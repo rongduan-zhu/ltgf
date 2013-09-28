@@ -21,8 +21,6 @@ namespace Project1
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
         Vector3 LandPosition;                                           
         Vector3 ViewPosition;
-        private KeyboardManager keyboardManager;
-        private MouseManager mouseManager;
         private float Speed = 0.05f;        //Camera Speed
         private float Angle = 0;            //Angle moved around y axis
         private float Angle2 = 0;           //Angel moved around x axis
@@ -32,15 +30,12 @@ namespace Project1
         public Landscape(Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(1, 7);      //Randomize the height
-            vertices = Buffer.Vertex.New(
+            vertices = Buffer.Vertex.New<VertexPositionColor>(
                 game.GraphicsDevice,
                 InitializeGrid());                  //Initalize the vertices       
 
             LandPosition = new Vector3(1, 1, 1);                                    //Setting the land position
             ViewPosition = new Vector3(0, MAX_HEIGHT, BOARD_SIZE * SCALE_FACTOR);   //Setting the camera position
-
-            keyboardManager = new KeyboardManager(game);
-            mouseManager = new MouseManager(game);                                  //Was going to use mouse to look around, but turns out to be too compicated
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
@@ -50,17 +45,13 @@ namespace Project1
                 World = Matrix.Identity
             };
 
-            inputLayout = VertexInputLayout.FromBuffer(0, vertices);
+            inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, vertices);
             this.game = game;
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Control(KeyboardState keyboardState)
         {
-            // Rotate the cube.
-            var time = (float)gameTime.TotalGameTime.TotalSeconds;
-            KeyboardState keyboardState = keyboardManager.GetState();
-
-            //Arrow keys to navigate. Left and Right are rotate left and right, Up and Down are used to move the camera up and down
+        	//Arrow keys to navigate. Left and Right are rotate left and right, Up and Down are used to move the camera up and down
             if (keyboardState.IsKeyDown(Keys.Up))
             {
                 if(Angle2 <= 3*(float)Math.PI/9)
@@ -80,6 +71,13 @@ namespace Project1
                 Angle += Speed;
             }
 
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            // Rotate the cube.
+            var time = (float)gameTime.TotalGameTime.TotalSeconds;
+            
             //Update world and camera.
             basicEffect.World = Matrix.RotationY(Angle) * Matrix.Translation(LandPosition);
             var LookAt = new Vector3(LandPosition.X, LandPosition.Y, LandPosition.Z);
