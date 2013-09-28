@@ -42,6 +42,7 @@
     </Compile>
     <Compile Include="ColoredGameObject.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="Landscape-kevin.cs" />
     <Compile Include="Landscape.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

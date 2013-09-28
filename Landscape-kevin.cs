@@ -26,13 +26,16 @@ namespace Project1
         private float Angle2 = 0;           //Angel moved around x axis
         private float COLOUR_SCALE = 10;    //A colour scale for calculating colours
         Random rnd = new Random();          //Initialize a Random object
+        private VertexPositionColor[] vpc;
 
-        public Landscape(Game game)
+        public Landscape2(Game game)
         {
-            MAX_HEIGHT = rnd.NextFloat(1, 7);      //Randomize the height
+            MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
+
+            vpc = InitializeGrid();
             vertices = Buffer.Vertex.New<VertexPositionColor>(
                 game.GraphicsDevice,
-                InitializeGrid());                  //Initalize the vertices       
+                vpc);                  //Initalize the vertices       
 
             LandPosition = new Vector3(1, 1, 1);                                    //Setting the land position
             ViewPosition = new Vector3(0, MAX_HEIGHT, BOARD_SIZE * SCALE_FACTOR);   //Setting the camera position
@@ -45,7 +48,7 @@ namespace Project1
                 World = Matrix.Identity
             };
 
-            inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, vertices);
+            inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
             this.game = game;
         }
 
@@ -90,7 +93,7 @@ namespace Project1
         public override void Draw(GameTime gameTime)
         {
             // Setup the vertices
-            game.GraphicsDevice.SetVertexBuffer(vertices);
+            game.GraphicsDevice.SetVertexBuffer<VertexPositionColor>((Buffer<VertexPositionColor>)vertices);
             game.GraphicsDevice.SetVertexInputLayout(inputLayout);
 
             // Apply the basic effect technique and draw the rotating cube
