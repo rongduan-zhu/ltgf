@@ -26,6 +26,7 @@ namespace Project1
         private float Angle2 = 0;           //Angel moved around x axis
         private float COLOUR_SCALE = 10;    //A colour scale for calculating colours
         Random rnd = new Random();          //Initialize a Random object
+        private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
 
         public Landscape2(Game game)
@@ -116,11 +117,11 @@ namespace Project1
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
 
             //average the landscape to remove sharp drop
-            for (int i = 1; i < BOARD_SIZE - 1; i++)
+            for (int i = flatOffset; i < BOARD_SIZE - flatOffset; i++)
             {
-                for (int j = 1; j < BOARD_SIZE - 1; j++)
+                for (int j = flatOffset; j < BOARD_SIZE - flatOffset; j++)
                 {
-                    pHeights[i,j] = (pHeights[i,j-1] + pHeights[i-1,j] + pHeights[i,j+1] + pHeights[i+1,j]) / 4f;
+                    pHeights[i, j] = (pHeights[i, j - flatOffset] + pHeights[i - flatOffset, j] + pHeights[i, j + flatOffset] + pHeights[i + flatOffset, j]) / 4f;
                 }
      		}
 
