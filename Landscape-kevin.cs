@@ -114,6 +114,15 @@ namespace Project1
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
 
+            //average the landscape to remove sharp drop
+            for (int i = 1; i < BOARD_SIZE - 1; i++)
+            {
+                for (int j = 1; j < BOARD_SIZE - 1; j++)
+                {
+                    pHeights[i,j] = (pHeights[i,j-1] + pHeights[i-1,j] + pHeights[i,j+1] + pHeights[i+1,j]) / 4f;
+                }
+     		}
+
             //Now convert the array into vertices
             int k = 0;
             for (int i = 0; i < BOARD_SIZE - 1; i++)
@@ -158,18 +167,6 @@ namespace Project1
             //Make sure ncen is between 0 and 20. 
             ncen = normalize(ncen);
 
-            //These are legacy methods I've tried, getting random value between two points rather than average
-            //don't seem to be that bad
-            /*    
-            newp1 = (h1 + h2) / 2;
-            newp2 = (h2 + h3) / 2;
-            newp3 = (h3 + h4) / 2;
-            newp4 = (h4 + h1) / 2;
-            newp1 = rnd.NextFloat(min(h1,h2), max(h1,h2));
-            newp2 = rnd.NextFloat(min(h3, h2), max(h3, h2));
-            newp3 = rnd.NextFloat(min(h3, h4), max(h3, h4));
-            newp4 = rnd.NextFloat(min(h1, h4), max(h1, h4));
-            */
             points[x + newWidth, y + newWidth] = ncen;
 
             //Calculate the average using the hybrid center calculation. Since I've used recursion, I've

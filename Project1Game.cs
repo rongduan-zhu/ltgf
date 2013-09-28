@@ -55,7 +55,7 @@ namespace Project1
 
         protected override void LoadContent()
         {
-            model = new Landscape(this);
+            model = new Landscape2(this);
 
             // Create an input layout from the vertices
 
