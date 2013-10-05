@@ -30,6 +30,9 @@ namespace Project2
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
+
+        public float[,] pHeights;
+
         Project2Game game1;
         public Landscape2(Game game)
         {
@@ -117,7 +120,7 @@ namespace Project2
         public VertexPositionColor[] InitializeGrid()
         {
             float h1, h2, h3, h4;
-            float[,] pHeights = new float[BOARD_SIZE, BOARD_SIZE];
+            pHeights = new float[BOARD_SIZE, BOARD_SIZE];
             VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
             h1 = rnd.NextFloat(0, MAX_HEIGHT);
