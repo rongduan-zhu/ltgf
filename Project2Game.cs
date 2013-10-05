@@ -38,13 +38,13 @@ namespace Project2
     {
         private GraphicsDeviceManager graphicsDeviceManager;
         private GameObject landscape;
-        private GameModel ball, pin, arrow;
         private Model model;
         private Stack<GameModel> models;
-        private Camera camera;
-        private KeyboardManager km;
-        private KeyboardState ks;
-        public GameInput input;
+        public GameInput input { get; private set; }
+        public Camera camera { get; private set; }
+        public GameModel ball { get; private set; }
+        public GameModel pin { get; private set; }
+        public GameModel arrow { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
@@ -60,7 +60,6 @@ namespace Project2
             models = new Stack<GameModel>(3);
 
             // Creates a keyboard manager
-            km = new KeyboardManager(this);
             input = new GameInput();
             // Initialise event handling.
             input.gestureRecognizer.ManipulationUpdated += OnManipulationUpdated;
@@ -69,19 +68,20 @@ namespace Project2
         protected override void LoadContent()
         {
             landscape = new Landscape2(this);
+
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this, camera);
+            arrow = new GameModel(model, this);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, camera);
+            ball = new GameModel(model, this);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
-            pin = new GameModel(model, this, camera);
+            pin = new GameModel(model, this);
             models.Push(pin);
 
             foreach (var m in models)
             {
-                BasicEffect.EnableDefaultLighting(m.getModel(), true);
+                BasicEffect.EnableDefaultLighting(m.model, true);
             }
 
             // Create an input layout from the vertices
@@ -100,23 +100,26 @@ namespace Project2
 
         protected override void Update(GameTime gameTime)
         {
-            ks = km.GetState();
-            landscape.Update(gameTime);
-            landscape.Control(ks);
+            camera.Update(gameTime);
 
-            // Handle base.Update
+            foreach (var m in models)
+            {
+                m.Update(gameTime);
+            }
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             // Clears the screen with the Color.CornflowerBlue
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.SkyBlue);
 
-            landscape.Draw(gameTime);
             foreach(var m in models){
                 m.Draw();
             }
+
+            landscape.Draw(gameTime);
 
             // Handle base.Draw
             base.Draw(gameTime);
@@ -124,11 +127,7 @@ namespace Project2
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
-            // Update camera position for all game objec
-
-            // TASK 4: Respond to OnManipulationUpdated events for linear motion
-            landscape.OnManipulationUpdated(sender, args);
-
+            camera.OnManipulationUpdated(sender, args);
         }
     }
 }

@@ -12,28 +12,26 @@ namespace Project2
     using SharpDX.Toolkit.Graphics;
     using SharpDX.Toolkit.Input;
 
-    class GameModel
+    public class GameModel
     {
-        protected Game game;
-        protected Camera camera;
-        protected Matrix world;
-        protected Model model;
+        protected Project2Game game;
+        public Model model { get; private set; }
+        public Matrix World { get; private set; }
 
-        public GameModel (Model model, Game game, Camera camera) {
-            this.game = game;
-            this.camera = camera;
+        public GameModel (Model model, Game game) {
+            this.game = (Project2Game) game;
             this.model = model;
-            world = Matrix.Identity;
+            World = Matrix.Identity;
         }
 
-        public Model getModel()
+        public virtual void Update(GameTime gameTime)
         {
-            return model;
+            World = Matrix.RotationY(gameTime.ElapsedGameTime.Milliseconds);
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
-            model.Draw(game.GraphicsDevice, world, camera.View, camera.Projection);
+            model.Draw(game.GraphicsDevice, World, game.camera.View, game.camera.Projection);
         }
     }
 }
