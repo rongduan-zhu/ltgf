@@ -22,6 +22,9 @@ using System;
 
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.Devices.Sensors;
+using Windows.UI.Input;
+using Windows.UI.Core;
 
 namespace Project1
 {
@@ -36,6 +39,8 @@ namespace Project1
         private GameObject model;
         private KeyboardManager km;
         public KeyboardState ks;
+        public GameInput input;
+        public AccelerometerReading accelerometerReading;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Project1Game" /> class.
@@ -51,6 +56,16 @@ namespace Project1
 
             // Creates a keyboard manager
             km = new KeyboardManager(this);
+            input = new GameInput();
+            // Initialise event handling.
+
+            input.gestureRecognizer.ManipulationUpdated += OnManipulationUpdated;
+            /*
+            input.gestureRecognizer.Tapped += Tapped;
+            input.gestureRecognizer.ManipulationStarted += OnManipulationStarted;
+            input.gestureRecognizer.ManipulationUpdated += OnManipulationUpdated;
+            input.gestureRecognizer.ManipulationCompleted += OnManipulationCompleted;
+             **/
         }
 
         protected override void LoadContent()
@@ -71,6 +86,7 @@ namespace Project1
 
         protected override void Update(GameTime gameTime)
         {
+            accelerometerReading = input.accelerometer.GetCurrentReading(); 
             ks = km.GetState();
             model.Update(gameTime);
             model.Control(ks);
@@ -89,5 +105,29 @@ namespace Project1
             // Handle base.Draw
             base.Draw(gameTime);
         }
+
+        /* Tap and manipulate functions 
+        public void Tapped(GestureRecognizer sender, TappedEventArgs args)
+        {
+            // Pass Manipulation events to the game objects.
+            foreach (var obj in gameObjects)
+            {
+                obj.Tapped(sender, args);
+            }
+        }*/
+
+        public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+            // Update camera position for all game objec
+
+                // TASK 4: Respond to OnManipulationUpdated events for linear motion
+                model.OnManipulationUpdated(sender, args);
+            
+        }
+        /*
+        public void OnManipulationCompleted(GestureRecognizer sender, ManipulationCompletedEventArgs args)
+        {
+        }
+          */
     }
 }

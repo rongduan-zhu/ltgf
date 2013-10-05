@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.UI.Input;
+using Windows.UI.Core;
 
 namespace Project1
 {
@@ -19,5 +21,10 @@ namespace Project1
         public abstract void Draw(GameTime gametime);
 
         public abstract void Control(KeyboardState keystate);
+        public virtual void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+
+        }
     }
+
 }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.UI.Input;
+using Windows.UI.Core;
 
 namespace Project1
 {
@@ -20,6 +22,8 @@ namespace Project1
         private float hAcc, hVelocity, vVelocity, hRotation, vRotation;
         private float[,] heights;
         private VertexPositionColor[] vpc;
+
+        
 
         public Landscape(Game game)
         {
@@ -47,6 +51,7 @@ namespace Project1
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>)vertices);
             this.game = game;
+
         }
 
         // init corner points
@@ -155,6 +160,7 @@ namespace Project1
 
         public override void Update(GameTime gameTime)
         {
+            
             hVelocity += hAcc;
 
             hRotation += hVelocity;
@@ -179,9 +185,11 @@ namespace Project1
             // basicEffect.World = Matrix.RotationX(time) * Matrix.RotationY(time * 2.0f) * Matrix.RotationZ(time * .7f);
             basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, SIZE * 2);
         }
-
+       
         public override void Control(KeyboardState ks)
         {
+           
+            
             if (ks.IsKeyDown(Keys.Right))
             {
                 hAcc = -ROTATION;

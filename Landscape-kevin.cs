@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.UI.Input;
+using Windows.UI.Core;
 
 namespace Project1
 {
@@ -28,7 +30,7 @@ namespace Project1
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
-
+        Project1Game game1;
         public Landscape2(Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
@@ -51,6 +53,7 @@ namespace Project1
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
             this.game = game;
+            game1 = (Project1Game)game;
         }
 
         public override void Control(KeyboardState keyboardState)
@@ -75,6 +78,13 @@ namespace Project1
                 Angle += Speed;
             }
 
+        }
+
+        // TASK 4: Move when a TranslationX event occurs
+        public override void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+            //Angle -= (float)args.Delta.Translation.X / 100;
+            Angle2 -= (float)args.Delta.Translation.Y / 100;
         }
 
         public override void Update(GameTime gameTime)
@@ -318,6 +328,8 @@ namespace Project1
             //This can produce a good result as well, you can try this out
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
+
+
 
     }
 }
