@@ -35,6 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <ToolkitModel Include="Content\Arrow.obj" />
+    <ToolkitModel Include="Content\Ball.obj" />
+    <ToolkitModel Include="Content\Pin.obj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -49,6 +52,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Project1Game.cs" />
     <Compile Include="Project2Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,11 +60,6 @@
     <AppxManifest Include="PackageXaml.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <ToolkitModel Include="Content\Arrow.obj" />
-    <ToolkitModel Include="Content\Ball.obj" />
-    <ToolkitModel Include="Content\Pin.obj" />
-    <None Include="Content\Arrow.mtl" />
-    <None Include="Content\Pin.mtl" />
     <None Include="MiniCube.WinRTXaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

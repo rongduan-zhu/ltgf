@@ -30,7 +30,7 @@ namespace Project2
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
-        Project1Game game1;
+        Project2Game game1;
         public Landscape2(Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
@@ -53,7 +53,7 @@ namespace Project2
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
             this.game = game;
-            game1 = (Project1Game)game;
+            game1 = (Project2Game)game;
         }
 
         public override void Control(KeyboardState keyboardState)
@@ -83,7 +83,7 @@ namespace Project2
         // TASK 4: Move when a TranslationX event occurs
         public override void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
-            //Angle -= (float)args.Delta.Translation.X / 100;
+            Angle -= (float)args.Delta.Translation.X / 100;
             Angle2 -= (float)args.Delta.Translation.Y / 100;
         }
 

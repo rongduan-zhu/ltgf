@@ -23,6 +23,9 @@ using System.Collections.Generic;
 
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.UI.Input;
+using Windows.UI.Core;
+
 
 namespace Project2
 {
@@ -40,6 +43,7 @@ namespace Project2
         private Camera camera;
         private KeyboardManager km;
         private KeyboardState ks;
+        public GameInput input;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
@@ -56,6 +60,9 @@ namespace Project2
 
             // Creates a keyboard manager
             km = new KeyboardManager(this);
+            input = new GameInput();
+            // Initialise event handling.
+            input.gestureRecognizer.ManipulationUpdated += OnManipulationUpdated;
         }
 
         protected override void LoadContent()
@@ -109,6 +116,14 @@ namespace Project2
 
             // Handle base.Draw
             base.Draw(gameTime);
+        }
+        public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+            // Update camera position for all game objec
+
+            // TASK 4: Respond to OnManipulationUpdated events for linear motion
+            landscape.OnManipulationUpdated(sender, args);
+
         }
     }
 }
