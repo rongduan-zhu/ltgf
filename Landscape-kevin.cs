@@ -328,8 +328,5 @@ namespace Project2
             //This can produce a good result as well, you can try this out
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
-
-
-
     }
 }

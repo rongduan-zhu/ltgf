@@ -38,8 +38,9 @@ namespace Project2
     {
         private GraphicsDeviceManager graphicsDeviceManager;
         private GameObject landscape;
-        private Model ball, pin, arrow;
-        private Stack<Model> models;
+        private GameModel ball, pin, arrow;
+        private Model model;
+        private Stack<GameModel> models;
         private Camera camera;
         private KeyboardManager km;
         private KeyboardState ks;
@@ -56,7 +57,7 @@ namespace Project2
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";
-            models = new Stack<Model>(3);
+            models = new Stack<GameModel>(3);
 
             // Creates a keyboard manager
             km = new KeyboardManager(this);
@@ -68,16 +69,19 @@ namespace Project2
         protected override void LoadContent()
         {
             landscape = new Landscape2(this);
-            arrow = Content.Load<Model>("Arrow");
+            model = Content.Load<Model>("Arrow");
+            arrow = new GameModel(model, this, camera);
             models.Push(arrow);
-            ball = Content.Load<Model>("Ball");
+            model = Content.Load<Model>("Ball");
+            ball = new GameModel(model, this, camera);
             models.Push(ball);
-            pin = Content.Load<Model>("Pin");
+            model = Content.Load<Model>("Pin");
+            pin = new GameModel(model, this, camera);
             models.Push(pin);
 
             foreach (var m in models)
             {
-                BasicEffect.EnableDefaultLighting(m, true);
+                BasicEffect.EnableDefaultLighting(m.getModel(), true);
             }
 
             // Create an input layout from the vertices
@@ -111,12 +115,13 @@ namespace Project2
 
             landscape.Draw(gameTime);
             foreach(var m in models){
-                m.Draw(GraphicsDevice, Matrix.Identity, camera.View, camera.Projection);
+                m.Draw();
             }
 
             // Handle base.Draw
             base.Draw(gameTime);
         }
+
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             // Update camera position for all game objec
