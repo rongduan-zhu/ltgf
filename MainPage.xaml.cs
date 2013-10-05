@@ -19,6 +19,8 @@
 // THE SOFTWARE.
 
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using SharpDX;
 
 namespace Project2
 {
@@ -35,5 +37,24 @@ namespace Project2
             game = new Project2Game();
             game.Run(this);
         }
+        private void StartGame(object sender, RoutedEventArgs e)
+        {
+            //game.started = true;
+            sgrid.Visibility = Visibility.Collapsed;
+            //game.Run(this);
+        }
+        private void About(object sender, RoutedEventArgs e)
+        {
+            //game.started = true;
+            //sgrid.Visibility = Visibility.Collapsed;
+            //game.Run(this);
+            abutton.Visibility = Visibility.Visible;
+        }
+
+        private void abutton_Click(object sender, RoutedEventArgs e)
+        {
+            abutton.Visibility = Visibility.Collapsed;
+        }
+
     }
 }
