@@ -84,7 +84,8 @@ namespace Project2
         public override void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             Angle -= (float)args.Delta.Translation.X / 100;
-            Angle2 -= (float)args.Delta.Translation.Y / 100;
+            if ((Angle2 <= 3 * (float)Math.PI / 9 && (float)args.Delta.Translation.Y > 0) || (Angle2 > 0 && (float)args.Delta.Translation.Y < 0))
+                Angle2 += (float)args.Delta.Translation.Y / 100;
         }
 
         public override void Update(GameTime gameTime)

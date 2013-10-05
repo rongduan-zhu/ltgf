@@ -24,7 +24,7 @@ namespace Project2
 
             // Set up the gesture recognizer.  In this example, it only responds to TranslateX and Tap events
             gestureRecognizer = new Windows.UI.Input.GestureRecognizer();
-            gestureRecognizer.GestureSettings = GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationScale | GestureSettings.Tap;
+            gestureRecognizer.GestureSettings = GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationScale | GestureSettings.Tap;
 
             // Register event handlers for pointer events
             window.PointerPressed += OnPointerPressed;

@@ -3,6 +3,8 @@ obj
 *.exe
 *.o
 
+Content
+
 *.obj
 *.mtl
 
