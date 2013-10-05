@@ -7,7 +7,7 @@ using SharpDX.Toolkit;
 using Windows.UI.Input;
 using Windows.UI.Core;
 
-namespace Project1
+namespace Project2
 {
     using SharpDX.Toolkit.Graphics;
     using SharpDX.Toolkit.Input;

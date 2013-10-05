@@ -7,7 +7,7 @@
     <ProjectGuid>{5114D1A3-5423-4B73-8729-57CD90DC4BEC}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Project1</RootNamespace>
+    <RootNamespace>Project2</RootNamespace>
     <AssemblyName>Project1.WinRTXaml</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
@@ -40,6 +40,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Camera.cs" />
     <Compile Include="ColoredGameObject.cs" />
     <Compile Include="GameInput.cs" />
     <Compile Include="GameObject.cs" />
@@ -48,13 +49,18 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Project1Game.cs" />
+    <Compile Include="Project2Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="PackageXaml.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <ToolkitModel Include="Content\Arrow.obj" />
+    <ToolkitModel Include="Content\Ball.obj" />
+    <ToolkitModel Include="Content\Pin.obj" />
+    <None Include="Content\Arrow.mtl" />
+    <None Include="Content\Pin.mtl" />
     <None Include="MiniCube.WinRTXaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

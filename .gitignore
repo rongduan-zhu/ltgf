@@ -2,3 +2,7 @@ bin
 obj
 *.exe
 *.o
+
+*.obj
+*.mtl
+
