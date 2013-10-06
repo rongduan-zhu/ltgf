@@ -19,28 +19,37 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 
 using SharpDX;
 using SharpDX.Toolkit;
+using Windows.UI.Input;
+using Windows.UI.Core;
 
-namespace Project1
+
+namespace Project2
 {
     // Use this namespace here in case we need to use Direct3D11 namespace as well, as this
     // namespace will override the Direct3D11.
     using SharpDX.Toolkit.Graphics;
     using SharpDX.Toolkit.Input;
 
-    public class Project1Game : Game
+    public class Project2Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
-        private GameObject model;
-        private KeyboardManager km;
-        public KeyboardState ks;
+        private GameObject landscape;
+        private Model model;
+        private Stack<GameModel> models;
+        public GameInput input { get; private set; }
+        public Camera camera { get; private set; }
+        public GameModel ball { get; private set; }
+        public GameModel pin { get; private set; }
+        public GameModel arrow { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Project1Game" /> class.
+        /// Initializes a new instance of the <see cref="Project2Game" /> class.
         /// </summary>
-        public Project1Game()
+        public Project2Game()
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
@@ -48,14 +57,32 @@ namespace Project1
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
             Content.RootDirectory = "Content";
+            models = new Stack<GameModel>(3);
 
             // Creates a keyboard manager
-            km = new KeyboardManager(this);
+            input = new GameInput();
+            // Initialise event handling.
+            input.gestureRecognizer.ManipulationUpdated += OnManipulationUpdated;
         }
 
         protected override void LoadContent()
         {
-            model = new Landscape2(this);
+            landscape = new Landscape2(this);
+
+            model = Content.Load<Model>("Arrow");
+            arrow = new GameModel(model, this);
+            models.Push(arrow);
+            model = Content.Load<Model>("Ball");
+            ball = new GameModel(model, this);
+            models.Push(ball);
+            model = Content.Load<Model>("Pin");
+            pin = new GameModel(model, this);
+            models.Push(pin);
+
+            foreach (var m in models)
+            {
+                BasicEffect.EnableDefaultLighting(m.model, true);
+            }
 
             // Create an input layout from the vertices
 
@@ -64,30 +91,43 @@ namespace Project1
 
         protected override void Initialize()
         {
-            Window.Title = "Project 1";
+            Window.Title = "Project 2";
 
             base.Initialize();
+
+            camera = new Camera(this);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            ks = km.GetState();
-            model.Update(gameTime);
-            model.Control(ks);
+            camera.Update(gameTime);
 
-            // Handle base.Update
+            foreach (var m in models)
+            {
+                m.Update(gameTime);
+            }
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             // Clears the screen with the Color.CornflowerBlue
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.SkyBlue);
 
-            model.Draw(gameTime);
+            foreach(var m in models){
+                m.Draw();
+            }
+
+            landscape.Draw(gameTime);
 
             // Handle base.Draw
             base.Draw(gameTime);
+        }
+
+        public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
+        {
+            camera.OnManipulationUpdated(sender, args);
         }
     }
 }

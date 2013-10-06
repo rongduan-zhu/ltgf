@@ -19,21 +19,42 @@
 // THE SOFTWARE.
 
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
+using SharpDX;
 
-namespace Project1
+namespace Project2
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage
     {
-        private readonly Project1Game game;
+        private readonly Project2Game game;
 
         public MainPage()
         {
             InitializeComponent();
-            game = new Project1Game();
+            game = new Project2Game();
             game.Run(this);
         }
+        private void StartGame(object sender, RoutedEventArgs e)
+        {
+            //game.started = true;
+            sgrid.Visibility = Visibility.Collapsed;
+            //game.Run(this);
+        }
+        private void About(object sender, RoutedEventArgs e)
+        {
+            //game.started = true;
+            //sgrid.Visibility = Visibility.Collapsed;
+            //game.Run(this);
+            abutton.Visibility = Visibility.Visible;
+        }
+
+        private void abutton_Click(object sender, RoutedEventArgs e)
+        {
+            abutton.Visibility = Visibility.Collapsed;
+        }
+
     }
 }

@@ -7,7 +7,7 @@
     <ProjectGuid>{5114D1A3-5423-4B73-8729-57CD90DC4BEC}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Project1</RootNamespace>
+    <RootNamespace>Project2</RootNamespace>
     <AssemblyName>Project1.WinRTXaml</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
@@ -35,19 +35,24 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <ToolkitModel Include="Content\Arrow.obj" />
+    <ToolkitModel Include="Content\Ball.obj" />
+    <ToolkitModel Include="Content\Pin.obj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Camera.cs" />
     <Compile Include="ColoredGameObject.cs" />
+    <Compile Include="GameInput.cs" />
+    <Compile Include="GameModel.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Landscape-kevin.cs" />
-    <Compile Include="Landscape.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Project1Game.cs" />
+    <Compile Include="Project2Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -61,6 +66,7 @@
     <Content Include="Assets\SmallLogo.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Content\GolfImage.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

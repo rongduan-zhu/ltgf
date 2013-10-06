@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using SharpDX;
 using SharpDX.Toolkit;
 
-namespace Project1
+namespace Project2
 {
     using SharpDX.Toolkit.Graphics;
-    using SharpDX.Toolkit.Input;
-    using SharpDX.Toolkit.Content;
+
     class Landscape2 : ColoredGameObject
     {
         private static int BOARD_SIZE = 513;                            //Work best at 513x513
@@ -19,76 +19,35 @@ namespace Project1
         private float ROUGHNESS = 10;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
-        Vector3 LandPosition;                                           
-        Vector3 ViewPosition;
-        private float Speed = 0.05f;        //Camera Speed
-        private float Angle = 0;            //Angle moved around y axis
-        private float Angle2 = 0;           //Angel moved around x axis
         private float COLOUR_SCALE = 10;    //A colour scale for calculating colours
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
 
-        public Landscape2(Game game)
+        public float[,] pHeights;
+
+        public Landscape2(Project2Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
 
             vpc = InitializeGrid();
-            vertices = Buffer.Vertex.New<VertexPositionColor>(
-                game.GraphicsDevice,
-                vpc);                  //Initalize the vertices       
-
-            LandPosition = new Vector3(1, 1, 1);                                    //Setting the land position
-            ViewPosition = new Vector3(0, MAX_HEIGHT, BOARD_SIZE * SCALE_FACTOR);   //Setting the camera position
+            vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
 
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                View = Matrix.LookAtLH(ViewPosition, new Vector3(0, 0, 0), Vector3.UnitY),
-                Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f),
-                World = Matrix.Identity
+                World = Matrix.Translation(0, -10, 0),
+                View = game.camera.View,
+                Projection = game.camera.Projection
             };
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
             this.game = game;
         }
 
-        public override void Control(KeyboardState keyboardState)
+        public override void Update(GameTime gametime)
         {
-        	//Arrow keys to navigate. Left and Right are rotate left and right, Up and Down are used to move the camera up and down
-            if (keyboardState.IsKeyDown(Keys.Up))
-            {
-                if(Angle2 <= 3*(float)Math.PI/9)
-                    Angle2 += Speed;
-            }
-            if (keyboardState.IsKeyDown(Keys.Down))
-            {
-                if(Angle2 >= 0)
-                    Angle2 -= Speed;
-            }
-            if (keyboardState.IsKeyDown(Keys.Left))
-            {
-                Angle -= Speed;
-            }
-            if (keyboardState.IsKeyDown(Keys.Right))
-            {
-                Angle += Speed;
-            }
-
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            // Rotate the cube.
-            var time = (float)gameTime.TotalGameTime.TotalSeconds;
-            
-            //Update world and camera.
-            basicEffect.World = Matrix.RotationY(Angle) * Matrix.Translation(LandPosition);
-            var LookAt = new Vector3(LandPosition.X, LandPosition.Y, LandPosition.Z);
-            basicEffect.View = Matrix.RotationX(Angle2/2) * Matrix.LookAtLH(ViewPosition, LookAt, Vector3.UnitY);
-            
-            //basicEffect.World = Matrix.RotationY(time*0.5f);
-            basicEffect.Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+            basicEffect.View = game.camera.View;
         }
 
         public override void Draw(GameTime gameTime)
@@ -106,7 +65,7 @@ namespace Project1
         public VertexPositionColor[] InitializeGrid()
         {
             float h1, h2, h3, h4;
-            float[,] pHeights = new float[BOARD_SIZE, BOARD_SIZE];
+            pHeights = new float[BOARD_SIZE, BOARD_SIZE];
             VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
             h1 = rnd.NextFloat(0, MAX_HEIGHT);
@@ -194,7 +153,6 @@ namespace Project1
         //depth, but they are physically the same height. Just so it looks more realistic.
         //It also flatten the beach near the ocean
         private float flatOcean(float height) {
-            return height;
             if (height <= COLOUR_SCALE * 0.1)
             {
                 if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
@@ -298,8 +256,8 @@ namespace Project1
         {
             if (a > 20)
                 return 20;
-            if (a < -10)
-                return -10;
+            if (a < 0)
+                return 0;
             return a;
         }
 
@@ -319,6 +277,5 @@ namespace Project1
             //This can produce a good result as well, you can try this out
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
-
     }
 }
