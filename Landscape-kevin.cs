@@ -194,6 +194,7 @@ namespace Project1
         //depth, but they are physically the same height. Just so it looks more realistic.
         //It also flatten the beach near the ocean
         private float flatOcean(float height) {
+            return height;
             if (height <= COLOUR_SCALE * 0.1)
             {
                 if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
@@ -297,8 +298,8 @@ namespace Project1
         {
             if (a > 20)
                 return 20;
-            if (a < 0)
-                return 0;
+            if (a < -10)
+                return -10;
             return a;
         }
 
