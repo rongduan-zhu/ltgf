@@ -36,7 +36,7 @@ namespace Project2
             basicEffect = new BasicEffect(game.GraphicsDevice)
             {
                 VertexColorEnabled = true,
-                World = Matrix.Translation(0, -10, 0),
+                World = Matrix.Identity,
                 View = game.camera.View,
                 Projection = game.camera.Projection
             };
@@ -47,7 +47,6 @@ namespace Project2
 
         public override void Update(GameTime gameTime)
         {
-            basicEffect.World = Matrix.RotationY((float)(gameTime.TotalGameTime.Milliseconds * Math.PI / 500));
             basicEffect.View = game.camera.View;
             basicEffect.Projection = game.camera.Projection;
         }
