@@ -45,9 +45,11 @@ namespace Project2
             this.game = game;
         }
 
-        public override void Update(GameTime gametime)
+        public override void Update(GameTime gameTime)
         {
+            basicEffect.World = Matrix.RotationY((float)(gameTime.TotalGameTime.Milliseconds * Math.PI / 500));
             basicEffect.View = game.camera.View;
+            basicEffect.Projection = game.camera.Projection;
         }
 
         public override void Draw(GameTime gameTime)

@@ -26,7 +26,7 @@ namespace Project2
 
         public virtual void Update(GameTime gameTime)
         {
-            World = Matrix.RotationY(gameTime.ElapsedGameTime.Milliseconds);
+            World = Matrix.RotationY((float)(-gameTime.TotalGameTime.Milliseconds * Math.PI / 500)) * Matrix.Translation(0, 10, 0);
         }
 
         public virtual void Draw()

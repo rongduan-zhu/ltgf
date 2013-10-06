@@ -107,6 +107,8 @@ namespace Project2
                 m.Update(gameTime);
             }
 
+            landscape.Update(gameTime);
+
             base.Update(gameTime);
         }
 

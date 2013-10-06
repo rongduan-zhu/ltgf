@@ -18,7 +18,6 @@ namespace Project2
     {
         public Matrix View;
         public Matrix Projection;
-        public Matrix World;
         public Game game;
 
         public Vector3 distance;
@@ -28,12 +27,12 @@ namespace Project2
 
         // Ensures that all objects are being rendered from a consistent viewpoint
         public Camera(Game game) {
-            View = Matrix.LookAtLH(new Vector3(0, 0, -10), new Vector3(0, 0, 0), Vector3.UnitY);
-            World = Matrix.Identity;
-            this.game = game;
-            distance = new Vector3(0, 100, 0);
+            distance = new Vector3(0, 30, -10);
 
+            View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+
+            this.game = game;
         }
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
