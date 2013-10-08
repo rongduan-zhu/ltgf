@@ -23,7 +23,9 @@ namespace Project2
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
-
+        
+        private Vector3 startPos;
+        private Vector3 objectivePos;
         public float[,] pHeights;
 
         public Landscape2(Project2Game game)
@@ -154,6 +156,7 @@ namespace Project2
         //depth, but they are physically the same height. Just so it looks more realistic.
         //It also flatten the beach near the ocean
         private float flatOcean(float height) {
+            return height;
             if (height <= COLOUR_SCALE * 0.1)
             {
                 if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
@@ -208,6 +211,7 @@ namespace Project2
                 return new Color(new Vector4(255 / 255, 255 / 255, 34f / 255, 1));
             if (height < COLOUR_SCALE * 0.12 && height >= COLOUR_SCALE * 0.1)
                 return new Color(new Vector4(255 / 255, 215f / 255, 0f / 255, 1));
+            //Water below this point
             if (height < COLOUR_SCALE * 0.1 && height >= COLOUR_SCALE * 0.09)
                 return new Color(new Vector4(127f / 255, 255f / 255, 212f / 255, 1));
             if (height < COLOUR_SCALE * 0.09 && height >= COLOUR_SCALE * 0.05)
@@ -277,6 +281,39 @@ namespace Project2
             return rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT) * max;
             //This can produce a good result as well, you can try this out
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
+        }
+
+        public Vector3 getStartPos() {
+            return startPos;
+        }
+
+        public Vector3 getObjectivePos() {
+            return objectivePos;
+        }
+
+        private void generateRandomStartObjectivePos() {
+            //Get starting pos
+            bool unsuccessful = true;
+            int tempX, tempZ;
+            while (unsuccessful) {
+                tempX = rnd.Next(0, BOARD_SIZE);
+                tempZ = rnd.Next(0, BOARD_SIZE);
+                if (pHeights[tempX, tempZ] > 0.1) {
+                    startPos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
+                    unsuccessful = false;
+                }
+            }
+
+            //Get objective pos
+            unsuccessful = true;
+            while (unsuccessful) { 
+                tempX = rnd.Next(0, BOARD_SIZE);
+                tempZ = rnd.Next(0, BOARD_SIZE);
+                if (pHeights[tempX, tempZ] > 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
+                    objectivePos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
+                    unsuccessful = false;
+                }
+            }
         }
     }
 }
