@@ -30,10 +30,15 @@ namespace Project2
                 if (landtype.Equals("water"))
                 {
 
+                        //TODO: allow ball sink into water with static velocity
+                        // unitil reaching river bed.
                 }
                 else if (landtype.Equals("moutain"))
                 {
-
+                    // heights difference between left and right
+                    float heightLRdiff = heights[(int)fPosition.X - 1, (int)fPosition.Z] - heights[(int)fPosition.X + 1, (int)fPosition.Z];
+                    // heights difference between front and back
+                    float heightFBdiff = heights[(int)fPosition.X, (int)fPosition.Z - 1] - heights[(int)fPosition.X, (int)fPosition.Z + 1];
                 }
                 else if (landtype.Equals("sand"))
                 {
@@ -42,6 +47,8 @@ namespace Project2
                 }
                 else
                 {
+                    dir.Y = -1;
+                    a = -0.008f;
                 }
 
                 if (v0 > 0)
@@ -73,6 +80,17 @@ namespace Project2
             }
 
             return hitGround;
+        }
+
+        private float ballBounce(float a, float v0)
+        {
+            float h = 0;
+            float time = 0;
+
+            time = v0 / a;
+            h = v0 * time + (1 / 2) * a * (float) Math.Pow(time, 2);
+
+            return h;
         }
     }
 }
