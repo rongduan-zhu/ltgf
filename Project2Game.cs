@@ -68,12 +68,13 @@ namespace Project2
         protected override void LoadContent()
         {
             landscape = new Landscape2(this);
+            Landscape2 temp = (Landscape2)landscape;
 
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this, 5, 10, -5);
+            arrow = new GameModel(model, this, temp.getObjectivePos().X, temp.getObjectivePos().Y, temp.getObjectivePos().Z);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, 5, 10, -10);
+            ball = new GameModel(model, this, temp.getStartPos().X, temp.getStartPos().Y, temp.getStartPos().Z);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
             pin = new GameModel(model, this, 5, 10, 0);
