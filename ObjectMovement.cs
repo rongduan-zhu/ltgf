@@ -27,7 +27,7 @@ namespace Project2
         // the longest side
         float c;
         // radius
-        float r = 0.08f;
+        float r = 0.0f;
 
         public ObjectMovement(Project2Game game)
         {
@@ -46,7 +46,7 @@ namespace Project2
             {
                 fPosition.Y = heights[(int)fPosition.X, (int)fPosition.Z] + r;
 
-                if (fPosition.X > 0 && fPosition.Z > 0)
+                if (fPosition.X > 0 && fPosition.Z > 0 && fPosition.X < 512 && fPosition.Z < 512)
                 {
                     // heights difference between left and right
                     float heightLRdiff = heights[(int)fPosition.X - 1, (int)fPosition.Z] - heights[(int)fPosition.X + 1, (int)fPosition.Z];
