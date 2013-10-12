@@ -107,6 +107,9 @@ namespace Project2
                         (i + 1) * SCALE_FACTOR - MOVETOCENTER), GetColor(pHeights[i + 1, j + 1]));
                 }
             }
+
+            //generates the position of the ball and the hole
+            generateRandomStartObjectivePos();
             return vertices;
         }
 
@@ -288,9 +291,8 @@ namespace Project2
         }
 
         //Manipulates the original copy
-        public static void posNormalise(Vector3 value) {
-            value.X = value.X * SCALE_FACTOR - MOVETOCENTER;
-            value.Y = value.Y * SCALE_FACTOR - MOVETOCENTER;
+        public float posNormalise(int value) {
+            return value * SCALE_FACTOR - MOVETOCENTER;
         }
 
         public Vector3 getStartPos() {
@@ -310,8 +312,7 @@ namespace Project2
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
                 if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1) {
-                    startPos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
-                    posNormalise(startPos);
+                    startPos = new Vector3(posNormalise(tempX), pHeights[tempX, tempZ], posNormalise(tempZ));
                     unsuccessful = false;
                 }
             }
@@ -322,8 +323,7 @@ namespace Project2
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
                 if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
-                    objectivePos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
-                    posNormalise(objectivePos);
+                    objectivePos = new Vector3(posNormalise(tempX), pHeights[tempX, tempZ], posNormalise(tempZ));
                     unsuccessful = false;
                 }
             }
