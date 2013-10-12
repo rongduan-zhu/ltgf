@@ -19,6 +19,7 @@ namespace Project2
         public Matrix World { get; private set; }
 
         public Vector3 position { get; protected set; }
+        public Vector3 worldPosition { get; protected set; }
 
         public GameModel (Model model, Game game, float x, float y, float z) {
             this.game = (Project2Game) game;

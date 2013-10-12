@@ -10,7 +10,7 @@ namespace Project2
 {
     using SharpDX.Toolkit.Graphics;
 
-    class Landscape2 : ColoredGameObject
+    public class Landscape2 : ColoredGameObject
     {
         private static int BOARD_SIZE = 513;                            //Work best at 513x513
         private static float SCALE_FACTOR = 50f / BOARD_SIZE;             //Normalize the board size
@@ -93,18 +93,12 @@ namespace Project2
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i, j]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i + 1, j + 1]), 
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i, j + 1]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i, j]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i + 1, j]), 
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i + 1, j + 1]),
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(j, flatOcean(pHeights[i, j]), i), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1), flatOcean(pHeights[i + 1, j + 1]), (i + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1), flatOcean(pHeights[i, j + 1]), i), GetColor(pHeights[i, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(j, flatOcean(pHeights[i, j]), i), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(j, flatOcean(pHeights[i + 1, j]), (i + 1)), GetColor(pHeights[i + 1, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1), flatOcean(pHeights[i + 1, j + 1]), (i + 1)), GetColor(pHeights[i + 1, j + 1]));
                 }
             }
 
@@ -160,13 +154,13 @@ namespace Project2
         //It also flatten the beach near the ocean
         private float flatOcean(float height) {
             return height;
-            if (height <= COLOUR_SCALE * 0.1)
-            {
-                if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
-                    return COLOUR_SCALE * 0.11f;
-                return COLOUR_SCALE * 0.1f;
-            }
-            return height;
+            //if (height <= COLOUR_SCALE * 0.1)
+            //{
+            //    if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
+            //        return COLOUR_SCALE * 0.11f;
+            //    return COLOUR_SCALE * 0.1f;
+            //}
+            //return height;
         }
 
         //Calculates the colour corresponding to the height
@@ -286,19 +280,6 @@ namespace Project2
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
 
-        //Manipulates the original copy
-        public float posNormalise(int value) {
-            return value * SCALE_FACTOR;
-        }
-
-        public Vector3 getStartPos() {
-            return startPos;
-        }
-
-        public Vector3 getObjectivePos() {
-            return objectivePos;
-        }
-
         //Position returned has been normalised to screen coordinate
         private void generateRandomStartObjectivePos() {
             //Get starting pos
@@ -322,8 +303,8 @@ namespace Project2
                     unsuccessful = false;
                 }
             }
-            startPos = new Vector3(posNormalise(tempZ1), flatOcean(pHeights[tempX1, tempZ1]), posNormalise(tempX1));
-            objectivePos = new Vector3(posNormalise(tempZ2), flatOcean(pHeights[tempX2, tempZ2]), posNormalise(tempX2));
+            startPos = new Vector3(tempZ1, flatOcean(pHeights[tempX1, tempZ1]), tempX1);
+            objectivePos = new Vector3(tempZ2, flatOcean(pHeights[tempX2, tempZ2]), tempX2);
         }
     }
 }

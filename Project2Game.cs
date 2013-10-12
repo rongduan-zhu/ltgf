@@ -37,9 +37,13 @@ namespace Project2
     public class Project2Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
-        private Landscape2 landscape;
         private Model model;
         private Stack<GameModel> models;
+
+        public enum GameState { Start, Movie, Hit, Lose, Win };
+        public GameState gameState = GameState.Start;
+
+        public Landscape2 landscape { get; private set; }
         public GameInput input { get; private set; }
         public Camera camera { get; private set; }
         public GameModel ball { get; private set; }
