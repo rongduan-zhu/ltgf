@@ -291,7 +291,6 @@ namespace Project2
         public static void posNormalise(Vector3 value) {
             value.X = value.X * SCALE_FACTOR - MOVETOCENTER;
             value.Y = value.Y * SCALE_FACTOR - MOVETOCENTER;
-            value.Z = value.Z * SCALE_FACTOR - MOVETOCENTER;
         }
 
         public Vector3 getStartPos() {
@@ -310,7 +309,7 @@ namespace Project2
             while (unsuccessful) {
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX, tempZ] > 0.1) {
+                if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1) {
                     startPos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
                     posNormalise(startPos);
                     unsuccessful = false;
@@ -322,7 +321,7 @@ namespace Project2
             while (unsuccessful) { 
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX, tempZ] > 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
+                if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
                     objectivePos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
                     posNormalise(objectivePos);
                     unsuccessful = false;
