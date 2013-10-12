@@ -12,7 +12,7 @@ namespace Project2
     using SharpDX.Toolkit.Graphics;
     using SharpDX.Toolkit.Content;
 
-    class ObjectMovement
+    public class ObjectMovement
     {
         Project2Game game;
         Landscape2 land;
