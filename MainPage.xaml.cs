@@ -41,6 +41,8 @@ namespace Project2
         {
             //game.started = true;
             sgrid.Visibility = Visibility.Collapsed;
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
             //game.Run(this);
         }
         private void About(object sender, RoutedEventArgs e)
@@ -56,5 +58,14 @@ namespace Project2
             abutton.Visibility = Visibility.Collapsed;
         }
 
+        private void btnhit_Click(object sender, RoutedEventArgs e)
+        {
+            //ball.move = true;
+        }
+
+        private void changeDifficulty(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        {
+            //if (game != null) { game.force = (float)e.NewValue; }
+        }
     }
 }

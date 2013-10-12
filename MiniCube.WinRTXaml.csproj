@@ -52,6 +52,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ObjectMovement.cs" />
     <Compile Include="Project2Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

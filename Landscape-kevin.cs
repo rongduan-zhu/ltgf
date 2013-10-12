@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,16 +10,18 @@ namespace Project2
 {
     using SharpDX.Toolkit.Graphics;
 
-    class Landscape2 : ColoredGameObject
+    public class Landscape2 : ColoredGameObject
     {
         private static int BOARD_SIZE = 513;                            //Work best at 513x513
         private static float SCALE_FACTOR = 50f / BOARD_SIZE;             //Normalize the board size
         private float MAX_HEIGHT;                                       //Setting the maximum height
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private static float MOVETOCENTER = SCALE_FACTOR * BOARD_SIZE / 2;     //Move to center factor
-        private float ROUGHNESS = 10;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
+        private float ROUGHNESS = BOARD_SIZE / 50;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
-        private float COLOUR_SCALE = 10;    //A colour scale for calculating colours
+        private float COLOUR_SCALE = BOARD_SIZE / 5;    //A colour scale for calculating colours
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
@@ -30,7 +32,7 @@ namespace Project2
 
         public Landscape2(Project2Game game)
         {
-            MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
+            MAX_HEIGHT = rnd.NextFloat(INIT_MIN_HEIGHT, INIT_MAX_HEIGHT);      //Randomize the height
 
             vpc = InitializeGrid();
             vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
@@ -93,18 +95,12 @@ namespace Project2
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i, j]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i + 1, j + 1]), 
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i, j + 1]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i, j]), 
-                        i * SCALE_FACTOR), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(j * SCALE_FACTOR, flatOcean(pHeights[i + 1, j]), 
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((j + 1) * SCALE_FACTOR, flatOcean(pHeights[i + 1, j + 1]),
-                        (i + 1) * SCALE_FACTOR), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), GetColor(pHeights[i + 1, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), GetColor(pHeights[i, j + 1]));
+                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
                 }
             }
 
@@ -159,7 +155,7 @@ namespace Project2
         //depth, but they are physically the same height. Just so it looks more realistic.
         //It also flatten the beach near the ocean
         private float flatOcean(float height) {
-            return height;
+            //return height;
             if (height <= COLOUR_SCALE * 0.1)
             {
                 if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
@@ -286,19 +282,6 @@ namespace Project2
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
 
-        //Manipulates the original copy
-        public float posNormalise(int value) {
-            return value * SCALE_FACTOR;
-        }
-
-        public Vector3 getStartPos() {
-            return startPos;
-        }
-
-        public Vector3 getObjectivePos() {
-            return objectivePos;
-        }
-
         //Position returned has been normalised to screen coordinate
         private void generateRandomStartObjectivePos() {
             //Get starting pos
@@ -322,8 +305,8 @@ namespace Project2
                     unsuccessful = false;
                 }
             }
-            startPos = new Vector3(posNormalise(tempZ1), flatOcean(pHeights[tempX1, tempZ1]), posNormalise(tempX1));
-            objectivePos = new Vector3(posNormalise(tempZ2), flatOcean(pHeights[tempX2, tempZ2]), posNormalise(tempX2));
+            startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
+            objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
     }
 }

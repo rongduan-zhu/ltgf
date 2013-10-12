@@ -37,14 +37,20 @@ namespace Project2
     public class Project2Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
-        private Landscape2 landscape;
         private Model model;
         private Stack<GameModel> models;
+
+        public enum GameState { Start, Movie, Hit, Lose, Win };
+        public GameState gameState = GameState.Start;
+
+        public Landscape2 landscape { get; private set; }
         public GameInput input { get; private set; }
         public Camera camera { get; private set; }
-        public GameModel ball { get; private set; }
+        public GameModel ball { get; set; }
         public GameModel pin { get; private set; }
         public GameModel arrow { get; private set; }
+
+        public ObjectMovement objectmove;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
@@ -53,6 +59,7 @@ namespace Project2
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
+
 
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
@@ -69,6 +76,7 @@ namespace Project2
         {
             landscape = new Landscape2(this);
 
+            objectmove = new ObjectMovement(this);
             model = Content.Load<Model>("Arrow");
             arrow = new GameModel(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
             models.Push(arrow);
@@ -109,6 +117,8 @@ namespace Project2
 
             landscape.Update(gameTime);
 
+            objectmove.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -129,6 +139,7 @@ namespace Project2
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
+            
             camera.OnManipulationUpdated(sender, args);
         }
     }
