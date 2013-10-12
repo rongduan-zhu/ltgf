@@ -15,11 +15,13 @@ namespace Project2
         private static int BOARD_SIZE = 513;                            //Work best at 513x513
         private static float SCALE_FACTOR = 50f / BOARD_SIZE;             //Normalize the board size
         private float MAX_HEIGHT;                                       //Setting the maximum height
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private static float MOVETOCENTER = SCALE_FACTOR * BOARD_SIZE / 2;     //Move to center factor
-        private float ROUGHNESS = 10;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
+        private float ROUGHNESS = BOARD_SIZE / 50;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
-        private float COLOUR_SCALE = 10;    //A colour scale for calculating colours
+        private float COLOUR_SCALE = BOARD_SIZE / 5;    //A colour scale for calculating colours
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
@@ -30,7 +32,7 @@ namespace Project2
 
         public Landscape2(Project2Game game)
         {
-            MAX_HEIGHT = rnd.NextFloat(1, 3);      //Randomize the height
+            MAX_HEIGHT = rnd.NextFloat(INIT_MIN_HEIGHT, INIT_MAX_HEIGHT);      //Randomize the height
 
             vpc = InitializeGrid();
             vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
