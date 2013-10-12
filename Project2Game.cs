@@ -129,6 +129,7 @@ namespace Project2
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
+            
             camera.OnManipulationUpdated(sender, args);
         }
     }
