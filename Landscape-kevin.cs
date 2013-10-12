@@ -15,7 +15,7 @@ namespace Project2
         private static int BOARD_SIZE = 513;                            //Work best at 513x513
         private static float SCALE_FACTOR = 50f/BOARD_SIZE;             //Normalize the board size
         private float MAX_HEIGHT;                                       //Setting the maximum height
-        private float MOVETOCENTER = SCALE_FACTOR * BOARD_SIZE / 2;     //Move to center factor
+        private static float MOVETOCENTER = SCALE_FACTOR * BOARD_SIZE / 2;     //Move to center factor
         private float ROUGHNESS = 10;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
@@ -23,9 +23,9 @@ namespace Project2
         Random rnd = new Random();          //Initialize a Random object
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
-        
-        private Vector3 startPos;
-        private Vector3 objectivePos;
+
+        public Vector3 startPos { get; private set; }
+        public Vector3 objectivePos { get; private set; }
         public float[,] pHeights; 
 
         public Landscape2(Project2Game game)
@@ -283,6 +283,16 @@ namespace Project2
             //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
         }
 
+        public static float posNormalise(float value) {
+            return value * SCALE_FACTOR - MOVETOCENTER;
+        }
+
+        //Manipulates the original copy
+        public static void posNormalise(Vector3 value) {
+            value.X = value.X * SCALE_FACTOR - MOVETOCENTER;
+            value.Y = value.Y * SCALE_FACTOR - MOVETOCENTER;
+        }
+
         public Vector3 getStartPos() {
             return startPos;
         }
@@ -291,6 +301,7 @@ namespace Project2
             return objectivePos;
         }
 
+        //Position returned has been normalised to screen coordinate
         private void generateRandomStartObjectivePos() {
             //Get starting pos
             bool unsuccessful = true;
@@ -298,8 +309,9 @@ namespace Project2
             while (unsuccessful) {
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX, tempZ] > 0.1) {
+                if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1) {
                     startPos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
+                    posNormalise(startPos);
                     unsuccessful = false;
                 }
             }
@@ -309,8 +321,9 @@ namespace Project2
             while (unsuccessful) { 
                 tempX = rnd.Next(0, BOARD_SIZE);
                 tempZ = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX, tempZ] > 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
+                if (pHeights[tempX, tempZ] > COLOUR_SCALE * 0.1 && (tempX != startPos.X || tempZ != startPos.Z)) {
                     objectivePos = new Vector3(tempX, pHeights[tempX, tempZ], tempZ);
+                    posNormalise(objectivePos);
                     unsuccessful = false;
                 }
             }

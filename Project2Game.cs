@@ -37,7 +37,7 @@ namespace Project2
     public class Project2Game : Game
     {
         private GraphicsDeviceManager graphicsDeviceManager;
-        private GameObject landscape;
+        private Landscape2 landscape;
         private Model model;
         private Stack<GameModel> models;
         public GameInput input { get; private set; }
@@ -72,13 +72,13 @@ namespace Project2
             landscape = new Landscape2(this);
 
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this, 5, 10, -5);
+            arrow = new GameModel(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, 5, 10, 10);
+            ball = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y + 2, landscape.startPos.Z);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
-            pin = new GameModel(model, this, 5, 10, 0);
+            pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
             models.Push(pin);
 
             foreach (var m in models)

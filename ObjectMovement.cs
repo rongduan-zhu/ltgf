@@ -17,7 +17,7 @@ namespace Project2
         Project2Game game;
         Landscape2 land;
 
-        float v0;
+        float v0 = 0.01f; 
         Vector3 direction;
 
         public ObjectMovement(Project2Game game)
@@ -112,11 +112,19 @@ namespace Project2
         {
             Vector3 position =  game.ball.position;
 
+
             if (hitGround(position, land.pHeights))
             {
-               game.ball.position = this.BallOnGround(v0, position, direction, land.pHeights, "sand");
+                game.ball.position = this.BallOnGround(v0, position, direction, land.pHeights, "sand");
+            }
+            else
+            {
+                position.Y -= v0;
+                position.X -= v0;
+                position.Z -= v0;
             }
 
+            game.ball.position = position;
         }
     }
 }

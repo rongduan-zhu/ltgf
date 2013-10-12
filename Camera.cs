@@ -40,16 +40,17 @@ namespace Project2
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             AngleH -= (float)args.Delta.Translation.X / 100;
-            if ((AngleV <= 3 * (float)Math.PI / 9 && (float)args.Delta.Translation.Y > 0) || (AngleV > 0 && (float)args.Delta.Translation.Y < 0))
+            //if ((AngleV <= 3 * (float)Math.PI / 9 && (float)args.Delta.Translation.Y > 0) || (AngleV > 0 && (float)args.Delta.Translation.Y < 0))
                 AngleV += (float)args.Delta.Translation.Y / 100;
         }
 
         public void Update(GameTime gameTime)
         {
             position = game.ball.position + distance;
-            View = Matrix.Translation(-5, -20, 10)
-                * Matrix.RotationY((float)(gameTime.TotalGameTime.TotalMilliseconds * Math.PI / 5000))
-                * Matrix.Translation(5, 20, -10)
+            View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
+                * Matrix.RotationY(AngleH)//(float)(gameTime.TotalGameTime.TotalMilliseconds * Math.PI / 5000))
+                *Matrix.RotationX(-AngleV)
+                * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
                 * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }
     }
