@@ -3,11 +3,12 @@ obj
 *.exe
 *.o
 
-Content
-
 *.obj
 *.mtl
 
 *.suo
+*.obj
+*.mtl
 
+*.db
 

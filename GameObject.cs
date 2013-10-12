@@ -17,6 +17,7 @@ namespace Project2
         public BasicEffect basicEffect;
         public VertexInputLayout inputLayout;
         public Project2Game game;
+        public Effect effect;
 
         public abstract void Update(GameTime gametime);
         public abstract void Draw(GameTime gametime);
