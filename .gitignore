@@ -9,6 +9,8 @@ obj
 *.suo
 *.obj
 *.mtl
+*.jpg
+*.png
 
 *.db
 
