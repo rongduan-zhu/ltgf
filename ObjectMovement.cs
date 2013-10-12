@@ -32,7 +32,7 @@ namespace Project2
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
-            land = new Landscape2(game);
+            land = game.landscape;
             direction = new Vector3(1,1,1);
             v0 = 0.01f;
 
@@ -40,18 +40,16 @@ namespace Project2
 
         public Vector3 BallOnGround(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
         {
-            Vector3 fPosition = position;
-
-            if (this.hitGround(fPosition, heights))
+            if (hitGround(position, heights))
             {
-                fPosition.Y = heights[(int)fPosition.X, (int)fPosition.Z] + r;
+                position.Y = heights[(int)position.X, (int)position.Z] + r;
 
                 if (fPosition.X > 0 && fPosition.Z > 0 && fPosition.X < 512 && fPosition.Z < 512)
                 {
                     // heights difference between left and right
-                    float heightLRdiff = heights[(int)fPosition.X - 1, (int)fPosition.Z] - heights[(int)fPosition.X + 1, (int)fPosition.Z];
+                    float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
                     // heights difference between front and back
-                    float heightFBdiff = heights[(int)fPosition.X, (int)fPosition.Z - 1] - heights[(int)fPosition.X, (int)fPosition.Z + 1];
+                    float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
 
                     c = (float)Math.Sqrt(Math.Pow(heightLRdiff, 2) + Math.Pow(heightFBdiff, 2));
                     cos = heightLRdiff / c;
@@ -85,33 +83,26 @@ namespace Project2
                     v0 = 0;
                 }
 
-                fPosition.X += dir.X * v0; 
-                fPosition.Z += dir.Z * v0;
-                //fPosition.Y += dir.Y * v0;
+                position.X += dir.X * v0; 
+                position.Z += dir.Z * v0;
+                //position.Y += dir.Y * v0;
             }
 
-            return fPosition;
+            return position;
 
         }
 
         // check if ball hit ground.
         private bool hitGround(Vector3 position, float[,] heights)
         {
-            bool hitGround = false;
+           
 
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
             //if((int) position.X >= 0 && (int) position.Z >= 0)
             //{
-                if (position.Y <= heights[(int)position.X, (int)position.Z] + r)
-                {
-                    
-                    hitGround = true;
-                }
-            //}
-
-            return hitGround;
+            return position.Y <= heights[(int)position.X, (int)position.Z] + r;
         }
 
         // control ball movement after ball hit ground and bounce back to sky.
@@ -132,8 +123,7 @@ namespace Project2
 
             if (hitGround(position, land.pHeights))
             {
-
-                position = this.BallOnGround(v0, position, direction, land.pHeights, "sand");
+                position = BallOnGround(v0, position, direction, land.pHeights, "sand");
             }
             else
             {
