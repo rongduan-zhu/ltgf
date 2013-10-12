@@ -70,13 +70,13 @@ namespace Project2
             landscape = new Landscape2(this);
 
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this);
+            arrow = new GameModel(model, this, 5, 10, -5);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this);
+            ball = new GameModel(model, this, 5, 10, -10);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
-            pin = new GameModel(model, this);
+            pin = new GameModel(model, this, 5, 10, 0);
             models.Push(pin);
 
             foreach (var m in models)

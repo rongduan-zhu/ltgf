@@ -18,16 +18,18 @@ namespace Project2
     {
         public Matrix View;
         public Matrix Projection;
-        public Game game;
+        public Project2Game game;
 
-        public Vector3 distance;
 
         private float AngleH = 0;
         private float AngleV = 0;
 
+        private Vector3 distance, position;
+
         // Ensures that all objects are being rendered from a consistent viewpoint
-        public Camera(Game game) {
-            distance = new Vector3(0, 30, -10);
+        public Camera(Project2Game game) {
+            distance = new Vector3(0, 3, -5);
+            position = new Vector3(0, 0, 0);
 
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
@@ -44,7 +46,11 @@ namespace Project2
 
         public void Update(GameTime gameTime)
         {
-            View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
+            position = game.ball.position + distance;
+            View = Matrix.Translation(-5, -20, 10)
+                * Matrix.RotationY((float)(gameTime.TotalGameTime.TotalMilliseconds * Math.PI / 5000))
+                * Matrix.Translation(5, 20, -10)
+                * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }
     }
 }

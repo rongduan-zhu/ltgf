@@ -18,15 +18,18 @@ namespace Project2
         public Model model { get; private set; }
         public Matrix World { get; private set; }
 
-        public GameModel (Model model, Game game) {
+        public Vector3 position { get; protected set; }
+
+        public GameModel (Model model, Game game, float x, float y, float z) {
             this.game = (Project2Game) game;
             this.model = model;
+            this.position = new Vector3(x, y, z);
             World = Matrix.Identity;
         }
 
         public virtual void Update(GameTime gameTime)
         {
-            World = Matrix.RotationY((float)(-gameTime.TotalGameTime.Milliseconds * Math.PI / 500)) * Matrix.Translation(0, 10, 0);
+            World = Matrix.Translation(position.X, position.Y, position.Z);
         }
 
         public virtual void Draw()
