@@ -26,7 +26,7 @@ namespace Project2
         
         private Vector3 startPos;
         private Vector3 objectivePos;
-        public float[,] pHeights;
+        public float[,] pHeights; 
 
         public Landscape2(Project2Game game)
         {

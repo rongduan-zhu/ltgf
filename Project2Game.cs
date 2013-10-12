@@ -46,6 +46,8 @@ namespace Project2
         public GameModel pin { get; private set; }
         public GameModel arrow { get; private set; }
 
+        private ObjectMovement ballMove { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
         /// </summary>
@@ -73,7 +75,7 @@ namespace Project2
             arrow = new GameModel(model, this, 5, 10, -5);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, 5, 10, -10);
+            ball = new GameModel(model, this, 5, 10, 10);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
             pin = new GameModel(model, this, 5, 10, 0);
@@ -96,6 +98,8 @@ namespace Project2
             base.Initialize();
 
             camera = new Camera(this);
+
+            ballMove = new ObjectMovement(this);
         }
 
         protected override void Update(GameTime gameTime)
@@ -110,6 +114,8 @@ namespace Project2
             landscape.Update(gameTime);
 
             base.Update(gameTime);
+
+            ballMove.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)

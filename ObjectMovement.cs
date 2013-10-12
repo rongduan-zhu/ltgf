@@ -10,16 +10,25 @@ using SharpDX.Toolkit;
 namespace Project2
 {
     using SharpDX.Toolkit.Graphics;
-    using SharpDX.Toolkit.Input;
     using SharpDX.Toolkit.Content;
 
     class ObjectMovement
     {
-        public ObjectMovement()
+        Project2Game game;
+        Landscape2 land;
+
+        float v0;
+        Vector3 direction;
+
+        public ObjectMovement(Project2Game game)
         {
+            this.game = game;
+            land = new Landscape2(game);
+            direction = new Vector3(1,1,1);
+
         }
 
-        public Vector3 BallMove(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
+        public Vector3 BallOnGround(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
         {
             Vector3 fPosition = position;
             float a = 0;
@@ -51,6 +60,7 @@ namespace Project2
                     a = -0.008f;
                 }
 
+                // control the velocity of ball movement.
                 if (v0 > 0)
                 {
                     v0 += a;
@@ -67,6 +77,7 @@ namespace Project2
 
         }
 
+        // check if ball hit ground.
         private bool hitGround(Vector3 position, float[,] heights)
         {
             bool hitGround = false;
@@ -74,14 +85,18 @@ namespace Project2
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            if (position.Y <= heights[(int)position.X, (int)position.Z])
+            if (((((int)position.X) < heights.GetLength(0)) && (((int)position.Z) < heights.GetLength(1))))
             {
-                hitGround = true;
+                if (position.Y <= heights[(int)position.X, (int)position.Z])
+                {
+                    hitGround = true;
+                }
             }
 
             return hitGround;
         }
 
+        // control ball movement after ball hit ground and bounce back to sky.
         private float ballBounce(float a, float v0)
         {
             float h = 0;
@@ -91,6 +106,17 @@ namespace Project2
             h = v0 * time + (1 / 2) * a * (float) Math.Pow(time, 2);
 
             return h;
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            Vector3 position =  game.ball.position;
+
+            if (hitGround(position, land.pHeights))
+            {
+               game.ball.position = this.BallOnGround(v0, position, direction, land.pHeights, "sand");
+            }
+
         }
     }
 }
