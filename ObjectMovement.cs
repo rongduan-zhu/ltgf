@@ -19,6 +19,7 @@ namespace Project2
 
         float v0 = 0.01f; 
         Vector3 direction;
+        Vector3 acc;
 
         public ObjectMovement(Project2Game game)
         {
@@ -31,7 +32,7 @@ namespace Project2
         public Vector3 BallOnGround(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
         {
             Vector3 fPosition = position;
-            float a = 0;
+            acc = new Vector3(0, 0, 0);
 
             if (this.hitGround(fPosition, heights))
             {
@@ -52,18 +53,18 @@ namespace Project2
                 else if (landtype.Equals("sand"))
                 {
                     fPosition.Y = heights[(int)fPosition.X, (int)fPosition.Z];
-                    a = -0.01f;
+                    acc.Y = -0.01f;
                 }
                 else
                 {
                     dir.Y = -1;
-                    a = -0.008f;
+                    acc.Y = -0.008f;
                 }
 
                 // control the velocity of ball movement.
                 if (v0 > 0)
                 {
-                    v0 += a;
+                    v0 += acc.Y;
                 }
                 else
                 {
@@ -85,7 +86,7 @@ namespace Project2
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            if (((((int)position.X) < heights.GetLength(0)) && (((int)position.Z) < heights.GetLength(1))))
+            if((int) position.X >= 0 && (int) position.Z >= 0)
             {
                 if (position.Y <= heights[(int)position.X, (int)position.Z])
                 {
@@ -120,8 +121,8 @@ namespace Project2
             else
             {
                 position.Y -= v0;
-                position.X -= v0;
-                position.Z -= v0;
+                //position.X -= v0;
+                //position.Z -= v0;
             }
 
             game.ball.position = position;
