@@ -47,9 +47,9 @@ namespace Project2
         public void Update(GameTime gameTime)
         {
             position = game.ball.position + distance;
-            View = Matrix.Translation(-5, -20, 10)
+            View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
                 * Matrix.RotationY((float)(gameTime.TotalGameTime.TotalMilliseconds * Math.PI / 5000))
-                * Matrix.Translation(5, 20, -10)
+                * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
                 * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }
     }

@@ -24,8 +24,8 @@ namespace Project2
         private int flatOffset = BOARD_SIZE / 100;
         private VertexPositionColor[] vpc;
         
-        private Vector3 startPos;
-        private Vector3 objectivePos;
+        public Vector3 startPos { get; private set; }
+        public Vector3 objectivePos { get; private set; }
         public float[,] pHeights;
 
         public Landscape2(Project2Game game)
