@@ -19,7 +19,7 @@ namespace Project2
         public override void Update(GameTime gameTime)
         {
             World = Matrix.Scaling(9)
-                * Matrix.RotationY(gameTime.TotalGameTime.Milliseconds / 500)
+                * Matrix.RotationY((float)(gameTime.TotalGameTime.Milliseconds * Math.PI / 2000))
                 * Matrix.Translation(position.X, position.Y, position.Z);
         }
     }
