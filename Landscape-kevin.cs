@@ -92,7 +92,8 @@ namespace Project2
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
 
             //average the landscape to remove sharp drop
-            for (int z = 0; z < smoothingFactor; z++){
+            for (int z = 0; z < smoothingFactor; z++)
+            {
                 for (int i = flatOffset; i < BOARD_SIZE - flatOffset; i++)
                 {
                     for (int j = flatOffset; j < BOARD_SIZE - flatOffset; j++)

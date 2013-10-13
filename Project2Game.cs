@@ -76,16 +76,17 @@ namespace Project2
         {
             landscape = new Landscape2(this);
 
-            objectmove = new ObjectMovement(this);
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
+            arrow = new Arrow(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y + 2, landscape.startPos.Z);
+            ball = new Ball(model, this, landscape.startPos.X, landscape.startPos.Y + 2, landscape.startPos.Z);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
             pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
             models.Push(pin);
+
+            objectmove = new ObjectMovement(this);
 
             foreach (var m in models)
             {

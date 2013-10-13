@@ -15,17 +15,20 @@ namespace Project2
     public class GameModel
     {
         protected Project2Game game;
-        public Model model { get; private set; }
-        public Matrix World { get; private set; }
+        public Model model { get; protected set; }
+        public Matrix World { get; protected set; }
 
         public Vector3 position { get; set; }
 
-        public GameModel (Model model, Game game, float x, float y, float z) {
+        public GameModel (Model model, Game game, float x, float y, float z)
+        {
             this.game = (Project2Game) game;
             this.model = model;
             this.position = new Vector3(x, y, z);
             World = Matrix.Identity;
         }
+
+        public GameModel () {}
 
         public virtual void Update(GameTime gameTime)
         {
