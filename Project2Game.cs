@@ -39,6 +39,7 @@ namespace Project2
         private GraphicsDeviceManager graphicsDeviceManager;
         private Model model;
         private Stack<GameModel> models;
+        private MainPage main;
 
         public enum GameState { Start, Movie, Ready, Lose, Win };
         public GameState gameState = GameState.Start;
@@ -55,11 +56,11 @@ namespace Project2
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
         /// </summary>
-        public Project2Game()
+        public Project2Game(MainPage main)
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
-
+            this.main = main;
 
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager

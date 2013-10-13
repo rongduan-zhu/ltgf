@@ -34,7 +34,7 @@ namespace Project2
         public MainPage()
         {
             InitializeComponent();
-            game = new Project2Game();
+            game = new Project2Game(this);
             game.Run(this);
         }
         private void StartGame(object sender, RoutedEventArgs e)
@@ -54,12 +54,12 @@ namespace Project2
             abutton.Visibility = Visibility.Visible;
         }
 
-        private void abutton_Click(object sender, RoutedEventArgs e)
+        public void abutton_Click(object sender, RoutedEventArgs e)
         {
             abutton.Visibility = Visibility.Collapsed;
         }
 
-        private void btnhit_Click(object sender, RoutedEventArgs e)
+        public void btnhit_Click(object sender, RoutedEventArgs e)
         {
             game.gameState = Project2Game.GameState.Movie;
             //ball.move = true;
