@@ -123,8 +123,15 @@ namespace Project2
             {
                 case GameState.Start:
                     break;
+                case GameState.Ready:
+                    main.readystate();
+                    break;
                 case GameState.Movie:
                     objectmove.Update(gameTime);
+                    if (objectmove.v0 <= 0)
+                    {
+                        gameState = GameState.Ready;
+                    }
                     break;
                 default:
                     break;

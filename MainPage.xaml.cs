@@ -37,10 +37,10 @@ namespace Project2
             game = new Project2Game(this);
             game.Run(this);
         }
-        private void StartGame(object sender, RoutedEventArgs e)
+        public void StartGame(object sender, RoutedEventArgs e)
         {
             //game.started = true;
-            game.gameState = Project2Game.GameState.Ready;
+            //game.gameState = Project2Game.GameState.Ready;
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
@@ -70,7 +70,13 @@ namespace Project2
 
         private void setforce(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
         {
-            if (game.gameState == Project2Game.GameState.Ready) { game.objectmove.v0 = (float)e.NewValue/200; }
+            //if (game.gameState == Project2Game.GameState.Ready) 
+            { game.objectmove.v0 = (float)e.NewValue/100; }
         }
+        public void readystate()
+       {
+           sldforce.Visibility = Visibility.Visible;
+           btnhit.Visibility = Visibility.Visible;
+       }
     }
 }

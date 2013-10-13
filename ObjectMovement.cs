@@ -32,7 +32,6 @@ namespace Project2
         {
             this.game = game;
             direction = new Vector3(1,1,1);
-            v0 = 0.01f;
 
         }
 
@@ -62,7 +61,7 @@ namespace Project2
                     accelerate = -0.001f;
                 }
                 // control the velocity of ball movement.
-                if (v0 > 0.0f)
+                if (Math.Abs(v0) > 0.002f)
                 {
                     v0 += accelerate;
                 }
