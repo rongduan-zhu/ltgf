@@ -23,11 +23,8 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        
-
-
     </Grid>
-    <Slider x:Name="sldforce" HorizontalAlignment="Left" Margin="269.807,214.691,0,0" VerticalAlignment="Top" Width="538.65" RenderTransformOrigin="0.5,0.5" Height="80.008" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FFBF1D1D" Background="Black" Visibility="Collapsed">
+    <Slider x:Name="sldforce" HorizontalAlignment="Left" Margin="269.807,214.691,0,0" VerticalAlignment="Top" Width="538.65" RenderTransformOrigin="0.5,0.5" Height="80.008" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FFBF1D1D" Background="Black" Visibility="Collapsed" ValueChanged="setforce">
         <Slider.RenderTransform>
             <CompositeTransform Rotation="0.098" SkewY="-0.465" TranslateX="-12.858" TranslateY="11.957"/>
         </Slider.RenderTransform>

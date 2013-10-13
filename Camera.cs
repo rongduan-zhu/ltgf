@@ -28,10 +28,11 @@ namespace Project2
         private Vector3 distance, position;
 
         public Camera(Project2Game game) {
-            distance = new Vector3(0, 3, -5);
+            distance = new Vector3(0, 55, -15);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
-            Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f, (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
+            Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
+                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 500.0f);
 
             AngleH = AngleV = 0;
 

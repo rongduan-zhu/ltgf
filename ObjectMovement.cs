@@ -17,8 +17,7 @@ namespace Project2
         Project2Game game;
 
         // initial velocity
-        public float v0 { get; set; }
-        public Vector3 v;
+        public Vector3 v { get; set; }
         Vector3 direction;
         // accelerate 
         float accelerate;
@@ -33,19 +32,16 @@ namespace Project2
         {
             this.game = game;
             direction = new Vector3(1,1,1);
-            v0 = 0.1f;
             v = new Vector3();
-            v = InitializeV(v0);
-
         }
 
-        public Vector3 InitializeV(float v0)
+        public Vector3 InitializeV(float v0, float AngleV, float AngleH)
         {
             Vector3 v = new Vector3();
 
-            v.X = (float) ((double)v0 * Math.Sin(game.camera.AngleV) * Math.Sin(game.camera.AngleH));
-            v.Z = (float) ((double)v0 * Math.Sin(game.camera.AngleV) * Math.Cos(game.camera.AngleH));
-            v.Y = (float) ((double)v0 * Math.Cos(game.camera.AngleV));
+            v.X = (float)((double)v0 * Math.Sin(AngleV * Math.PI / 180) * Math.Sin(AngleH * Math.PI / 180));
+            v.Z = (float)((double)v0 * Math.Sin(AngleV * Math.PI / 180) * Math.Cos(AngleH * Math.PI / 180));
+            v.Y = (float)((double)v0 * Math.Cos(AngleV * Math.PI / 180));
 
             return v;
         }
@@ -153,9 +149,9 @@ namespace Project2
             }
             else
             {
-                position.Y -= v.Y;
-                //position.X += v0;
-                //position.Z += v0;
+                position.Y += v.Y;
+                position.X += v.X;
+                position.Z += v.Z;
             }
 
             game.ball.position = position;
