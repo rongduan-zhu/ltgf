@@ -40,7 +40,7 @@ namespace Project2
         private Model model;
         private Stack<GameModel> models;
 
-        public enum GameState { Start, Movie, Hit, Lose, Win };
+        public enum GameState { Start, Movie, Ready, Lose, Win };
         public GameState gameState = GameState.Start;
 
         public Landscape2 landscape { get; private set; }
@@ -80,7 +80,7 @@ namespace Project2
             arrow = new Arrow(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new Ball(model, this, landscape.startPos.X, landscape.startPos.Y + 2, landscape.startPos.Z);
+            ball = new Ball(model, this, landscape.startPos.X, landscape.startPos.Y + 0.8f, landscape.startPos.Z);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
             pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
@@ -118,7 +118,16 @@ namespace Project2
 
             landscape.Update(gameTime);
 
-            objectmove.Update(gameTime);
+            switch (gameState)
+            {
+                case GameState.Start:
+                    break;
+                case GameState.Movie:
+                    objectmove.Update(gameTime);
+                    break;
+                default:
+                    break;
+            }
 
             base.Update(gameTime);
         }
