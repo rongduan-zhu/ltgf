@@ -15,13 +15,12 @@ namespace Project2
     public class ObjectMovement
     {
         Project2Game game;
-        Landscape2 land;
 
         // initial velocity
-        float v0; 
+        public float v0 { get; set; } 
         Vector3 direction;
         // accelerate 
-        float acc;
+        float accelerate;
         float cos;
         float sin;
         // the longest side
@@ -32,7 +31,6 @@ namespace Project2
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
-            land = new Landscape2(game);
             direction = new Vector3(1,1,1);
             v0 = 0.01f;
 
@@ -40,8 +38,6 @@ namespace Project2
 
         public Vector3 BallOnGround(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
         {
-
-                position.Y = heights[(int)position.X, (int)position.Z] + r;
 
                 if (position.X > 0 && position.Z > 0 && position.X < 512 && position.Z < 512)
                 {
@@ -53,7 +49,6 @@ namespace Project2
                     c = (float)Math.Sqrt(Math.Pow(heightLRdiff, 2) + Math.Pow(heightFBdiff, 2));
                     cos = heightLRdiff / c;
                     sin = heightFBdiff / c;
-
                 }
 
                 if (landtype.Equals("water"))
@@ -64,18 +59,12 @@ namespace Project2
                 }
                 else if (landtype.Equals("sand"))
                 {
-                    acc = -0.001f;
+                    accelerate = -0.001f;
                 }
-                else
-                {
-                    dir.Y = -1;
-                    acc = -0.008f;
-                }
-
                 // control the velocity of ball movement.
                 if (v0 > 0.0f)
                 {
-                    v0 += acc;
+                    v0 += accelerate;
                 }
                 else
                 {
@@ -84,8 +73,7 @@ namespace Project2
 
                 position.X += dir.X * v0 * cos; 
                 position.Z += dir.Z * v0 * sin;
-                //position.Y += dir.Y * v0;
-
+                position.Y = heights[(int)position.X, (int)position.Z];
             return position;
 
         }
@@ -97,7 +85,7 @@ namespace Project2
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            return (position.Y <= heights[(int)position.X, (int)position.Z] + r);
+            return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
         
         }
 
@@ -117,10 +105,10 @@ namespace Project2
         {
             Vector3 position =  game.ball.position;
 
-            if (hitGround(position, land.pHeights))
+            if (hitGround(position, game.landscape.pHeights))
             {
 
-                position = this.BallOnGround(v0, position, direction, land.pHeights, "sand");
+                position = this.BallOnGround(v0, position, direction, game.landscape.pHeights, "sand");
             }
             else
             {
