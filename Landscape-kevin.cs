@@ -21,7 +21,7 @@ namespace Project2
         /*landscape properties*/
         private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
         private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
-        private float ROUGHNESS = BOARD_SIZE / 50;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
+        private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
         private float COLOUR_SCALE = BOARD_SIZE / 4;                    //A colour scale for calculating colours
@@ -31,7 +31,7 @@ namespace Project2
         public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
         private const float MIN_PROBABILITY = 0.1f;
-        private const float MAX_PROBABILITY = 1f;
+        private const float MAX_PROBABILITY = 1.2f;
 
         /*auxiliary members*/
         Random rnd = new Random();                                      //Initialize a Random object
@@ -85,10 +85,10 @@ namespace Project2
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
             VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
-            h1 = rnd.NextFloat(0, MAX_HEIGHT);
-            h2 = rnd.NextFloat(0, MAX_HEIGHT);
-            h3 = rnd.NextFloat(0, MAX_HEIGHT);
-            h4 = rnd.NextFloat(0, MAX_HEIGHT);
+            h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h3 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h4 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
 
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
