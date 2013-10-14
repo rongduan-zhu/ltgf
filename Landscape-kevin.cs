@@ -33,6 +33,10 @@ namespace Project2
         private const float MIN_PROBABILITY = 0.1f;
         private const float MAX_PROBABILITY = 1.2f;
 
+        private float totalLand;
+        private float totalPoints;
+        private float landRatio;
+
         /*auxiliary members*/
         Random rnd = new Random();                                      //Initialize a Random object
         public Vector3 startPos { get; private set; }                   //Position where the golf ball should start
@@ -42,7 +46,7 @@ namespace Project2
         public Landscape2(Project2Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(INIT_MIN_HEIGHT, INIT_MAX_HEIGHT);      //Randomize the height
-
+            
             //initlize the world
             vpc = InitializeGrid();
             vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
@@ -89,6 +93,11 @@ namespace Project2
             h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h3 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h4 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+
+            totalLand += (int)isWater(h1);
+            totalLand += isWater(h2);
+            totalLand = 4;
+            totalPoints = 4;
 
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
@@ -324,7 +333,15 @@ namespace Project2
             if (!isInside(x, z)) {
                 return false;
             }
-            return pHeights[x, z] <= COLOUR_SCALE * 0.1;
+            return pHeights[x, z] < COLOUR_SCALE * 0.1;
+        }
+
+        /**
+         *  Checks if height is water level
+         */
+        private bool isWater(float height)
+        {
+            return height < COLOUR_SCALE * 0.1;
         }
 
         /**
@@ -333,5 +350,36 @@ namespace Project2
         private Boolean isSafePosition(int x, int z) {
             return pHeights[x, z] > COLOUR_SCALE * 0.12;
         }
+
+        private float calcLandRatio() { 
+            return totalLand / totalPoints;
+        }
+
+        private void updateLand(float h1, float h2, float h3, float h4, float h5 = 0) {
+            if (!isWater(h1)) {
+                totalLand++;
+            }
+            if (!isWater(h2))
+            {
+                totalLand++;
+            }
+            if (!isWater(h3))
+            {
+                totalLand++;
+            }
+            if (!isWater(h4))
+            {
+                totalLand++;
+            }
+            if (!isWater(h5)) 
+            {
+                totalLand++;
+            }
+        }
+
+        private void landscapeShapeGuard(float h1, float h2, float h3, float h4, float h5 = -float.MinValue) {
+            updateLand(h1, h2, h3, h4, h5);
+        }
+
     }
 }
