@@ -41,6 +41,8 @@ namespace Project2
         private Stack<GameModel> models;
         private MainPage main;
 
+        private static Vector3 STILL = Vector3.Zero;
+
         public enum GameState { Start, Movie, Ready, Lose, Win };
         public GameState gameState = GameState.Start;
 
@@ -123,7 +125,7 @@ namespace Project2
             {
                 case GameState.Movie:
                     objectmove.Update(gameTime);
-                    if (objectmove.velocity.Equals(0.0f))
+                    if (objectmove.velocity.Equals(STILL))
                     {
                         gameState = GameState.Ready;
                         main.showHitUI();

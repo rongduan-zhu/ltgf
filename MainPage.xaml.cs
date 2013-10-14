@@ -43,22 +43,16 @@ namespace Project2
         }
         public void StartGame(object sender, RoutedEventArgs e)
         {
-            //game.started = true;
-            //game.gameState = Project2Game.GameState.Ready;
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
-            //game.Run(this);
         }
         private void About(object sender, RoutedEventArgs e)
         {
-            //game.started = true;
-            //sgrid.Visibility = Visibility.Collapsed;
-            //game.Run(this);
             abutton.Visibility = Visibility.Visible;
         }
 
-        public void abutton_Click(object sender, RoutedEventArgs e)
+        public void hideAbout(object sender, RoutedEventArgs e)
         {
             abutton.Visibility = Visibility.Collapsed;
         }

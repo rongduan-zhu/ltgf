@@ -28,7 +28,7 @@ namespace Project2
         {
             this.game = game;
             direction = -game.camera.distance;
-            velocity = new Vector3();
+            velocity = Vector3.Zero;
         }
 
         public void InitializeV(float v0, float AngleV, float AngleH)
@@ -66,28 +66,26 @@ namespace Project2
             // heights difference between front and back
             float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
 
-            // velocity temp
-            Vector3 v = velocity, dir = direction;
-            float accelerate = 0;
-
             float c = (float)Math.Sqrt(heightLRdiff * heightLRdiff + heightFBdiff * heightFBdiff);
             // proportion on X-axis is cos, proportion on Z-axis is sin.
             float cos = heightLRdiff / c;
             float sin = heightFBdiff / c;
 
+            // temps
+            Vector3 v = velocity, dir = direction;
+            float accelerate = 0;
 
             if (landtype.Equals("water"))
             {
                 game.gameState = Project2Game.GameState.Lose;
                 return;
             }
-
             else if (landtype.Equals("sand"))
             {
                 accelerate = -0.01f;
             }
             // control the velocity of ball movement.
-            if (v.X > 0.0f)
+            if (Math.Abs(v.X) > 0.1f)
             {
                 v.X += accelerate * cos;
             }
@@ -96,7 +94,7 @@ namespace Project2
                 v.X = 0;
             }
 
-            if (v.Z > 0.0f)
+            if (Math.Abs(v.Z) > 0.1f)
             {
                 v.Z += accelerate * sin;
             }
@@ -104,6 +102,7 @@ namespace Project2
             {
                 v.Z = 0.0f;
             }
+
             position.X += dir.X * v.X;
             position.Z += dir.Z * v.Z;
 
@@ -161,7 +160,7 @@ namespace Project2
 
             if (hitGround(position, game.landscape.pHeights))
             {
-                onGround(ref position, game.landscape.pHeights, "");
+                onGround(ref position, game.landscape.pHeights, "sand");
             }
             else
             {
