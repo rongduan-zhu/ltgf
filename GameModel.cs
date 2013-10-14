@@ -37,6 +37,7 @@ namespace Project2
 
         public virtual void Draw()
         {
+            BasicEffect.EnableDefaultLighting(model, true);
             model.Draw(game.GraphicsDevice, World, game.camera.View, game.camera.Projection);
         }
     }

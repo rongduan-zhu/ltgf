@@ -24,12 +24,12 @@
             </Button.Background>
         </Button>
     </Grid>
-    <Slider x:Name="sldforce" HorizontalAlignment="Left" Margin="269.807,214.691,0,0" VerticalAlignment="Top" Width="538.65" RenderTransformOrigin="0.5,0.5" Height="80.008" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FFBF1D1D" Background="Black" Visibility="Collapsed" ValueChanged="setforce">
+    <Slider x:Name="sldforce" HorizontalAlignment="Left" Margin="269.807,214.691,0,0" VerticalAlignment="Top" Width="538.65" RenderTransformOrigin="0.5,0.5" Height="80.008" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FFBF1D1D" Background="Black" Visibility="Collapsed" ValueChanged="setForce">
         <Slider.RenderTransform>
             <CompositeTransform Rotation="0.098" SkewY="-0.465" TranslateX="-12.858" TranslateY="11.957"/>
         </Slider.RenderTransform>
     </Slider>
-    <Button x:Name="btnhit" Content="HIT" HorizontalAlignment="Left" Margin="994.984,517.033,0,0"  Click="btnhit_Click"   VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="108.711" UseLayoutRounding="False" Width="190.089" d:LayoutRounding="Auto" Background="#FF23E48C" BorderBrush="#FF20DE54" Visibility="Collapsed">
+    <Button x:Name="btnhit" Content="HIT" HorizontalAlignment="Left" Margin="994.984,517.033,0,0"  Click="hit"   VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="108.711" UseLayoutRounding="False" Width="190.089" d:LayoutRounding="Auto" Background="#FF23E48C" BorderBrush="#FF20DE54" Visibility="Collapsed">
             <Button.RenderTransform>
                 <CompositeTransform Rotation="-0.292"/>
             </Button.RenderTransform>

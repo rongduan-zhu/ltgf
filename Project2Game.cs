@@ -121,18 +121,17 @@ namespace Project2
 
             switch (gameState)
             {
-                case GameState.Start:
-                    break;
-                case GameState.Ready:
-                    main.readystate();
-                    break;
                 case GameState.Movie:
                     objectmove.Update(gameTime);
-                    if (objectmove.v.Equals(0.0f))
+                    if (objectmove.velocity.Equals(0.0f))
                     {
                         gameState = GameState.Ready;
+                        main.showHitUI();
                     }
                     break;
+                case GameState.Start:
+                case GameState.Ready:
+                case GameState.Lose:
                 default:
                     break;
             }

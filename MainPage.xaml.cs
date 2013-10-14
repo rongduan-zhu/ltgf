@@ -27,9 +27,13 @@ namespace Project2
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+
+    using Windows.UI.Xaml.Controls.Primitives;
+
     public sealed partial class MainPage
     {
         private readonly Project2Game game;
+        private float force  = 0;
 
         public MainPage()
         {
@@ -59,27 +63,25 @@ namespace Project2
             abutton.Visibility = Visibility.Collapsed;
         }
 
-        public void btnhit_Click(object sender, RoutedEventArgs e)
+        private void setForce(object sender, RangeBaseValueChangedEventArgs e)
         {
+            force = (float) e.NewValue / 100;
+        }
+
+        public void showHitUI()
+        {
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
+        }
+
+        private void hit(object sender, RoutedEventArgs e)
+        {
+            // hit the ball + UI disappear + watch movie
             game.gameState = Project2Game.GameState.Movie;
-            //ball.move = true;
-            //game.objectmove.v0 = 0;
+            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+
             sldforce.Visibility = Visibility.Collapsed;
             btnhit.Visibility = Visibility.Collapsed;
         }
-
-        private void setforce(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
-        {
-            //if (game.gameState == Project2Game.GameState.Ready) 
-            { 
-                float v0 = (float)e.NewValue/100;
-                game.objectmove.v = game.objectmove.InitializeV(v0, game.camera.AngleV, game.camera.AngleH);
-            }
-        }
-        public void readystate()
-       {
-           sldforce.Visibility = Visibility.Visible;
-           btnhit.Visibility = Visibility.Visible;
-       }
     }
 }
