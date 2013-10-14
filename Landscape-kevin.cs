@@ -13,7 +13,7 @@ namespace Project2
     public class Landscape2 : ColoredGameObject
     {
         /*board properties*/
-        private static int BOARD_SIZE = 513;                            //Work best at 513x513
+        private const int BOARD_SIZE = 513;                      //Work best at 513x513
         private float MAX_HEIGHT;                                       //Setting the maximum height, a random value between INIT_MIN_HEIGHT and INIT_MAX_HEIGHT
         public float[,] pHeights;                                       //2D array storing the heights for corresponding (x,z)
         private VertexPositionColor[] vpc;                              //Vertices list generated from the 2D array
@@ -30,12 +30,15 @@ namespace Project2
         public int minPlayable = BOARD_SIZE / 10;                       //Minimum x or z value that any GameObject could be placed
         public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
-        private const float MIN_PROBABILITY = 0.1f;
-        private const float MAX_PROBABILITY = 1.2f;
+        private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
+        private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
 
-        private float totalLand;
-        private float totalPoints;
-        private float landRatio;
+        private float totalLand;                                        //Total number of points which is land
+        private float totalPoints;                                      //Total number of initialized points
+        private float landRatio;                                        //Portion of land
+        private const float OPTIMAL_RATIO = 0.7f;                       //Optimal portion of land
+        private const float UPPERBOUND_RATIO = 0.9f;                    //Upper bound portion of land
+        private const float LOWERBOUND_RATIO = 0.5f;                    //Lower bound portion of land
 
         /*auxiliary members*/
         Random rnd = new Random();                                      //Initialize a Random object
@@ -94,10 +97,7 @@ namespace Project2
             h3 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h4 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
 
-            totalLand += (int)isWater(h1);
-            totalLand += isWater(h2);
-            totalLand = 4;
-            totalPoints = 4;
+            landscapeShapeGuard(h1, h2, h3, h4);
 
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
@@ -169,6 +169,8 @@ namespace Project2
             points[x + newWidth, y + width] = newp2;
             points[x + width, y + newWidth] = newp3;
             points[x + newWidth, y] = newp4;
+
+            landscapeShapeGuard(newp1, newp2, newp3, newp4, ncen);
 
             //Recursively call itself
             DivideVertices(ref points, x, y, newWidth, h1, newp1, ncen, newp4);
@@ -292,7 +294,7 @@ namespace Project2
          */
         private float displace(float smallsize) {
             float max = smallsize * ROUGHNESS / GBIGSIZE;
-            return rnd.NextFloat(-MAX_HEIGHT * MIN_PROBABILITY, MAX_HEIGHT * MAX_PROBABILITY) * max;
+            return rnd.NextFloat(-MAX_HEIGHT * min_probability, MAX_HEIGHT * max_probability) * max;
         }
 
         /**
@@ -351,10 +353,16 @@ namespace Project2
             return pHeights[x, z] > COLOUR_SCALE * 0.12;
         }
 
+        /**
+         *  Calculates percentage of land
+         */
         private float calcLandRatio() { 
             return totalLand / totalPoints;
         }
 
+        /**
+         *  Given these new heights, updates the total number of land points
+         */
         private void updateLand(float h1, float h2, float h3, float h4, float h5 = 0) {
             if (!isWater(h1)) {
                 totalLand++;
@@ -377,8 +385,43 @@ namespace Project2
             }
         }
 
+        /**
+         *  If proportion of land is below threshold value, increase probability of getting land
+         *  otherwise make probability of generating land and water equivalent
+         */
         private void landscapeShapeGuard(float h1, float h2, float h3, float h4, float h5 = -float.MinValue) {
             updateLand(h1, h2, h3, h4, h5);
+            if (h5 != -float.MinValue)
+            {
+                totalPoints += 5;
+            }
+            else {
+                totalPoints += 4;
+            }
+            landRatio = totalLand / totalPoints;
+
+            //If its lower than lower bound, make the probability of land extremely high
+            if (landRatio < LOWERBOUND_RATIO)
+            {
+                max_probability = 1.5f;
+                min_probability = -1f;
+            }
+            //If its higher than upper bound, make probability of land very low
+            else if (landRatio > UPPERBOUND_RATIO) {
+                max_probability = 0.1f;
+                min_probability = 1f;
+            }
+            //If its less than optimal_ratio, just have land slightly higher than water
+            else if (landRatio < OPTIMAL_RATIO) {
+                max_probability = 1.5f;
+                min_probability = 0.5f;
+            }
+            //We are safe, so make probability of water and land the same
+            else
+            {
+                max_probability = 1f;
+                min_probability = 1f;
+            }
         }
 
     }
