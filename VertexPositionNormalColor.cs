@@ -27,10 +27,12 @@ namespace Project2
             Color = color;
         }
 
+        /*IMPORTANT NOTE! Change [VertexElement("SV_POSITION")] to correspond with shader definition.*/
+        /*Default is on http://goo.gl/HMmukK */
         /// <summary>
         /// XYZ position.
         /// </summary>
-        [VertexElement("POSITION")]
+        [VertexElement("SV_POSITION")]
         public Vector3 Position;
 
         /// <summary>

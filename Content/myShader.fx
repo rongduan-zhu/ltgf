@@ -34,7 +34,7 @@ float4x4 worldInvTrp;
 
 struct VS_IN
 {
-	float4 pos : POSITION;
+	float4 pos : SV_POSITION;
 	float4 nrm : NORMAL;
 	float4 col : COLOR;
 // Other vertex properties, e.g. texture co-ords, surface Kd, Ks, etc

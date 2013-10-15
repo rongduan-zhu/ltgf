@@ -57,6 +57,7 @@
     <Compile Include="ObjectMovement.cs" />
     <Compile Include="Project2Game.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VertexPositionNormalColor.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="PackageXaml.appxmanifest">
@@ -70,6 +71,8 @@
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Content\GolfImage.jpg" />
+    <ToolkitFxc Include="Content\Phong.fx" />
+    <ToolkitFxc Include="Content\myShader.fx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

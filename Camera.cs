@@ -28,11 +28,11 @@ namespace Project2
         public Vector3 position { get; private set; }
 
         public Camera(Project2Game game) {
-            distance = new Vector3(0, 5, -5);
+            distance = new Vector3(0, 500, -5);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 500.0f);
+                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 1000.0f);
 
             AngleH = AngleV = 0;
 
@@ -42,8 +42,8 @@ namespace Project2
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             scaleFactor *= (float) args.Delta.Scale;
-            AngleH -= (float)args.Delta.Translation.X / 100;
-            AngleV -= (float)args.Delta.Translation.Y / 100;
+            AngleH -= (float)args.Delta.Translation.X / 500;
+            AngleV -= (float)args.Delta.Translation.Y / 500;
         }
 
         public void Update(GameTime gameTime)

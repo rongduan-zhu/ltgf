@@ -26,15 +26,18 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float4 cameraPos;
+//Ambient Color rgb
 float4 lightAmbCol = float4(0.4f, 0.4f, 0.4f, 1.0f);
+//point position (x,y,z)
 float4 lightPntPos = float4(0.0f, 0.0f, -2.0f, 1.0f);
+//point color rgb
 float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
 float4x4 worldInvTrp;
 //
 
 struct VS_IN
 {
-	float4 pos : POSITION;
+	float4 pos : SV_POSITION;
 	float4 nrm : NORMAL;
 	float4 col : COLOR;
 // Other vertex properties, e.g. texture co-ords, surface Kd, Ks, etc

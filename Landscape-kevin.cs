@@ -16,7 +16,7 @@ namespace Project2
         private const int BOARD_SIZE = 513;                      //Work best at 513x513
         private float MAX_HEIGHT;                                       //Setting the maximum height, a random value between INIT_MIN_HEIGHT and INIT_MAX_HEIGHT
         public float[,] pHeights;                                       //2D array storing the heights for corresponding (x,z)
-        private VertexPositionColor[] vpc;                              //Vertices list generated from the 2D array
+        private VertexPositionNormalColor[] vpc;                              //Vertices list generated from the 2D array
 
         /*landscape properties*/
         private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
@@ -32,6 +32,7 @@ namespace Project2
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
+        private Vector3 dummyNormal = new Vector3(1, 1, 1);
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -52,45 +53,61 @@ namespace Project2
             
             //initlize the world
             vpc = InitializeGrid();
-            vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
+            vertices = Buffer.Vertex.New<VertexPositionNormalColor>(game.GraphicsDevice, vpc);
 
-            basicEffect = new BasicEffect(game.GraphicsDevice)
-            {
-                VertexColorEnabled = true,
-                World = Matrix.Identity,
-                View = game.camera.View,
-                Projection = game.camera.Projection
-            };
+            //basicEffect = new BasicEffect(game.GraphicsDevice)
+            //{
+            //    VertexColorEnabled = true,
+            //    World = Matrix.Identity,
+            //    View = game.camera.View,
+            //    Projection = game.camera.Projection
+            //};
 
-            inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
+            
+
+            effect = game.Content.Load<Effect>("Phong");
+
+            inputLayout = VertexInputLayout.FromBuffer<VertexPositionNormalColor>(0, (Buffer<VertexPositionNormalColor>) vertices);
             this.game = game;
         }
 
         public override void Update(GameTime gameTime)
         {
-            basicEffect.View = game.camera.View;
-            basicEffect.Projection = game.camera.Projection;
-        }
+            //basicEffect.View = game.camera.View;
+            //basicEffect.Projection = game.camera.Projection;
 
+
+            //Matrix World = basicEffect.World;
+            Matrix World = Matrix.Identity;
+            Matrix WorldInverseTranspose = Matrix.Transpose(Matrix.Invert(World));
+            effect.Parameters["World"].SetValue(World);
+            //effect.Parameters["World"].SetValue(Matrix.Identity);
+            effect.Parameters["Projection"].SetValue(game.camera.Projection);
+            effect.Parameters["View"].SetValue(game.camera.View);
+            effect.Parameters["cameraPos"].SetValue(game.camera.position);
+            effect.Parameters["worldInvTrp"].SetValue(WorldInverseTranspose);
+        }
+        
         public override void Draw(GameTime gameTime)
         {
             // Setup the vertices
-            game.GraphicsDevice.SetVertexBuffer<VertexPositionColor>((Buffer<VertexPositionColor>)vertices);
+            game.GraphicsDevice.SetVertexBuffer<VertexPositionNormalColor>((Buffer<VertexPositionNormalColor>)vertices);
             game.GraphicsDevice.SetVertexInputLayout(inputLayout);
 
             // Apply the basic effect technique and draw the rotating cube
-            basicEffect.CurrentTechnique.Passes[0].Apply();
+            //basicEffect.CurrentTechnique.Passes[0].Apply();
+            effect.CurrentTechnique.Passes[0].Apply();
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
         /**
          Initialization function which starts the random landscape algorithm
          */
-        public VertexPositionColor[] InitializeGrid()
+        public VertexPositionNormalColor[] InitializeGrid()
         {
             float h1, h2, h3, h4;
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
-            VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
+            VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
             h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
@@ -120,12 +137,12 @@ namespace Project2
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), GetColor(pHeights[i + 1, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), GetColor(pHeights[i, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), GetColor(pHeights[i + 1, j]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), GetColor(pHeights[i, j + 1]));
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
                 }
             }
 
