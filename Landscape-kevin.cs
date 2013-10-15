@@ -12,28 +12,45 @@ namespace Project2
 
     public class Landscape2 : ColoredGameObject
     {
-        private static int BOARD_SIZE = 513;                            //Work best at 513x513
-        private static float SCALE_FACTOR = 50f / BOARD_SIZE;             //Normalize the board size
-        private float MAX_HEIGHT;                                       //Setting the maximum height
+        /*board properties*/
+        private const int BOARD_SIZE = 513;                      //Work best at 513x513
+        private float MAX_HEIGHT;                                       //Setting the maximum height, a random value between INIT_MIN_HEIGHT and INIT_MAX_HEIGHT
+        public float[,] pHeights;                                       //2D array storing the heights for corresponding (x,z)
+        private VertexPositionColor[] vpc;                              //Vertices list generated from the 2D array
+
+        /*landscape properties*/
         private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
         private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
-        private static float MOVETOCENTER = SCALE_FACTOR * BOARD_SIZE / 2;     //Move to center factor
-        private float ROUGHNESS = BOARD_SIZE / 50;                                   //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
+        private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
-        private float COLOUR_SCALE = BOARD_SIZE / 5;    //A colour scale for calculating colours
-        Random rnd = new Random();          //Initialize a Random object
-        private int flatOffset = BOARD_SIZE / 100;
-        private VertexPositionColor[] vpc;
+        private float COLOUR_SCALE = BOARD_SIZE / 4;                    //A colour scale for calculating colours
+        private float smoothingFactor = 3;                              //Determines how smooth the landscape is
+        private int flatOffset = BOARD_SIZE / 100;                      //Value determines how smooth the landscape is
+        public int minPlayable = BOARD_SIZE / 10;                       //Minimum x or z value that any GameObject could be placed
+        public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
+        private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
+        private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
+        private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
+
+        private float totalLand;                                        //Total number of points which is land
+        private float totalPoints;                                      //Total number of initialized points
+        private float landRatio;                                        //Portion of land
+        private const float OPTIMAL_RATIO = 0.7f;                       //Optimal portion of land
+        private const float UPPERBOUND_RATIO = 0.9f;                    //Upper bound portion of land
+        private const float LOWERBOUND_RATIO = 0.5f;                    //Lower bound portion of land
+
+        /*auxiliary members*/
+        Random rnd = new Random();                                      //Initialize a Random object
+        public Vector3 startPos { get; private set; }                   //Position where the golf ball should start
+        public Vector3 objectivePos { get; private set; }               //Position where the golf ball should land 
         
-        public Vector3 startPos { get; private set; }
-        public Vector3 objectivePos { get; private set; }
-        public float[,] pHeights;
 
         public Landscape2(Project2Game game)
         {
             MAX_HEIGHT = rnd.NextFloat(INIT_MIN_HEIGHT, INIT_MAX_HEIGHT);      //Randomize the height
-
+            
+            //initlize the world
             vpc = InitializeGrid();
             vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
 
@@ -66,28 +83,36 @@ namespace Project2
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
-        //Initialize grid
+        /**
+         Initialization function which starts the random landscape algorithm
+         */
         public VertexPositionColor[] InitializeGrid()
         {
             float h1, h2, h3, h4;
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
             VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
-            h1 = rnd.NextFloat(0, MAX_HEIGHT);
-            h2 = rnd.NextFloat(0, MAX_HEIGHT);
-            h3 = rnd.NextFloat(0, MAX_HEIGHT);
-            h4 = rnd.NextFloat(0, MAX_HEIGHT);
+            h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h3 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+            h4 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
+
+            landscapeShapeGuard(h1, h2, h3, h4);
+
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
 
             //average the landscape to remove sharp drop
-            for (int i = flatOffset; i < BOARD_SIZE - flatOffset; i++)
+            for (int z = 0; z < smoothingFactor; z++)
             {
-                for (int j = flatOffset; j < BOARD_SIZE - flatOffset; j++)
+                for (int i = flatOffset; i < BOARD_SIZE - flatOffset; i++)
                 {
-                    pHeights[i, j] = (pHeights[i, j - flatOffset] + pHeights[i - flatOffset, j] + pHeights[i, j + flatOffset] + pHeights[i + flatOffset, j]) / 4f;
+                    for (int j = flatOffset; j < BOARD_SIZE - flatOffset; j++)
+                    {
+                        pHeights[i, j] = (pHeights[i, j - flatOffset] + pHeights[i - flatOffset, j] + pHeights[i, j + flatOffset] + pHeights[i + flatOffset, j]) / 4f;
+                    }
                 }
-     		}
+            }
 
             //Now convert the array into vertices
             int k = 0;
@@ -109,6 +134,9 @@ namespace Project2
             return vertices;
         }
 
+        /**
+         *  Generats a random height map
+         */
         public void DivideVertices(ref float[,] points, int x, int y, int width, float h1, float h2, float h3, float h4)
         {
             //Base case, if the width between two points is less than 1, stop
@@ -127,8 +155,6 @@ namespace Project2
             if ((h1 + h2 + h3 + h4) / 4 + tempDisplacement > HIGHEST_POINT)
                 HIGHEST_POINT = (h1 + h2 + h3 + h4) / 4 + tempDisplacement;
             ncen = (h1 + h2 + h3 + h4) / 4 + tempDisplacement;
-            //Make sure ncen is between 0 and 20. 
-            ncen = normalize(ncen);
 
             points[x + newWidth, y + newWidth] = ncen;
 
@@ -144,6 +170,8 @@ namespace Project2
             points[x + width, y + newWidth] = newp3;
             points[x + newWidth, y] = newp4;
 
+            landscapeShapeGuard(newp1, newp2, newp3, newp4, ncen);
+
             //Recursively call itself
             DivideVertices(ref points, x, y, newWidth, h1, newp1, ncen, newp4);
             DivideVertices(ref points, x, y + newWidth, newWidth, newp1, h2, newp2, ncen);
@@ -151,21 +179,22 @@ namespace Project2
             DivideVertices(ref points, x + newWidth, y, newWidth, newp4, ncen, newp3, h4);
         }
 
-        //This function flats the ocean, there will only be colour effect for different
-        //depth, but they are physically the same height. Just so it looks more realistic.
-        //It also flatten the beach near the ocean
+        /**
+         * This function flats the ocean, there will only be colour effect for different
+           depth, but they are physically the same height. Just so it looks more realistic.
+           It also flatten the beach near the ocean
+         */
         private float flatOcean(float height) {
-            //return height;
             if (height <= COLOUR_SCALE * 0.1)
             {
-                if (height <= COLOUR_SCALE * 0.08 && height >= COLOUR_SCALE * 0.06)
-                    return COLOUR_SCALE * 0.11f;
                 return COLOUR_SCALE * 0.1f;
             }
             return height;
         }
 
-        //Calculates the colour corresponding to the height
+        /**
+         *  Calculates the colour of landscape based on height
+         */
         public Color GetColor(float height) {
             if (height >= COLOUR_SCALE) {
                 return Color.White;
@@ -221,7 +250,9 @@ namespace Project2
 
         }
 
-        //The hybrid method for calculating average
+        /**
+         * Auxiliary average function for the diamond-square algorithm
+         */
         private float getDiamondAverage(ref float[,] points, int x, int y, int width) {
             int counter = 0;
             float totalHeight = 0;
@@ -250,63 +281,148 @@ namespace Project2
             return totalHeight/counter;
         }
 
-        //Checks if x,y is inside the board
+        /**
+         *  Checks if x,y is inside the board
+         */
         private bool isInside(int x, int y) {
             return x <= BOARD_SIZE - 1 && x >= 0 && y <= BOARD_SIZE - 1 && y >= 0;
         }
 
-        //Normalize the height of land to be between 0 and 20
-        private float normalize(float a)
-        {
-            if (a > 20)
-                return 20;
-            if (a < 0)
-                return 0;
-            return a;
-        }
-
-        //Calculates the min between two floats, not used anymore
-        private float min(float a, float b)
-        {
-            if (a < b)
-                return a;
-            return b;
-        }
-
-        //taken from internet, but modified how the Random value is calculated, this seems to generate more
-        //"interesting" landscape.
+        /**
+         taken from internet, but modified how the Random value is calculated, this seems to generate more
+         "interesting" landscape.
+         */
         private float displace(float smallsize) {
             float max = smallsize * ROUGHNESS / GBIGSIZE;
-            return rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT) * max;
-            //This can produce a good result as well, you can try this out
-            //return rnd.NextFloat(rnd.NextFloat(-MAX_HEIGHT,0), rnd.NextFloat(0, MAX_HEIGHT)) * max;
+            return rnd.NextFloat(-MAX_HEIGHT * min_probability, MAX_HEIGHT * max_probability) * max;
         }
 
-        //Position returned has been normalised to screen coordinate
+        /**
+         * Generates a random golf ball position and hole position
+         */
         private void generateRandomStartObjectivePos() {
             //Get starting pos
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;
             tempX1 = tempX2 = tempZ1 = tempZ2 = 0;
             while (unsuccessful) {
-                tempX1 = rnd.Next(0, BOARD_SIZE);
-                tempZ1 = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX1, tempZ1] > COLOUR_SCALE * 0.12) {
+                tempX1 = rnd.Next(minPlayable, maxPlayable);
+                tempZ1 = rnd.Next(minPlayable, maxPlayable);
+                if (isSafePosition(tempX1, tempZ1))
+                {
                     unsuccessful = false;
                 }
             }
 
             //Get objective pos
             unsuccessful = true;
-            while (unsuccessful) { 
-                tempX2 = rnd.Next(0, BOARD_SIZE);
-                tempZ2 = rnd.Next(0, BOARD_SIZE);
-                if (pHeights[tempX2, tempZ2] > COLOUR_SCALE * 0.12 && (tempX2 != tempX1 || tempZ2 != tempZ1)) {
+            while (unsuccessful) {
+                tempX2 = rnd.Next(minPlayable, maxPlayable);
+                tempZ2 = rnd.Next(minPlayable, maxPlayable);
+                if ( isSafePosition(tempX2, tempZ2) && 
+                    (Math.Abs(tempX2 - tempX1) > minimumDistance || Math.Abs(tempZ2 - tempZ1) > minimumDistance)) {
                     unsuccessful = false;
                 }
             }
             startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
             objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
+
+        /**
+         *  Checks if (x,z) is water
+         */
+        public Boolean isWater(int x, int z) {
+            if (!isInside(x, z)) {
+                return false;
+            }
+            return pHeights[x, z] < COLOUR_SCALE * 0.1;
+        }
+
+        /**
+         *  Checks if height is water level
+         */
+        private bool isWater(float height)
+        {
+            return height < COLOUR_SCALE * 0.1;
+        }
+
+        /**
+         *  Checks if (x,z) is at least some distance away from water
+         */
+        private Boolean isSafePosition(int x, int z) {
+            return pHeights[x, z] > COLOUR_SCALE * 0.12;
+        }
+
+        /**
+         *  Calculates percentage of land
+         */
+        private float calcLandRatio() { 
+            return totalLand / totalPoints;
+        }
+
+        /**
+         *  Given these new heights, updates the total number of land points
+         */
+        private void updateLand(float h1, float h2, float h3, float h4, float h5 = 0) {
+            if (!isWater(h1)) {
+                totalLand++;
+            }
+            if (!isWater(h2))
+            {
+                totalLand++;
+            }
+            if (!isWater(h3))
+            {
+                totalLand++;
+            }
+            if (!isWater(h4))
+            {
+                totalLand++;
+            }
+            if (!isWater(h5)) 
+            {
+                totalLand++;
+            }
+        }
+
+        /**
+         *  If proportion of land is below threshold value, increase probability of getting land
+         *  otherwise make probability of generating land and water equivalent
+         */
+        private void landscapeShapeGuard(float h1, float h2, float h3, float h4, float h5 = -float.MinValue) {
+            updateLand(h1, h2, h3, h4, h5);
+            if (h5 != -float.MinValue)
+            {
+                totalPoints += 5;
+            }
+            else {
+                totalPoints += 4;
+            }
+            landRatio = totalLand / totalPoints;
+
+            //If its lower than lower bound, make the probability of land extremely high
+            if (landRatio < LOWERBOUND_RATIO)
+            {
+                max_probability = 1.5f;
+                min_probability = -1f;
+            }
+            //If its higher than upper bound, make probability of land very low
+            else if (landRatio > UPPERBOUND_RATIO) {
+                max_probability = 0.1f;
+                min_probability = 1f;
+            }
+            //If its less than optimal_ratio, just have land slightly higher than water
+            else if (landRatio < OPTIMAL_RATIO) {
+                max_probability = 1.5f;
+                min_probability = 0.5f;
+            }
+            //We are safe, so make probability of water and land the same
+            else
+            {
+                max_probability = 1f;
+                min_probability = 1f;
+            }
+        }
+
     }
 }

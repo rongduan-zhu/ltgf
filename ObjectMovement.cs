@@ -14,122 +14,157 @@ namespace Project2
 
     public class ObjectMovement
     {
-        Project2Game game;
-        Landscape2 land;
+        public Vector3 velocity { get; set; }
+
+        private Project2Game game;
 
         // initial velocity
-        float v0; 
-        Vector3 direction;
-        // accelerate 
-        float acc;
-        float cos;
-        float sin;
-        // the longest side
-        float c;
+        private Vector3 direction;
+
         // radius
-        float r = 0.08f;
+        private float r = 0.03f;
 
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
-            land = game.landscape;
-            direction = new Vector3(1,1,1);
-            v0 = 0.01f;
-
+            direction = -game.camera.distance;
+            velocity = Vector3.Zero;
         }
 
-        public Vector3 BallOnGround(float v0, Vector3 position, Vector3 dir, float[,] heights, string landtype)
+        public void InitializeV(float v0, float AngleV, float AngleH)
         {
-            if (hitGround(position, heights))
+            Vector3 v = new Vector3();
+
+            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(AngleH));
+            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(AngleH));
+            v.Y = (float)(v0 * Math.Sin(AngleV));
+
+            velocity = v;
+        }
+
+        private void inAir(ref Vector3 position, float[,] heights)
+        {
+            float accelerate = -0.01f;
+            Vector3 v = velocity;
+            v.Y += accelerate;
+            velocity = v;
+
+            position.Y += velocity.Y;
+            position.X += velocity.X;
+            position.Z += velocity.Z;
+
+            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
             {
-                position.Y = heights[(int)position.X, (int)position.Z] + r;
+                game.gameState = Project2Game.GameState.Lose;
+            }
+        }
 
-                if (position.X > 0 && position.Z > 0)
-                {
-                    // heights difference between left and right
-                    float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
-                    // heights difference between front and back
-                    float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
+        public void onGround(ref Vector3 position, float[,] heights, string landtype)
+        {
+            // heights difference between left and right
+            float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
+            // heights difference between front and back
+            float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
 
-                    c = (float)Math.Sqrt(Math.Pow(heightLRdiff, 2) + Math.Pow(heightFBdiff, 2));
-                    cos = heightLRdiff / c;
-                    sin = heightFBdiff / c;
+            float c = (float)Math.Sqrt(heightLRdiff * heightLRdiff + heightFBdiff * heightFBdiff);
+            // proportion on X-axis is cos, proportion on Z-axis is sin.
+            float cos = heightLRdiff / c;
+            float sin = heightFBdiff / c;
 
-                }
+            // temps
+            Vector3 v = velocity, dir = direction;
+            float accelerate = 0;
 
-                if (landtype.Equals("water"))
-                {
-
-                        //TODO: allow ball sink into water with static velocity
-                        // unitil reaching river bed.
-                }
-                else if (landtype.Equals("sand"))
-                {
-                    acc = -0.001f;
-                }
-                else
-                {
-                    dir.Y = -1;
-                    acc = -0.008f;
-                }
-
-                // control the velocity of ball movement.
-                if (v0 > 0.0f)
-                {
-                    v0 += acc;
-                }
-                else
-                {
-                    v0 = 0;
-                }
-
-                position.X += dir.X * v0; 
-                position.Z += dir.Z * v0;
-                //position.Y += dir.Y * v0;
+            if (landtype.Equals("water"))
+            {
+                game.gameState = Project2Game.GameState.Lose;
+                return;
+            }
+            else if (landtype.Equals("sand"))
+            {
+                accelerate = -0.01f;
+            }
+            // control the velocity of ball movement.
+            if (Math.Abs(v.X) > 0.1f)
+            {
+                v.X += accelerate * cos;
+            }
+            else
+            {
+                v.X = 0;
             }
 
-            return position;
+            if (Math.Abs(v.Z) > 0.1f)
+            {
+                v.Z += accelerate * sin;
+            }
+            else
+            {
+                v.Z = 0.0f;
+            }
 
+            position.X += dir.X * v.X;
+            position.Z += dir.Z * v.Z;
+
+            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
+            {
+                game.gameState = Project2Game.GameState.Lose;
+                return;
+            }
+
+            Vector3 fpos, bpos, lpos, rpos;
+            fpos = new Vector3(position.X, 0, (int)Math.Ceiling(position.Z));
+            bpos = new Vector3(position.X, 0, (int)Math.Floor(position.Z));
+            lpos = new Vector3((int)Math.Floor(position.X), 0, position.Z);
+            rpos = new Vector3((int)Math.Ceiling(position.X), 0, position.Z);
+
+            float hOnX = (heights[(int)rpos.X, (int)rpos.Z] - heights[(int)lpos.X, (int)lpos.Z])
+                * (position.X - lpos.X) / (rpos.X - lpos.X)
+                + heights[(int)lpos.X, (int)lpos.Z];
+
+            float hOnZ = (heights[(int)fpos.X, (int)fpos.Z] - heights[(int)bpos.X, (int)bpos.Z])
+                * (position.Z - (float)bpos.Z) * (fpos.Z - bpos.Z)
+                + heights[(int)bpos.X, (int)bpos.Z];
+
+            float nextH = (hOnX + hOnZ) / 2;
+
+            velocity = v;
+            direction = dir;
         }
 
         // check if ball hit ground.
         private bool hitGround(Vector3 position, float[,] heights)
         {
-           
-
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            //if((int) position.X >= 0 && (int) position.Z >= 0)
-            //{
-            return position.Y <= heights[(int)position.X, (int)position.Z] + r;
+            return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
+
         }
 
         // control ball movement after ball hit ground and bounce back to sky.
-        private float ballBounce(float a, float v0)
+        private float ballBounce(float a, Vector3 v)
         {
             float h = 0;
             float time = 0;
 
-            time = v0 / a;
-            h = v0 * time + (1 / 2) * a * (float) Math.Pow(time, 2);
+            time = v.Y / a;
+            h = v.Y * time + (1 / 2) * a * time * time;
 
             return h;
         }
 
         public void Update(GameTime gameTime)
         {
-            Vector3 position =  game.ball.position;
+            Vector3 position = game.ball.position;
 
-            if (hitGround(position, land.pHeights))
+            if (hitGround(position, game.landscape.pHeights))
             {
-                position = BallOnGround(v0, position, direction, land.pHeights, "sand");
+                onGround(ref position, game.landscape.pHeights, "sand");
             }
             else
             {
-                position.Y -= v0;
-                //position.X += v0;
-                //position.Z += v0;
+                inAir(ref position, game.landscape.pHeights);
             }
 
             game.ball.position = position;

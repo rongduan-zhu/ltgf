@@ -27,45 +27,55 @@ namespace Project2
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
+
+    using Windows.UI.Xaml.Controls.Primitives;
+
     public sealed partial class MainPage
     {
         private readonly Project2Game game;
+        private float force  = 0;
 
         public MainPage()
         {
             InitializeComponent();
-            game = new Project2Game();
+            game = new Project2Game(this);
             game.Run(this);
         }
-        private void StartGame(object sender, RoutedEventArgs e)
+        public void StartGame(object sender, RoutedEventArgs e)
         {
-            //game.started = true;
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
-            //game.Run(this);
         }
         private void About(object sender, RoutedEventArgs e)
         {
-            //game.started = true;
-            //sgrid.Visibility = Visibility.Collapsed;
-            //game.Run(this);
             abutton.Visibility = Visibility.Visible;
         }
 
-        private void abutton_Click(object sender, RoutedEventArgs e)
+        public void hideAbout(object sender, RoutedEventArgs e)
         {
             abutton.Visibility = Visibility.Collapsed;
         }
 
-        private void btnhit_Click(object sender, RoutedEventArgs e)
+        private void setForce(object sender, RangeBaseValueChangedEventArgs e)
         {
-            //ball.move = true;
+            force = (float) e.NewValue / 100;
         }
 
-        private void changeDifficulty(object sender, Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+        public void showHitUI()
         {
-            //if (game != null) { game.force = (float)e.NewValue; }
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
+        }
+
+        private void hit(object sender, RoutedEventArgs e)
+        {
+            // hit the ball + UI disappear + watch movie
+            game.gameState = Project2Game.GameState.Movie;
+            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+
+            sldforce.Visibility = Visibility.Collapsed;
+            btnhit.Visibility = Visibility.Collapsed;
         }
     }
 }

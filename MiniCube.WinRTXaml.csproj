@@ -43,6 +43,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Arrow.cs" />
+    <Compile Include="Ball.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="ColoredGameObject.cs" />
     <Compile Include="GameInput.cs" />

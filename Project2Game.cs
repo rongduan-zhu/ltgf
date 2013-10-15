@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
+﻿﻿// Copyright (c) 2010-2013 SharpDX - Alexandre Mutel
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -39,8 +39,11 @@ namespace Project2
         private GraphicsDeviceManager graphicsDeviceManager;
         private Model model;
         private Stack<GameModel> models;
+        private MainPage main;
 
-        public enum GameState { Start, Movie, Hit, Lose, Win };
+        private static Vector3 STILL = Vector3.Zero;
+
+        public enum GameState { Start, Movie, Ready, Lose, Win };
         public GameState gameState = GameState.Start;
 
         public Landscape2 landscape { get; private set; }
@@ -55,11 +58,11 @@ namespace Project2
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
         /// </summary>
-        public Project2Game()
+        public Project2Game(MainPage main)
         {
             // Creates a graphics manager. This is mandatory.
             graphicsDeviceManager = new GraphicsDeviceManager(this);
-
+            this.main = main;
 
             // Setup the relative directory to the executable directory
             // for loading contents with the ContentManager
@@ -76,16 +79,17 @@ namespace Project2
         {
             landscape = new Landscape2(this);
 
-            objectmove = new ObjectMovement(this);
             model = Content.Load<Model>("Arrow");
-            arrow = new GameModel(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
+            arrow = new Arrow(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y + 2, landscape.startPos.Z);
+            ball = new Ball(model, this, landscape.startPos.X, landscape.startPos.Y + 0.8f, landscape.startPos.Z);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
             pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
             models.Push(pin);
+
+            objectmove = new ObjectMovement(this);
 
             foreach (var m in models)
             {
@@ -117,7 +121,22 @@ namespace Project2
 
             landscape.Update(gameTime);
 
-            objectmove.Update(gameTime);
+            switch (gameState)
+            {
+                case GameState.Movie:
+                    objectmove.Update(gameTime);
+                    if (objectmove.velocity.Equals(STILL))
+                    {
+                        gameState = GameState.Ready;
+                        main.showHitUI();
+                    }
+                    break;
+                case GameState.Start:
+                case GameState.Ready:
+                case GameState.Lose:
+                default:
+                    break;
+            }
 
             base.Update(gameTime);
         }
