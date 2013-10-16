@@ -128,7 +128,7 @@ namespace Project2
                     break;
                 case GameState.Movie:
                     objectmove.Update(gameTime);
-                    if (objectmove.v.Equals(0.0f))
+                    if (objectmove.V.Equals(0.0f))
                     {
                         gameState = GameState.Ready;
                     }

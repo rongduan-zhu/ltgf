@@ -17,7 +17,7 @@ namespace Project2
         Project2Game game;
 
         // initial velocity
-        public Vector3 v { get; set; }
+        public Vector3 V;
         Vector3 direction;
         // accelerate 
         float accelerate;
@@ -32,16 +32,16 @@ namespace Project2
         {
             this.game = game;
             direction = new Vector3(1,1,1);
-            v = new Vector3();
+            V = new Vector3(0,0,0);
         }
 
         public Vector3 InitializeV(float v0, float AngleV, float AngleH)
         {
             Vector3 v = new Vector3();
-
-            v.X = (float)((double)v0 * Math.Sin(AngleV * Math.PI / 180) * Math.Sin(AngleH * Math.PI / 180));
-            v.Z = (float)((double)v0 * Math.Sin(AngleV * Math.PI / 180) * Math.Cos(AngleH * Math.PI / 180));
-            v.Y = (float)((double)v0 * Math.Cos(AngleV * Math.PI / 180));
+            //* Math.PI / 180 change degree into radian
+            v.X = (v0 * (float)Math.Sin(AngleV * Math.PI / 180) * (float)Math.Cos(AngleH * Math.PI / 180)); //+(float)(v0 * (float)Math.Cos(AngleH * Math.PI / 180));
+            v.Z = (v0 * (float)Math.Sin(AngleV * Math.PI / 180) * (float)Math.Sin(AngleH * Math.PI / 180)); //+(float)(v0 * (float)Math.Sin(AngleH * Math.PI / 180));
+            v.Y = (v0 * (float)Math.Cos(AngleV * Math.PI / 180)) * 0.01f;
 
             return v;
         }
@@ -145,13 +145,23 @@ namespace Project2
             if (hitGround(position, game.landscape.pHeights))
             {
 
-                position = this.BallOnGround(v, position, direction, game.landscape.pHeights, "");
+                position = this.BallOnGround(V, position, direction, game.landscape.pHeights, "sand");
             }
             else
             {
-                position.Y += v.Y;
-                position.X += v.X;
-                position.Z += v.Z;
+
+                if (!V.Y.Equals(0.0f))
+                {
+                  //V.Y -= 0.0001f;
+                }
+                else
+                {
+                    V.Y = 0.0f;
+                }
+
+                position.Y += V.Y;
+                position.X += V.X;
+                position.Z += V.Z;
             }
 
             game.ball.position = position;

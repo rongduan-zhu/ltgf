@@ -73,7 +73,7 @@ namespace Project2
             //if (game.gameState == Project2Game.GameState.Ready) 
             { 
                 float v0 = (float)e.NewValue/100;
-                game.objectmove.v = game.objectmove.InitializeV(v0, game.camera.AngleV, game.camera.AngleH);
+                game.objectmove.V = game.objectmove.InitializeV(v0, game.camera.AngleV, game.camera.AngleH);
             }
         }
         public void readystate()
