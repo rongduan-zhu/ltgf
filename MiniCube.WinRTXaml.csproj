@@ -71,7 +71,6 @@
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Content\GolfImage.jpg" />
-    <ToolkitFxc Include="Content\Gouraud.fx" />
     <ToolkitFxc Include="Content\Phong.fx" />
     <ToolkitFxc Include="Content\myShader.fx" />
   </ItemGroup>

@@ -49,11 +49,12 @@ namespace Project2
         public void Update(GameTime gameTime)
         {
             position = game.ball.position + distance * scaleFactor;
-            View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
-                * Matrix.RotationY(AngleH)
-                * Matrix.RotationX(AngleV)
-                * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
-                * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
+            //View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
+            //    * Matrix.RotationY(AngleH)
+            //    * Matrix.RotationX(AngleV)
+            //    * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
+            //    * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
+            View = Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }
     }
 }

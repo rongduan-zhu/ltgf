@@ -76,16 +76,21 @@ namespace Project2
             //basicEffect.View = game.camera.View;
             //basicEffect.Projection = game.camera.Projection;
 
-
             //Matrix World = basicEffect.World;
             Matrix World = Matrix.Identity;
             Matrix WorldInverseTranspose = Matrix.Transpose(Matrix.Invert(World));
+
+            World = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
+                * Matrix.RotationY(game.camera.AngleH)
+                * Matrix.RotationX(game.camera.AngleV)
+                * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z);
+            WorldInverseTranspose = Matrix.Transpose(Matrix.Invert(World));
+
             effect.Parameters["World"].SetValue(World);
-            //effect.Parameters["World"].SetValue(Matrix.Identity);
             effect.Parameters["Projection"].SetValue(game.camera.Projection);
             effect.Parameters["View"].SetValue(game.camera.View);
             effect.Parameters["cameraPos"].SetValue(game.camera.position);
-            effect.Parameters["worldInvTrp"].SetValue(WorldInverseTranspose);
+            effect.Parameters["worldInvTrp"].SetValue(Matrix.Transpose(WorldInverseTranspose));
         }
         
         public override void Draw(GameTime gameTime)
