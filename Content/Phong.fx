@@ -27,11 +27,11 @@ float4x4 View;
 float4x4 Projection;
 float4 cameraPos;
 //Ambient Color rgb
-float4 lightAmbCol = float4(0.8f, 0.8f, 0.8f, 1.0f);
+float4 lightAmbCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(0.0f, 0.0f, -2.0f, 1.0f);
+float4 lightPntPos = float4(50.0f, 100.0f, 50.0f, 1.0f);
 //point color rgb
-float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
+float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.3f);
 float4x4 worldInvTrp;
 //
 
@@ -79,7 +79,7 @@ float4 PS( PS_IN input ) : SV_Target
 	float3 interpNormal = normalize(input.wnrm);
 
 	// Calculate ambient RGB intensities
-	float Ka = 1;
+	float Ka = 1.0f;
 	float3 amb = input.col.rgb*lightAmbCol.rgb*Ka;
 
 	// Calculate diffuse RBG reflections
@@ -91,7 +91,7 @@ float4 PS( PS_IN input ) : SV_Target
 
 	// Calculate specular reflections
 	float Ks = 1;
-	float specN = 5; // Numbers>>1 give more mirror-like highlights
+	float specN = 100; // Numbers>>1 give more mirror-like highlights
 	float3 V = normalize(cameraPos.xyz - input.wpos.xyz);
 	float3 R = normalize(2*LdotN*interpNormal.xyz - L.xyz);
 	//float3 R = normalize(0.5*(L.xyz+V.xyz)); //Blinn-Phong equivalent

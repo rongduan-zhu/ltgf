@@ -28,7 +28,7 @@ namespace Project2
         public Vector3 position { get; private set; }
 
         public Camera(Project2Game game) {
-            distance = new Vector3(0, 500, -5);
+            distance = new Vector3(0, 300, -5);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
