@@ -137,12 +137,29 @@ namespace Project2
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), GetColor(pHeights[i + 1, j]));
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), GetColor(pHeights[i, j + 1]));
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    Vector3 normal = vertexNormal(i, pHeights[i, j], j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal, GetColor(pHeights[i, j]));
+
+                    normal = vertexNormal(i + 1, pHeights[i + 1, j + 1], j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i + 1, j + 1]));
+                    
+                    normal = vertexNormal(i + 1, pHeights[i + 1, j], j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
+                        normal, GetColor(pHeights[i + 1, j]));
+
+                    normal = vertexNormal(i, pHeights[i, j], j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal, GetColor(pHeights[i, j]));
+
+                    normal = vertexNormal(i, pHeights[i, j + 1], j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i, j + 1]));
+
+                    normal = vertexNormal(i + 1, pHeights[i + 1, j + 1], j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i + 1, j + 1]));
                 }
             }
 
@@ -439,6 +456,49 @@ namespace Project2
                 max_probability = 1f;
                 min_probability = 1f;
             }
+        }
+
+        Vector3 vertexNormal(int x, float y, int z) {
+            Vector3 n1, n2, n3, n4, center;
+            n1 = new Vector3(0, 0, 0);
+            n2 = new Vector3(0, 0, 0);
+            n3 = new Vector3(0, 0, 0);
+            n4 = new Vector3(0, 0, 0);
+            center = new Vector3(x, pHeights[x, z], z);
+            float counter = 0;
+
+            if (isInside(x - 1, z) && isInside(x, z + 1)) { 
+                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
+                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
+                n1 = Vector3.Cross(top - center, right - center);
+                counter++;
+            }
+
+            if (isInside(x, z + 1) && isInside(x + 1, z)) {
+                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
+                Vector3 bottom = new Vector3(x + 1, pHeights[x + 1, z], z);
+                n2 = Vector3.Cross(right - center, bottom - center);
+                counter++;
+            }
+
+            if (isInside(x + 1, z) && isInside(x, z - 1)) {
+                Vector3 bottom = new Vector3(x, pHeights[x + 1, z], z);
+                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
+                n3 = Vector3.Cross(bottom - center, left - center);
+                counter++;
+            }
+
+            if (isInside(x, z - 1) && isInside(x - 1, z)) {
+                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
+                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
+                n4 = Vector3.Cross(left - center, top - center);
+                counter++;
+            }
+
+            if (counter < 1) {
+                counter = 1;
+            }
+            return (n1 + n2 + n3 + n4) / counter;
         }
 
     }

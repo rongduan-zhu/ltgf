@@ -27,7 +27,7 @@ float4x4 View;
 float4x4 Projection;
 float4 cameraPos;
 //Ambient Color rgb
-float4 lightAmbCol = float4(0.4f, 0.4f, 0.4f, 1.0f);
+float4 lightAmbCol = float4(0.8f, 0.8f, 0.8f, 1.0f);
 //point position (x,y,z)
 float4 lightPntPos = float4(0.0f, 0.0f, -2.0f, 1.0f);
 //point color rgb
