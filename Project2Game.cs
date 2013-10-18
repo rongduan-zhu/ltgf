@@ -96,8 +96,6 @@ namespace Project2
                 BasicEffect.EnableDefaultLighting(m.model, true);
             }
 
-            // Create an input layout from the vertices
-
             base.LoadContent();
         }
 

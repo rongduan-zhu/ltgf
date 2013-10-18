@@ -68,7 +68,7 @@ namespace Project2
         public override void Update(GameTime gameTime)
         {
             effect.Parameters["View"].SetValue(game.camera.View);
-            effect.Parameters["cameraPos"].SetValue(game.camera.position);
+            effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
         }
         
         public override void Draw(GameTime gameTime)
@@ -313,7 +313,7 @@ namespace Project2
         /**
          *  Checks if x,y is inside the board
          */
-        private bool isInside(int x, int y) {
+        public bool isInside(float x, float y) {
             return x <= BOARD_SIZE - 1 && x >= 0 && y <= BOARD_SIZE - 1 && y >= 0;
         }
 

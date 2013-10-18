@@ -14,12 +14,9 @@ namespace Project2
 
     public class ObjectMovement
     {
-        public Vector3 velocity { get; set; }
+        public Vector3 velocity { get; private set; }
 
         private Project2Game game;
-
-        // initial velocity
-        private Vector3 direction;
 
         // radius
         private float r = 0.03f;
@@ -27,7 +24,6 @@ namespace Project2
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
-            direction = -game.camera.distance;
             velocity = Vector3.Zero;
         }
 
@@ -35,9 +31,9 @@ namespace Project2
         {
             Vector3 v = new Vector3();
 
-            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(AngleH));
-            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(AngleH));
-            v.Y = (float)(v0 * Math.Sin(AngleV));
+            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(-AngleH));
+            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(-AngleH));
+            v.Y = (float)(v0 * Math.Sin(-AngleV));
 
             velocity = v;
         }
@@ -53,7 +49,7 @@ namespace Project2
             position.X += velocity.X;
             position.Z += velocity.Z;
 
-            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
+            if (!game.landscape.isInside(position.X, position.Z))
             {
                 game.gameState = Project2Game.GameState.Lose;
             }
@@ -72,7 +68,7 @@ namespace Project2
             float sin = heightFBdiff / c;
 
             // temps
-            Vector3 v = velocity, dir = direction;
+            Vector3 v = velocity;
             float accelerate = 0;
 
             if (landtype.Equals("water"))
@@ -103,10 +99,10 @@ namespace Project2
                 v.Z = 0.0f;
             }
 
-            position.X += dir.X * v.X;
-            position.Z += dir.Z * v.Z;
+            position.X += v.X;
+            position.Z += v.Z;
 
-            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
+            if (!game.landscape.isInside(position.X, position.Z))
             {
                 game.gameState = Project2Game.GameState.Lose;
                 return;
@@ -129,7 +125,6 @@ namespace Project2
             float nextH = (hOnX + hOnZ) / 2;
 
             velocity = v;
-            direction = dir;
         }
 
         // check if ball hit ground.
