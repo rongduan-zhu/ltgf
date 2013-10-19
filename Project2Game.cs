@@ -123,6 +123,7 @@ namespace Project2
             {
                 case GameState.Movie:
                     objectmove.Update(gameTime);
+
                     if (objectmove.velocity.Equals(STILL))
                     {
                         gameState = GameState.Ready;

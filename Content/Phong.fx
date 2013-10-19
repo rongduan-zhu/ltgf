@@ -29,7 +29,7 @@ float4 cameraPos;
 //Ambient Color rgb
 float4 lightAmbCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(50.0f, 100.0f, 50.0f, 1.0f);
+float4 lightPntPos = float4(50.0f, 180.0f, 50.0f, 1.0f);
 //point color rgb
 float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.3f);
 float4x4 worldInvTrp;
