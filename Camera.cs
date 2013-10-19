@@ -19,6 +19,7 @@ namespace Project2
         public Matrix View;
         public Matrix Projection;
         public Project2Game game;
+        public MainPage main;
 
         public float AngleH { get; private set; }
         public float AngleV { get; private set; }
@@ -29,7 +30,7 @@ namespace Project2
         public Vector3 RealDistance { get; private set; }
         public Vector3 RealPosition { get; private set; }
 
-        public Camera(Project2Game game) {
+        public Camera(Project2Game game, MainPage main) {
             distance = new Vector3(0, 0, -150);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
@@ -38,15 +39,18 @@ namespace Project2
 
             AngleH = 0;
             AngleV = -0.7f;
-
+            this.main = main;
             this.game = game;
         }
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
-            scaleFactor *= (float) args.Delta.Scale;
-            AngleH += (float)args.Delta.Translation.X / 500;
-            AngleV += (float)args.Delta.Translation.Y / 500;
+            if (main.focussld == false)
+            {
+                scaleFactor *= (float)args.Delta.Scale;
+                AngleH += (float)args.Delta.Translation.X / 500;
+                AngleV += (float)args.Delta.Translation.Y / 500;
+            }
         }
 
         public void Update(GameTime gameTime)
