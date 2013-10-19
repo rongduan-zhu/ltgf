@@ -49,6 +49,7 @@ namespace Project2
         public void StartGame(object sender, RoutedEventArgs e)
         {
             mode = 1000;
+            game.started = true;
             modebox.IsOpen = true;
             txb_mode.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
             sgrid.Visibility = Visibility.Collapsed;
@@ -78,11 +79,13 @@ namespace Project2
 
         private void hit(object sender, RoutedEventArgs e)
         {
-            if (game.gameState == Project2Game.GameState.Start) {
-                game.fire();
-            }
+
             if (mode > 0)
             {
+                if (game.gameState == Project2Game.GameState.Start)
+                {
+                    game.fire();
+                }
                 // hit the ball + UI disappear + watch movie
                 game.gameState = Project2Game.GameState.Movie;
                 game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
@@ -96,12 +99,6 @@ namespace Project2
                 modebox.IsOpen = true;
                 txb_mode.Text = "GameOver";
             }
-            // hit the ball + UI disappear + watch movie
-            game.gameState = Project2Game.GameState.Movie;
-            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
-
-            sldforce.Visibility = Visibility.Collapsed;
-            btnhit.Visibility = Visibility.Collapsed;
         }
 
         private void sldforce_GotFocus(object sender, RoutedEventArgs e)
@@ -117,6 +114,7 @@ namespace Project2
 
         private void bstart_practise_Click(object sender, RoutedEventArgs e)
         {
+            game.started = true;
             mode = 3;
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
@@ -129,8 +127,10 @@ namespace Project2
             modebox.IsOpen = false;
             if (mode == 0)
             {
+                game.started = true;
                 game = new Project2Game(this);
                 game.Run(this);
+                mode = 3;
             }
         }
     }

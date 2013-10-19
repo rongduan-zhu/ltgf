@@ -55,6 +55,8 @@ namespace Project2
 
         public ObjectMovement objectmove;
 
+        public bool started = false;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Project2Game" /> class.
         /// </summary>
@@ -110,47 +112,52 @@ namespace Project2
 
         protected override void Update(GameTime gameTime)
         {
-            camera.Update(gameTime);
-
-            foreach (var m in models)
+            if (started)
             {
-                m.Update(gameTime);
+                camera.Update(gameTime);
+
+                foreach (var m in models)
+                {
+                    m.Update(gameTime);
+                }
+
+                landscape.Update(gameTime);
+
+                switch (gameState)
+                {
+                    case GameState.Movie:
+                        objectmove.Update(gameTime);
+
+                        if (objectmove.velocity.Equals(STILL))
+                        {
+                            gameState = GameState.Ready;
+                            main.showHitUI();
+                        }
+                        break;
+                    case GameState.Start:
+                    case GameState.Ready:
+                    case GameState.Lose:
+                    default:
+                        break;
+                }
             }
-
-            landscape.Update(gameTime);
-
-            switch (gameState)
-            {
-                case GameState.Movie:
-                    objectmove.Update(gameTime);
-
-                    if (objectmove.velocity.Equals(STILL))
-                    {
-                        gameState = GameState.Ready;
-                        main.showHitUI();
-                    }
-                    break;
-                case GameState.Start:
-                case GameState.Ready:
-                case GameState.Lose:
-                default:
-                    break;
-            }
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            // Clears the screen with the Color.CornflowerBlue
-            GraphicsDevice.Clear(Color.SkyBlue);
+            if (started)
+            {
+                // Clears the screen with the Color.CornflowerBlue
+                GraphicsDevice.Clear(Color.SkyBlue);
 
-            foreach(var m in models){
-                m.Draw();
+                foreach (var m in models)
+                {
+                    m.Draw();
+                }
+
+                landscape.Draw(gameTime);
             }
-
-            landscape.Draw(gameTime);
-
             // Handle base.Draw
             base.Draw(gameTime);
         }
