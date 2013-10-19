@@ -30,7 +30,7 @@ float4 maxHeight;
 //Ambient Color rgb
 float4 lightAmbCol = float4(0.7f, 0.7f, 0.7f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(50.0f, 180.0f, 50.0f, 1.0f);
+float4 lightPntPos = float4(0.0f, 180.0f, 0.0f, 1.0f);
 //point color rgb
 float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
 float4x4 worldInvTrp;
@@ -92,7 +92,7 @@ float4 PS( PS_IN input ) : SV_Target
 
 	// Calculate specular reflections
 	float Ks = 1;
-	float specN = 1; // Numbers>>1 give more mirror-like highlights
+	float specN = 80; // Numbers>>1 give more mirror-like highlights
 	float3 V = normalize(cameraPos.xyz - input.wpos.xyz);
 	float3 R = normalize(2*LdotN*interpNormal.xyz - L.xyz);
 	//float3 R = normalize(0.5*(L.xyz+V.xyz)); //Blinn-Phong equivalent
@@ -101,7 +101,7 @@ float4 PS( PS_IN input ) : SV_Target
 	// Combine reflection components
 	float4 returnCol = float4(0.0f,0.0f,0.0f,0.0f);
 
-	int ocean = !(input.wpos.y > 0.1 * maxHeight);
+	int ocean = input.wpos.y <= 0.1 * maxHeight;
 
 	returnCol.rgb = amb.rgb+dif.rgb+spe.rgb * ocean;
 	returnCol.a = input.col.a;
