@@ -30,11 +30,14 @@ namespace Project2
 
     using Windows.UI.Xaml.Controls.Primitives;
 
+
     public sealed partial class MainPage
     {
-        private readonly Project2Game game;
+        private  Project2Game game;
         private float force  = 0;
         public bool focussld = false;
+        //which mode choosen, 0 is unlimit time,
+        public int mode = 0;
 
         public MainPage()
         {
@@ -45,6 +48,9 @@ namespace Project2
 
         public void StartGame(object sender, RoutedEventArgs e)
         {
+            mode = 1000;
+            modebox.IsOpen = true;
+            txb_mode.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
@@ -72,13 +78,21 @@ namespace Project2
 
         private void hit(object sender, RoutedEventArgs e)
         {
+            if (mode > 0)
+            {
+                // hit the ball + UI disappear + watch movie
+                game.gameState = Project2Game.GameState.Movie;
+                game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
 
-            // hit the ball + UI disappear + watch movie
-            game.gameState = Project2Game.GameState.Movie;
-            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
-
-            sldforce.Visibility = Visibility.Collapsed;
-            btnhit.Visibility = Visibility.Collapsed;
+                sldforce.Visibility = Visibility.Collapsed;
+                btnhit.Visibility = Visibility.Collapsed;
+                mode--;
+            }
+            else
+            {
+                modebox.IsOpen = true;
+                txb_mode.Text = "GameOver";
+            }
         }
 
         private void sldforce_GotFocus(object sender, RoutedEventArgs e)
@@ -90,6 +104,25 @@ namespace Project2
         private void sldforce_LostFocus(object sender, RoutedEventArgs e)
         {
             focussld = false;
+        }
+
+        private void bstart_practise_Click(object sender, RoutedEventArgs e)
+        {
+            mode = 3;
+            sgrid.Visibility = Visibility.Collapsed;
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
+            modebox.IsOpen = true;
+            txb_mode.Text = "You are under practise mode, in this mode, you are allowed unlimited times to hit the ball!";
+        }
+        private void close_popup_Click(object sender, RoutedEventArgs e)
+        {
+            modebox.IsOpen = false;
+            if (mode == 0)
+            {
+                game = new Project2Game(this);
+                game.Run(this);
+            }
         }
     }
 }
