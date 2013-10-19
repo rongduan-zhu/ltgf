@@ -2,7 +2,7 @@
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
+// in the Software without restriction, including without limitation the rightsD
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
@@ -78,6 +78,9 @@ namespace Project2
 
         private void hit(object sender, RoutedEventArgs e)
         {
+            if (game.gameState == Project2Game.GameState.Start) {
+                game.fire();
+            }
             if (mode > 0)
             {
                 // hit the ball + UI disappear + watch movie
@@ -93,6 +96,12 @@ namespace Project2
                 modebox.IsOpen = true;
                 txb_mode.Text = "GameOver";
             }
+            // hit the ball + UI disappear + watch movie
+            game.gameState = Project2Game.GameState.Movie;
+            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+
+            sldforce.Visibility = Visibility.Collapsed;
+            btnhit.Visibility = Visibility.Collapsed;
         }
 
         private void sldforce_GotFocus(object sender, RoutedEventArgs e)
