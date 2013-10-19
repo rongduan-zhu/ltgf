@@ -32,7 +32,7 @@ namespace Project2
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
-        private Vector3 dummyNormal = new Vector3(1, 1, 1);
+        private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -45,7 +45,62 @@ namespace Project2
         Random rnd = new Random();                                      //Initialize a Random object
         public Vector3 startPos { get; private set; }                   //Position where the golf ball should start
         public Vector3 objectivePos { get; private set; }               //Position where the golf ball should land 
-        
+
+        private Color[] top = new Color[] {
+            new Color(255f / 255, 255f / 255, 255f / 255),
+            new Color(255f / 255, 250f / 255, 250f / 255),
+            new Color(211f / 255, 211f / 255, 211f / 255),
+            new Color(192f / 255, 192f / 255, 192f / 255),
+            new Color(192f / 255,192f / 255,192f / 255),
+            new Color(211f / 255,211f / 255,211f / 255),
+            new Color(128f / 255, 128f / 255, 128f / 255),
+            new Color(139f / 255, 69f / 255, 19f / 255),
+            new Color(0 / 255, 100f / 255, 0 / 255),
+            new Color(34f / 255, 139f / 255, 34f / 255),
+            new Color(0 / 255, 100f / 255, 0 / 255),
+            new Color(34f / 255, 139f / 255, 34f / 255),
+            new Color(0 / 255, 128f / 255, 0 / 255),
+            new Color(34f / 255, 139f / 255, 34f / 255),
+            new Color(85f / 255, 107f / 255, 47f / 255),
+            new Color(107f / 255, 142f / 255, 35f / 255),
+            new Color(50f / 255, 205f / 255, 50f / 255),
+            new Color(154f / 255, 205f / 255, 50f / 255),
+            new Color(173f / 255, 255 / 255, 47f / 255),
+            new Color(255 / 255, 255 / 255, 34f / 255),
+            new Color(255 / 255, 215f / 255, 0f / 255),
+            new Color(127f / 255, 255f / 255, 212f / 255),
+            new Color(70f / 255, 130f / 255, 180f / 255),
+            new Color(0 / 255, 0 / 255, 139f / 255),
+            new Color(0 / 255, 0 / 255, 255f / 255)
+        };
+
+        private Color[] bottom = new Color[] {
+            new Color(255f / 255, 255f / 255, 255f / 255, BACK_ALPHA),
+            new Color(255f / 255, 250f / 255, 250f / 255, BACK_ALPHA),
+            new Color(211f / 255, 211f / 255, 211f / 255, BACK_ALPHA),
+            new Color(192f / 255, 192f / 255, 192f / 255, BACK_ALPHA),
+            new Color(192f / 255,192f / 255,192f / 255, BACK_ALPHA),
+            new Color(211f / 255,211f / 255,211f / 255, BACK_ALPHA),
+            new Color(128f / 255, 128f / 255, 128f / 255, BACK_ALPHA),
+            new Color(139f / 255, 69f / 255, 19f / 255, BACK_ALPHA),
+            new Color(0 / 255, 100f / 255, 0 / 255, BACK_ALPHA),
+            new Color(34f / 255, 139f / 255, 34f / 255, BACK_ALPHA),
+            new Color(0 / 255, 100f / 255, 0 / 255, BACK_ALPHA),
+            new Color(34f / 255, 139f / 255, 34f / 255, BACK_ALPHA),
+            new Color(0 / 255, 128f / 255, 0 / 255, BACK_ALPHA),
+            new Color(34f / 255, 139f / 255, 34f / 255, BACK_ALPHA),
+            new Color(85f / 255, 107f / 255, 47f / 255, BACK_ALPHA),
+            new Color(107f / 255, 142f / 255, 35f / 255, BACK_ALPHA),
+            new Color(50f / 255, 205f / 255, 50f / 255, BACK_ALPHA),
+            new Color(154f / 255, 205f / 255, 50f / 255, BACK_ALPHA),
+            new Color(173f / 255, 255 / 255, 47f / 255, BACK_ALPHA),
+            new Color(255 / 255, 255 / 255, 34f / 255, BACK_ALPHA),
+            new Color(255 / 255, 215f / 255, 0f / 255, BACK_ALPHA),
+            new Color(127f / 255, 255f / 255, 212f / 255, BACK_ALPHA),
+            new Color(70f / 255, 130f / 255, 180f / 255, BACK_ALPHA),
+            new Color(0 / 255, 0 / 255, 139f / 255, BACK_ALPHA),
+            new Color(0 / 255, 0 / 255, 255f / 255, BACK_ALPHA)
+        };
 
         public Landscape2(Project2Game game)
         {
@@ -60,6 +115,7 @@ namespace Project2
             effect.Parameters["World"].SetValue(Matrix.Identity);
             effect.Parameters["Projection"].SetValue(game.camera.Projection);
             effect.Parameters["worldInvTrp"].SetValue(Matrix.Transpose(Matrix.Invert(Matrix.Identity)));
+            effect.Parameters["maxHeight"].SetValue(COLOUR_SCALE);
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionNormalColor>(0, (Buffer<VertexPositionNormalColor>) vertices);
             this.game = game;
@@ -78,7 +134,6 @@ namespace Project2
             game.GraphicsDevice.SetVertexInputLayout(inputLayout);
 
             // Apply the basic effect technique and draw the rotating cube
-            //basicEffect.CurrentTechnique.Passes[0].Apply();
             effect.CurrentTechnique.Passes[0].Apply();
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
@@ -90,7 +145,7 @@ namespace Project2
         {
             float h1, h2, h3, h4;
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
-            VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6];
+            VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6 * 2];
             //Initialize the four starting corners
             h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
@@ -132,29 +187,51 @@ namespace Project2
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    Vector3 normal = vertexNormal(i, flatOcean(pHeights[i, j]), j);
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal, GetColor(pHeights[i, j]));
-
-                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1);
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal, GetColor(pHeights[i + 1, j + 1]));
+                    Vector3[] normal = new Vector3[] {
+                        vertexNormal(i, flatOcean(pHeights[i, j]), j),
+                        vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1),
+                        vertexNormal(i + 1, flatOcean(pHeights[i + 1, j]), j),
+                        vertexNormal(i, flatOcean(pHeights[i, j]), j),
+                        vertexNormal(i, flatOcean(pHeights[i, j + 1]), j + 1),
+                        vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1)
+                    };
                     
-                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j]), j);
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
-                        normal, GetColor(pHeights[i + 1, j]));
-
-                    normal = vertexNormal(i, flatOcean(pHeights[i, j]), j);
                     vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal, GetColor(pHeights[i, j]));
+                        normal[0], GetColor(pHeights[i, j]));
 
-                    normal = vertexNormal(i, flatOcean(pHeights[i, j + 1]), j + 1);
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
-                        normal, GetColor(pHeights[i, j + 1]));
-
-                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1);
                     vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal, GetColor(pHeights[i + 1, j + 1]));
+                        normal[1], GetColor(pHeights[i + 1, j + 1]));
+                    
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
+                        normal[2], GetColor(pHeights[i + 1, j]));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal[3], GetColor(pHeights[i, j]));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
+                        normal[4], GetColor(pHeights[i, j + 1]));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal[5], GetColor(pHeights[i + 1, j + 1]));
+
+                    //backface
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
+                        normal[0], GetColor(pHeights[i, j], true));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j], j),
+                        normal[2], GetColor(pHeights[i + 1, j], true));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
+                        normal[1], GetColor(pHeights[i + 1, j + 1], true));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
+                        normal[3], GetColor(pHeights[i, j], true));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
+                        normal[5], GetColor(pHeights[i + 1, j + 1], true));
+
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j + 1], (j + 1)),
+                        normal[4], GetColor(pHeights[i, j + 1], true));
                 }
             }
 
@@ -224,59 +301,57 @@ namespace Project2
         /**
          *  Calculates the colour of landscape based on height
          */
-        public Color GetColor(float height) {
-            if (height >= COLOUR_SCALE) {
-                return Color.White;
-            }
+        public Color GetColor(float height, bool back=false) {
+            if (height >= COLOUR_SCALE)
+                return (back) ? top[0] : bottom[0];
             if (height < COLOUR_SCALE && height >= COLOUR_SCALE * 0.97)
-                return new Color(new Vector4(255f/255, 250f/255, 250f/255,1));
+                return (back) ? top[1] : bottom[1];
             if (height < COLOUR_SCALE * 0.97 && height >= COLOUR_SCALE * 0.92)
-                return new Color(new Vector4(211f/255, 211f/255, 211f/255,1));
+                return (back) ? top[2] : bottom[2];
             if (height < COLOUR_SCALE * 0.92 && height >= COLOUR_SCALE * 0.85)
-                return new Color(new Vector4(192f/255, 192f/255, 192f/255,1));
+                return (back) ? top[3] : bottom[3];
             if (height < COLOUR_SCALE * 0.85 && height >= COLOUR_SCALE * 0.8)
-                return new Color(new Vector4(192f/255,192f/255,192f/255,1));
+                return (back) ? top[4] : bottom[4];
             if (height < COLOUR_SCALE * 0.8 && height >= COLOUR_SCALE * 0.75)
-                return new Color(new Vector4(211f/255,211f/255,211f/255,1));
+                return (back) ? top[5] : bottom[5];
             if (height < COLOUR_SCALE * 0.75 && height >= COLOUR_SCALE * 0.7)
-                return new Color(new Vector4(128f/255, 128f/255, 128f/255,1));
+                return (back) ? top[6] : bottom[6];
             if (height < COLOUR_SCALE * 0.7 && height >= COLOUR_SCALE * 0.68)
-                return new Color(new Vector4(139f / 255, 69f / 255, 19f / 255, 1));
+                return (back) ? top[7] : bottom[7];
             if (height < COLOUR_SCALE * 0.68 && height >= COLOUR_SCALE * 0.6)
-                return new Color(new Vector4(0 / 255, 100f / 255, 0 / 255, 1));
+                return (back) ? top[8] : bottom[8];
             if (height < COLOUR_SCALE * 0.6 && height >= COLOUR_SCALE * 0.5)
-                return new Color(new Vector4(34f / 255, 139f / 255, 34f / 255, 1));
+                return (back) ? top[9] : bottom[9];
             if (height < COLOUR_SCALE * 0.5 && height >= COLOUR_SCALE * 0.45)
-                return new Color(new Vector4(0 / 255, 100f / 255, 0 / 255, 1));
+                return (back) ? top[10] : bottom[10];
             if (height < COLOUR_SCALE * 0.45 && height >= COLOUR_SCALE * 0.43)
-                return new Color(new Vector4(34f / 255, 139f / 255, 34f / 255, 1));
+                return (back) ? top[11] : bottom[11];
             if (height < COLOUR_SCALE * 0.43 && height >= COLOUR_SCALE * 0.4)
-                return new Color(new Vector4(0 / 255, 128f / 255, 0 / 255, 1));
+                return (back) ? top[12] : bottom[12];
             if (height < COLOUR_SCALE * 0.4 && height >= COLOUR_SCALE * 0.35)
-                return new Color(new Vector4(34f / 255, 139f / 255, 34f / 255, 1));
+                return (back) ? top[13] : bottom[13];
             if (height < COLOUR_SCALE * 0.35 && height >= COLOUR_SCALE * 0.31)
-                return new Color(new Vector4(85f / 255, 107f / 255, 47f / 255, 1));
+                return (back) ? top[14] : bottom[14];
             if (height < COLOUR_SCALE * 0.31 && height >= COLOUR_SCALE * 0.24)
-                return new Color(new Vector4(107f / 255, 142f / 255, 35f / 255, 1));
+                return (back) ? top[15] : bottom[15];
             if (height < COLOUR_SCALE * 0.24 && height >= COLOUR_SCALE * 0.18)
-                return new Color(new Vector4(50f / 255, 205f / 255, 50f / 255, 1));
+                return (back) ? top[16] : bottom[16];
             if (height < COLOUR_SCALE * 0.18 && height >= COLOUR_SCALE * 0.16)
-                return new Color(new Vector4(154f / 255, 205f / 255, 50f / 255, 1));
+                return (back) ? top[17] : bottom[17];
             if (height < COLOUR_SCALE * 0.16 && height >= COLOUR_SCALE * 0.14)
-                return new Color(new Vector4(173f / 255, 255 / 255, 47f / 255, 1));
+                return (back) ? top[18] : bottom[18];
             if (height < COLOUR_SCALE * 0.14 && height >= COLOUR_SCALE * 0.12)
-                return new Color(new Vector4(255 / 255, 255 / 255, 34f / 255, 1));
+                return (back) ? top[19] : bottom[19];
             if (height < COLOUR_SCALE * 0.12 && height >= COLOUR_SCALE * 0.1)
-                return new Color(new Vector4(255 / 255, 215f / 255, 0f / 255, 1));
+                return (back) ? top[20] : bottom[20];
             //Water below this point
             if (height < COLOUR_SCALE * 0.1 && height >= COLOUR_SCALE * 0.09)
-                return new Color(new Vector4(127f / 255, 255f / 255, 212f / 255, 1));
+                return (back) ? top[21] : bottom[21];
             if (height < COLOUR_SCALE * 0.09 && height >= COLOUR_SCALE * 0.05)
-                return new Color(new Vector4(70f / 255, 130f / 255, 180f / 255, 1));
+                return (back) ? top[22] : bottom[22];
             if (height < COLOUR_SCALE * 0.05)
-                return new Color(new Vector4(0 / 255, 0 / 255, 139f / 255, 1));
-            return Color.DarkBlue;
-
+                return (back) ? top[23] : bottom[23];
+            return (back) ? top[24] : bottom[24];
         }
 
         /**
@@ -334,25 +409,25 @@ namespace Project2
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;
             tempX1 = tempX2 = tempZ1 = tempZ2 = 0;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX1 = rnd.Next(minPlayable, maxPlayable);
                 tempZ1 = rnd.Next(minPlayable, maxPlayable);
                 if (isSafePosition(tempX1, tempZ1))
                 {
                     unsuccessful = false;
                 }
-            }
+            //}
 
             //Get objective pos
             unsuccessful = true;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX2 = rnd.Next(minPlayable, maxPlayable);
                 tempZ2 = rnd.Next(minPlayable, maxPlayable);
                 if ( isSafePosition(tempX2, tempZ2) && 
                     (Math.Abs(tempX2 - tempX1) > minimumDistance || Math.Abs(tempZ2 - tempZ1) > minimumDistance)) {
                     unsuccessful = false;
                 }
-            }
+            //}
             startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
             objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
@@ -465,51 +540,45 @@ namespace Project2
             float counter = 0;
             //top right
             if (isInside(x - 1, z) && isInside(x, z + 1)) { 
-                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
-                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
+                Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z]), z);
+                Vector3 right = new Vector3(x, flatOcean(pHeights[x, z + 1]), z + 1);
                 n1 = Vector3.Cross(top - center, right - center);
-                n1.Normalize();
                 counter++;
             }
             //right bottom
             if (isInside(x, z + 1) && isInside(x + 1, z + 1)) {
-                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
-                Vector3 bottom = new Vector3(x + 1, pHeights[x + 1, z + 1], z + 1);
+                Vector3 right = new Vector3(x, flatOcean(pHeights[x, z + 1]), z + 1);
+                Vector3 bottom = new Vector3(x + 1, flatOcean(pHeights[x + 1, z + 1]), z + 1);
                 n2 = Vector3.Cross(right - center, bottom - center);
-                n2.Normalize();
                 counter++;
             }
             //bottom right
             if (isInside(x + 1, z + 1) && isInside(x + 1, z))
             {
-                Vector3 right = new Vector3(x + 1, pHeights[x + 1, z + 1], z + 1);
-                Vector3 bottom = new Vector3(x + 1, pHeights[x + 1, z], z);
+                Vector3 right = new Vector3(x + 1, flatOcean(pHeights[x + 1, z + 1]), z + 1);
+                Vector3 bottom = new Vector3(x + 1, flatOcean(pHeights[x + 1, z]), z);
                 n3 = Vector3.Cross(right - center, bottom - center);
-                n3.Normalize();
                 counter++;
             }
             //bottom left
             if (isInside(x + 1, z) && isInside(x, z - 1)) {
-                Vector3 bottom = new Vector3(x, pHeights[x + 1, z], z);
-                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
+                Vector3 bottom = new Vector3(x, flatOcean(pHeights[x + 1, z]), z);
+                Vector3 left = new Vector3(x, flatOcean(pHeights[x, z - 1]), z - 1);
                 n4 = Vector3.Cross(bottom - center, left - center);
-                n4.Normalize();
                 counter++;
             }
             //left top
             if (isInside(x, z - 1) && isInside(x - 1, z - 1)) {
-                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
-                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z - 1], z - 1);
+                Vector3 left = new Vector3(x, flatOcean(pHeights[x, z - 1]), z - 1);
+                Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z - 1]), z - 1);
                 n5 = Vector3.Cross(left - center, top - center);
-                n5.Normalize();
                 counter++;
             }
             //top left
             if (isInside(x - 1, z - 1) && isInside(x - 1, z))
             {
-                Vector3 left = new Vector3(x - 1, pHeights[x - 1, z - 1], z - 1);
-                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
-                n6.Normalize();
+                Vector3 left = new Vector3(x - 1, flatOcean(pHeights[x - 1, z - 1]), z - 1);
+                Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z]), z);
                 n6 = Vector3.Cross(left - center, top - center);
                 counter++;
             }
