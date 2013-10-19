@@ -41,6 +41,7 @@ namespace Project2
             game = new Project2Game(this);
             game.Run(this);
         }
+
         public void StartGame(object sender, RoutedEventArgs e)
         {
             sgrid.Visibility = Visibility.Collapsed;

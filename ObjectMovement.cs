@@ -14,44 +14,26 @@ namespace Project2
 
     public class ObjectMovement
     {
-        public Vector3 velocity { get; set; }
+        public Vector3 velocity { get; private set; }
 
         private Project2Game game;
 
-        // initial velocity
-        public Vector3 V;
-        private Vector3 direction;
-        // accelerate 
-        float accelerate;
-        float cos;
-        float sin;
-        // the longest side
-        float c;
-        
         // radius
         private float r = 0.03f;
 
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
-
-            direction = -game.camera.distance;
             velocity = Vector3.Zero;
         }
 
         public void InitializeV(float v0, float AngleV, float AngleH)
         {
             Vector3 v = new Vector3();
-//<<<<<<< HEAD
-//            //* Math.PI / 180 change degree into radian
-//            v.X = (v0 * (float)Math.Sin(AngleV * Math.PI / 180) * (float)Math.Cos(AngleH * Math.PI / 180)); //+(float)(v0 * (float)Math.Cos(AngleH * Math.PI / 180));
-//            v.Z = (v0 * (float)Math.Sin(AngleV * Math.PI / 180) * (float)Math.Sin(AngleH * Math.PI / 180)); //+(float)(v0 * (float)Math.Sin(AngleH * Math.PI / 180));
-//            v.Y = (v0 * (float)Math.Cos(AngleV * Math.PI / 180)) * 0.01f;
-//=======
 
-            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(AngleH));
-            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(AngleH));
-            v.Y = (float)(v0 * Math.Sin(AngleV));
+            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(-AngleH));
+            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(-AngleH));
+            v.Y = (float)(v0 * Math.Sin(-AngleV));
 
             velocity = v;
         }
@@ -67,7 +49,7 @@ namespace Project2
             position.X += velocity.X;
             position.Z += velocity.Z;
 
-            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
+            if (!game.landscape.isInside(position.X, position.Z))
             {
                 game.gameState = Project2Game.GameState.Lose;
             }
@@ -86,7 +68,7 @@ namespace Project2
             float sin = heightFBdiff / c;
 
             // temps
-            Vector3 v = velocity, dir = direction;
+            Vector3 v = velocity;
             float accelerate = 0;
 
             if (landtype.Equals("water"))
@@ -117,10 +99,10 @@ namespace Project2
                 v.Z = 0.0f;
             }
 
-            position.X += dir.X * v.X;
-            position.Z += dir.Z * v.Z;
+            position.X += v.X;
+            position.Z += v.Z;
 
-            if (position.X < 0 || position.Z < 0 || position.X > 512 || position.Z > 512)
+            if (!game.landscape.isInside(position.X, position.Z))
             {
                 game.gameState = Project2Game.GameState.Lose;
                 return;
@@ -143,7 +125,6 @@ namespace Project2
             float nextH = (hOnX + hOnZ) / 2;
 
             velocity = v;
-            direction = dir;
         }
 
         // check if ball hit ground.
@@ -174,26 +155,6 @@ namespace Project2
 
             if (hitGround(position, game.landscape.pHeights))
             {
-//<<<<<<< HEAD
-//
-//                position = this.BallOnGround(V, position, direction, game.landscape.pHeights, "sand");
-//            }
-//            else
-//            {
-//
-//                if (!V.Y.Equals(0.0f))
-//                {
-//                  //V.Y -= 0.0001f;
-//                }
-//                else
-//                {
-//                    V.Y = 0.0f;
-//                }
-//
-//                position.Y += V.Y;
-//                position.X += V.X;
-//                position.Z += V.Z;
-//=======
                 onGround(ref position, game.landscape.pHeights, "sand");
             }
             else

@@ -10,6 +10,6 @@ namespace Project2
     using SharpDX.Toolkit.Graphics;
     abstract public class ColoredGameObject : GameObject
     {
-        public Buffer vertices;
+        public Buffer<VertexPositionNormalColor> vertices;
     }
 }

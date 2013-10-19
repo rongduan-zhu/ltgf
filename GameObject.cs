@@ -21,11 +21,6 @@ namespace Project2
 
         public abstract void Update(GameTime gametime);
         public abstract void Draw(GameTime gametime);
-
-        public virtual void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
-        {
-
-        }
     }
 
 }

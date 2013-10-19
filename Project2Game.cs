@@ -96,8 +96,6 @@ namespace Project2
                 BasicEffect.EnableDefaultLighting(m.model, true);
             }
 
-            // Create an input layout from the vertices
-
             base.LoadContent();
         }
 
@@ -159,7 +157,6 @@ namespace Project2
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
-            
             camera.OnManipulationUpdated(sender, args);
         }
     }

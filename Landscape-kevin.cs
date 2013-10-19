@@ -16,22 +16,23 @@ namespace Project2
         private const int BOARD_SIZE = 513;                      //Work best at 513x513
         private float MAX_HEIGHT;                                       //Setting the maximum height, a random value between INIT_MIN_HEIGHT and INIT_MAX_HEIGHT
         public float[,] pHeights;                                       //2D array storing the heights for corresponding (x,z)
-        private VertexPositionColor[] vpc;                              //Vertices list generated from the 2D array
+        private VertexPositionNormalColor[] vpc;                              //Vertices list generated from the 2D array
 
         /*landscape properties*/
-        private float INIT_MIN_HEIGHT = BOARD_SIZE / 100;
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
         private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
         private float COLOUR_SCALE = BOARD_SIZE / 4;                    //A colour scale for calculating colours
-        private float smoothingFactor = 3;                              //Determines how smooth the landscape is
+        private float smoothingFactor = 6;                              //Determines how smooth the landscape is
         private int flatOffset = BOARD_SIZE / 100;                      //Value determines how smooth the landscape is
         public int minPlayable = BOARD_SIZE / 10;                       //Minimum x or z value that any GameObject could be placed
         public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
+        private Vector3 dummyNormal = new Vector3(1, 1, 1);
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -52,45 +53,44 @@ namespace Project2
             
             //initlize the world
             vpc = InitializeGrid();
-            vertices = Buffer.Vertex.New<VertexPositionColor>(game.GraphicsDevice, vpc);
+            vertices = Buffer.Vertex.New<VertexPositionNormalColor>(game.GraphicsDevice, vpc);
 
-            basicEffect = new BasicEffect(game.GraphicsDevice)
-            {
-                VertexColorEnabled = true,
-                World = Matrix.Identity,
-                View = game.camera.View,
-                Projection = game.camera.Projection
-            };
+            effect = game.Content.Load<Effect>("Phong");
 
-            inputLayout = VertexInputLayout.FromBuffer<VertexPositionColor>(0, (Buffer<VertexPositionColor>) vertices);
+            effect.Parameters["World"].SetValue(Matrix.Identity);
+            effect.Parameters["Projection"].SetValue(game.camera.Projection);
+            effect.Parameters["worldInvTrp"].SetValue(Matrix.Transpose(Matrix.Invert(Matrix.Identity)));
+
+            inputLayout = VertexInputLayout.FromBuffer<VertexPositionNormalColor>(0, (Buffer<VertexPositionNormalColor>) vertices);
             this.game = game;
         }
 
         public override void Update(GameTime gameTime)
         {
-            basicEffect.View = game.camera.View;
-            basicEffect.Projection = game.camera.Projection;
+            effect.Parameters["View"].SetValue(game.camera.View);
+            effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
         }
-
+        
         public override void Draw(GameTime gameTime)
         {
             // Setup the vertices
-            game.GraphicsDevice.SetVertexBuffer<VertexPositionColor>((Buffer<VertexPositionColor>)vertices);
+            game.GraphicsDevice.SetVertexBuffer<VertexPositionNormalColor>((Buffer<VertexPositionNormalColor>)vertices);
             game.GraphicsDevice.SetVertexInputLayout(inputLayout);
 
             // Apply the basic effect technique and draw the rotating cube
-            basicEffect.CurrentTechnique.Passes[0].Apply();
+            //basicEffect.CurrentTechnique.Passes[0].Apply();
+            effect.CurrentTechnique.Passes[0].Apply();
             game.GraphicsDevice.Draw(PrimitiveType.TriangleList, vertices.ElementCount);
         }
 
         /**
          Initialization function which starts the random landscape algorithm
          */
-        public VertexPositionColor[] InitializeGrid()
+        public VertexPositionNormalColor[] InitializeGrid()
         {
             float h1, h2, h3, h4;
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
-            VertexPositionColor[] vertices = new VertexPositionColor[BOARD_SIZE * BOARD_SIZE * 6];
+            VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6];
             //Initialize the four starting corners
             h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
@@ -114,18 +114,47 @@ namespace Project2
                 }
             }
 
+            //average the landscape to remove sharp drop
+            for (int z = 0; z < smoothingFactor; z++)
+            {
+                for (int i = 1; i < BOARD_SIZE - 1; i++)
+                {
+                    for (int j = 1; j < BOARD_SIZE - 1; j++)
+                    {
+                        pHeights[i, j] = (pHeights[i, j - 1] + pHeights[i - 1, j] + pHeights[i, j + 1] + pHeights[i + 1, j]) / 4f;
+                    }
+                }
+            }
+
             //Now convert the array into vertices
             int k = 0;
             for (int i = 0; i < BOARD_SIZE - 1; i++)
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
                 {
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), GetColor(pHeights[i + 1, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j]), j), GetColor(pHeights[i, j]));
-                    vertices[k++] = new VertexPositionColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), GetColor(pHeights[i, j + 1]));
-                    vertices[k++] = new VertexPositionColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), GetColor(pHeights[i + 1, j + 1]));
+                    Vector3 normal = vertexNormal(i, flatOcean(pHeights[i, j]), j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal, GetColor(pHeights[i, j]));
+
+                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i + 1, j + 1]));
+                    
+                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j]), j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
+                        normal, GetColor(pHeights[i + 1, j]));
+
+                    normal = vertexNormal(i, flatOcean(pHeights[i, j]), j);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal, GetColor(pHeights[i, j]));
+
+                    normal = vertexNormal(i, flatOcean(pHeights[i, j + 1]), j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i, j + 1]));
+
+                    normal = vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1);
+                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal, GetColor(pHeights[i + 1, j + 1]));
                 }
             }
 
@@ -284,7 +313,7 @@ namespace Project2
         /**
          *  Checks if x,y is inside the board
          */
-        private bool isInside(int x, int y) {
+        public bool isInside(float x, float y) {
             return x <= BOARD_SIZE - 1 && x >= 0 && y <= BOARD_SIZE - 1 && y >= 0;
         }
 
@@ -422,6 +451,73 @@ namespace Project2
                 max_probability = 1f;
                 min_probability = 1f;
             }
+        }
+
+        Vector3 vertexNormal(int x, float y, int z) {
+            Vector3 n1, n2, n3, n4, n5, n6, center;
+            n1 = new Vector3(0, 0, 0);
+            n2 = new Vector3(0, 0, 0);
+            n3 = new Vector3(0, 0, 0);
+            n4 = new Vector3(0, 0, 0);
+            n5 = new Vector3(0, 0, 0);
+            n6 = new Vector3(0, 0, 0);
+            center = new Vector3(x, pHeights[x, z], z);
+            float counter = 0;
+            //top right
+            if (isInside(x - 1, z) && isInside(x, z + 1)) { 
+                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
+                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
+                n1 = Vector3.Cross(top - center, right - center);
+                n1.Normalize();
+                counter++;
+            }
+            //right bottom
+            if (isInside(x, z + 1) && isInside(x + 1, z + 1)) {
+                Vector3 right = new Vector3(x, pHeights[x, z + 1], z + 1);
+                Vector3 bottom = new Vector3(x + 1, pHeights[x + 1, z + 1], z + 1);
+                n2 = Vector3.Cross(right - center, bottom - center);
+                n2.Normalize();
+                counter++;
+            }
+            //bottom right
+            if (isInside(x + 1, z + 1) && isInside(x + 1, z))
+            {
+                Vector3 right = new Vector3(x + 1, pHeights[x + 1, z + 1], z + 1);
+                Vector3 bottom = new Vector3(x + 1, pHeights[x + 1, z], z);
+                n3 = Vector3.Cross(right - center, bottom - center);
+                n3.Normalize();
+                counter++;
+            }
+            //bottom left
+            if (isInside(x + 1, z) && isInside(x, z - 1)) {
+                Vector3 bottom = new Vector3(x, pHeights[x + 1, z], z);
+                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
+                n4 = Vector3.Cross(bottom - center, left - center);
+                n4.Normalize();
+                counter++;
+            }
+            //left top
+            if (isInside(x, z - 1) && isInside(x - 1, z - 1)) {
+                Vector3 left = new Vector3(x, pHeights[x, z - 1], z - 1);
+                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z - 1], z - 1);
+                n5 = Vector3.Cross(left - center, top - center);
+                n5.Normalize();
+                counter++;
+            }
+            //top left
+            if (isInside(x - 1, z - 1) && isInside(x - 1, z))
+            {
+                Vector3 left = new Vector3(x - 1, pHeights[x - 1, z - 1], z - 1);
+                Vector3 top = new Vector3(x - 1, pHeights[x - 1, z], z);
+                n6.Normalize();
+                n6 = Vector3.Cross(left - center, top - center);
+                counter++;
+            }
+
+            if (counter < 1) {
+                counter = 1;
+            }
+            return (n1 + n2 + n3 + n4 + n5 + n6) / counter;
         }
 
     }

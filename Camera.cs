@@ -24,17 +24,20 @@ namespace Project2
         public float AngleV { get; private set; }
         private float scaleFactor = 1;
 
-        public Vector3 distance { get; private set; }
         public Vector3 position { get; private set; }
+        public Vector3 distance { get; private set; }
+        public Vector3 RealDistance { get; private set; }
+        public Vector3 RealPosition { get; private set; }
 
         public Camera(Project2Game game) {
-            distance = new Vector3(0, 5, -5);
+            distance = new Vector3(0, 0, -150);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 500.0f);
+                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 900.0f);
 
-            AngleH = AngleV = 0;
+            AngleH = 0;
+            AngleV = 0.7f;
 
             this.game = game;
         }
@@ -42,16 +45,21 @@ namespace Project2
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             scaleFactor *= (float) args.Delta.Scale;
-            AngleH -= (float)args.Delta.Translation.X / 100;
-            AngleV -= (float)args.Delta.Translation.Y / 100;
+            AngleH -= (float)args.Delta.Translation.X / 500;
+            AngleV -= (float)args.Delta.Translation.Y / 500;
         }
 
         public void Update(GameTime gameTime)
         {
+            Vector4 temp = new Vector4(distance, 1);
+            temp = Vector4.Transform(temp, Matrix.RotationY(AngleH) * Matrix.RotationX(-AngleV));
+            RealDistance = new Vector3(temp.X, temp.Y, temp.Z);
+            RealPosition = game.ball.position + RealDistance;
+
             position = game.ball.position + distance * scaleFactor;
             View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
                 * Matrix.RotationY(AngleH)
-                * Matrix.RotationX(AngleV)
+                * Matrix.RotationX(-AngleV)
                 * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
                 * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }

@@ -26,9 +26,12 @@ float4x4 World;
 float4x4 View;
 float4x4 Projection;
 float4 cameraPos;
-float4 lightAmbCol = float4(0.8f, 0.8f, 0.8f, 1.0f);
-float4 lightPntPos = float4(0.0f, 0.0f, -2.0f, 1.0f);
-float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
+//Ambient Color rgb
+float4 lightAmbCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
+//point position (x,y,z)
+float4 lightPntPos = float4(50.0f, 100.0f, 50.0f, 1.0f);
+//point color rgb
+float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.3f);
 float4x4 worldInvTrp;
 //
 
@@ -42,9 +45,12 @@ struct VS_IN
 
 struct PS_IN
 {
-	float4 pos : SV_POSITION;
+	float4 pos : SV_POSITION; //Position in camera co-ords
 	float4 col : COLOR;
+	float4 wpos : TEXCOORD0; //Position in world co-ords
+	float3 wnrm : TEXCOORD1; //Normal in world co-ords 
 };
+
 
 PS_IN VS( VS_IN input )
 {
@@ -53,45 +59,52 @@ PS_IN VS( VS_IN input )
 	// Convert Vertex position and corresponding normal into world coords
 	// Note that we have to multiply the normal by the transposed inverse of the world 
 	// transformation matrix (for cases where we have non-uniform scaling; we also don't
-	// care about the "fourth" dimension, because translations don't affect the normal) 
-	float4 worldVertex = mul(input.pos, World);
-	float3 worldNormal = normalize(mul(input.nrm.xyz, (float3x3)worldInvTrp));
-
-	// Calculate ambient RGB intensities
-	float Ka = 1;
-	float3 amb = input.col.rgb*lightAmbCol.rgb*Ka;
-
-	// Calculate diffuse RBG reflections, we save the results of L.N because we will use it again
-	// (when calculating the reflected ray in our specular component)
-	float fAtt = 1;
-	float Kd = 1;
-	float3 L = normalize(lightPntPos.xyz - worldVertex.xyz);
-	float LdotN = saturate(dot(L,worldNormal.xyz));
-	float3 dif = fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN;
-
-	// Calculate specular reflections
-	float Ks = 1;
-	float specN = 5; // Values>>1 give tighter highlights
-	float3 V = normalize(cameraPos.xyz - worldVertex.xyz);
-	float3 R = float3(0, 0, 0);
-	float3 spe = fAtt*lightPntCol.rgb*Ks*pow(saturate(dot(V,R)),specN);
-
-	// Combine reflection components
-	output.col.rgb = amb.rgb+dif.rgb+spe.rgb;
-	output.col.a = input.col.a;
+	// care about the "fourth" dimension, because translations don't affect the normal)
+	output.wpos = mul(input.pos, World);
+	output.wnrm = mul(input.nrm.xyz, (float3x3)worldInvTrp);
 
 	// Transform vertex in world coordinates to camera coordinates
-	float4 worldPos = mul(input.pos, World);
-    float4 viewPos = mul(worldPos, View);
+	float4 viewPos = mul(output.wpos, View);
     output.pos = mul(viewPos, Projection);
+
+	// Just pass along the colour at the vertex
+	output.col = input.col;
 
 	return output;
 }
 
 float4 PS( PS_IN input ) : SV_Target
-{
-	return input.col;
+	{
+	// Our interpolated normal might not be of length 1
+	float3 interpNormal = normalize(input.wnrm);
+
+	// Calculate ambient RGB intensities
+	float Ka = 1.0f;
+	float3 amb = input.col.rgb*lightAmbCol.rgb*Ka;
+
+	// Calculate diffuse RBG reflections
+	float fAtt = 1;
+	float Kd = 1;
+	float3 L = normalize(lightPntPos.xyz - input.wpos.xyz);
+	float LdotN = saturate(dot(L,interpNormal.xyz));
+	float3 dif = fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN;
+
+	// Calculate specular reflections
+	float Ks = 1;
+	float specN = 100; // Numbers>>1 give more mirror-like highlights
+	float3 V = normalize(cameraPos.xyz - input.wpos.xyz);
+	float3 R = normalize(2*LdotN*interpNormal.xyz - L.xyz);
+	//float3 R = normalize(0.5*(L.xyz+V.xyz)); //Blinn-Phong equivalent
+	float3 spe = fAtt*lightPntCol.rgb*Ks*pow(saturate(dot(V,R)),specN);
+
+	// Combine reflection components
+	float4 returnCol = float4(0.0f,0.0f,0.0f,0.0f);
+	returnCol.rgb = amb.rgb+dif.rgb+spe.rgb;
+	returnCol.a = input.col.a;
+
+	return returnCol;
 }
+
 
 
 technique Lighting
