@@ -34,6 +34,7 @@ namespace Project2
     {
         private readonly Project2Game game;
         private float force  = 0;
+        public bool focussld = false;
 
         public MainPage()
         {
@@ -78,6 +79,17 @@ namespace Project2
 
             sldforce.Visibility = Visibility.Collapsed;
             btnhit.Visibility = Visibility.Collapsed;
+        }
+
+        private void sldforce_GotFocus(object sender, RoutedEventArgs e)
+        {
+            focussld = true;
+        }
+
+
+        private void sldforce_LostFocus(object sender, RoutedEventArgs e)
+        {
+            focussld = false;
         }
     }
 }

@@ -77,6 +77,8 @@ namespace Project2
             Vector3 v = velocity;
             float accelerate = 0;
 
+            
+
             if (landtype.Equals("water"))
             {
                 game.gameState = Project2Game.GameState.Lose;
@@ -84,6 +86,8 @@ namespace Project2
             }
             else if (landtype.Equals("sand"))
             {
+                // on this type of land, don't allow ball bounce back to sky.
+                v.Y = 0.0f;
                 accelerate = -0.01f;
             }
             // control the velocity of ball movement.

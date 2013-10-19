@@ -105,7 +105,7 @@ namespace Project2
 
             base.Initialize();
 
-            camera = new Camera(this);
+            camera = new Camera(this,main);
         }
 
         protected override void Update(GameTime gameTime)
