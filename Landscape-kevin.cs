@@ -60,6 +60,7 @@ namespace Project2
             effect.Parameters["World"].SetValue(Matrix.Identity);
             effect.Parameters["Projection"].SetValue(game.camera.Projection);
             effect.Parameters["worldInvTrp"].SetValue(Matrix.Transpose(Matrix.Invert(Matrix.Identity)));
+            effect.Parameters["maxHeight"].SetValue(COLOUR_SCALE);
 
             inputLayout = VertexInputLayout.FromBuffer<VertexPositionNormalColor>(0, (Buffer<VertexPositionNormalColor>) vertices);
             this.game = game;
@@ -358,25 +359,25 @@ namespace Project2
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;
             tempX1 = tempX2 = tempZ1 = tempZ2 = 0;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX1 = rnd.Next(minPlayable, maxPlayable);
                 tempZ1 = rnd.Next(minPlayable, maxPlayable);
                 if (isSafePosition(tempX1, tempZ1))
                 {
                     unsuccessful = false;
                 }
-            }
+            //}
 
             //Get objective pos
             unsuccessful = true;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX2 = rnd.Next(minPlayable, maxPlayable);
                 tempZ2 = rnd.Next(minPlayable, maxPlayable);
                 if ( isSafePosition(tempX2, tempZ2) && 
                     (Math.Abs(tempX2 - tempX1) > minimumDistance || Math.Abs(tempZ2 - tempZ1) > minimumDistance)) {
                     unsuccessful = false;
                 }
-            }
+            //}
             startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
             objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
@@ -492,7 +493,6 @@ namespace Project2
                 Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z]), z);
                 Vector3 right = new Vector3(x, flatOcean(pHeights[x, z + 1]), z + 1);
                 n1 = Vector3.Cross(top - center, right - center);
-                n1.Normalize();
                 counter++;
             }
             //right bottom
@@ -500,7 +500,6 @@ namespace Project2
                 Vector3 right = new Vector3(x, flatOcean(pHeights[x, z + 1]), z + 1);
                 Vector3 bottom = new Vector3(x + 1, flatOcean(pHeights[x + 1, z + 1]), z + 1);
                 n2 = Vector3.Cross(right - center, bottom - center);
-                n2.Normalize();
                 counter++;
             }
             //bottom right
@@ -509,7 +508,6 @@ namespace Project2
                 Vector3 right = new Vector3(x + 1, flatOcean(pHeights[x + 1, z + 1]), z + 1);
                 Vector3 bottom = new Vector3(x + 1, flatOcean(pHeights[x + 1, z]), z);
                 n3 = Vector3.Cross(right - center, bottom - center);
-                n3.Normalize();
                 counter++;
             }
             //bottom left
@@ -517,7 +515,6 @@ namespace Project2
                 Vector3 bottom = new Vector3(x, flatOcean(pHeights[x + 1, z]), z);
                 Vector3 left = new Vector3(x, flatOcean(pHeights[x, z - 1]), z - 1);
                 n4 = Vector3.Cross(bottom - center, left - center);
-                n4.Normalize();
                 counter++;
             }
             //left top
@@ -525,7 +522,6 @@ namespace Project2
                 Vector3 left = new Vector3(x, flatOcean(pHeights[x, z - 1]), z - 1);
                 Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z - 1]), z - 1);
                 n5 = Vector3.Cross(left - center, top - center);
-                n5.Normalize();
                 counter++;
             }
             //top left
@@ -533,7 +529,6 @@ namespace Project2
             {
                 Vector3 left = new Vector3(x - 1, flatOcean(pHeights[x - 1, z - 1]), z - 1);
                 Vector3 top = new Vector3(x - 1, flatOcean(pHeights[x - 1, z]), z);
-                n6.Normalize();
                 n6 = Vector3.Cross(left - center, top - center);
                 counter++;
             }
