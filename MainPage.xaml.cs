@@ -2,7 +2,7 @@
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
+// in the Software without restriction, including without limitation the rightsD
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
@@ -30,11 +30,14 @@ namespace Project2
 
     using Windows.UI.Xaml.Controls.Primitives;
 
+
     public sealed partial class MainPage
     {
-        private readonly Project2Game game;
+        private  Project2Game game;
         private float force  = 0;
         public bool focussld = false;
+        //which mode choosen, 0 is unlimit time,
+        public int mode = 0;
 
         public MainPage()
         {
@@ -45,6 +48,10 @@ namespace Project2
 
         public void StartGame(object sender, RoutedEventArgs e)
         {
+            mode = 1000;
+            game.started = true;
+            modebox.IsOpen = true;
+            txb_mode.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
             sgrid.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
@@ -73,12 +80,25 @@ namespace Project2
         private void hit(object sender, RoutedEventArgs e)
         {
 
-            // hit the ball + UI disappear + watch movie
-            game.gameState = Project2Game.GameState.Movie;
-            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+            if (mode > 0)
+            {
+                if (game.gameState == Project2Game.GameState.Start)
+                {
+                    game.fire();
+                }
+                // hit the ball + UI disappear + watch movie
+                game.gameState = Project2Game.GameState.Movie;
+                game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
 
-            sldforce.Visibility = Visibility.Collapsed;
-            btnhit.Visibility = Visibility.Collapsed;
+                sldforce.Visibility = Visibility.Collapsed;
+                btnhit.Visibility = Visibility.Collapsed;
+                mode--;
+            }
+            else
+            {
+                modebox.IsOpen = true;
+                txb_mode.Text = "GameOver";
+            }
         }
 
         private void sldforce_GotFocus(object sender, RoutedEventArgs e)
@@ -90,6 +110,28 @@ namespace Project2
         private void sldforce_LostFocus(object sender, RoutedEventArgs e)
         {
             focussld = false;
+        }
+
+        private void bstart_practise_Click(object sender, RoutedEventArgs e)
+        {
+            game.started = true;
+            mode = 3;
+            sgrid.Visibility = Visibility.Collapsed;
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
+            modebox.IsOpen = true;
+            txb_mode.Text = "You are under practise mode, in this mode, you are allowed unlimited times to hit the ball!";
+        }
+        private void close_popup_Click(object sender, RoutedEventArgs e)
+        {
+            modebox.IsOpen = false;
+            if (mode == 0)
+            {
+                game.started = true;
+                game = new Project2Game(this);
+                game.Run(this);
+                mode = 3;
+            }
         }
     }
 }
