@@ -101,9 +101,8 @@ float4 PS( PS_IN input ) : SV_Target
 	// Combine reflection components
 	float4 returnCol = float4(0.0f,0.0f,0.0f,0.0f);
 
-	int ocean = !(input.wpos.y > 0.1 * maxHeight);
+	returnCol.rgb = amb.rgb + dif.rgb + ((int)(input.wpos.y == maxHeight * 0.1f)) * spe.rgb;
 
-	returnCol.rgb = amb.rgb+dif.rgb+spe.rgb * ocean;
 	returnCol.a = input.col.a;
 
 	return returnCol;
