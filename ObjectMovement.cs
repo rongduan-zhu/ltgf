@@ -133,7 +133,7 @@ namespace Project2
                 + heights[(int)bpos.X, (int)bpos.Z];
 
             float nextH = (hOnX + hOnZ) / 2;
-
+            position.Y = nextH;
             velocity = v;
         }
 
@@ -143,16 +143,9 @@ namespace Project2
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            //return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
+            return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
 
-            if(position.Y <= (heights[(int) position.X, (int) position.Z] +r))
-            {
-                return true;
-            }
-
-            return false;
-
-        }
+       }
 
         // control ball movement after ball hit ground and bounce back to sky.
         private float ballBounce(float a, Vector3 v)
