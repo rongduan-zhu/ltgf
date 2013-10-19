@@ -19,8 +19,10 @@ namespace Project2
         private VertexPositionNormalColor[] vpc;                              //Vertices list generated from the 2D array
 
         /*landscape properties*/
-        private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
-        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
+        //private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
+        //private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 500;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 200;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
@@ -145,7 +147,8 @@ namespace Project2
         {
             float h1, h2, h3, h4;
             pHeights = new float[BOARD_SIZE, BOARD_SIZE];
-            VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6 * 2];
+            //VertexPositionNormalColor[] vertices = new VertexPositionNormalColor[BOARD_SIZE * BOARD_SIZE * 6 * 2];
+            List<VertexPositionNormalColor> vertices = new List<VertexPositionNormalColor>(BOARD_SIZE * BOARD_SIZE * 6 * 2);
             //Initialize the four starting corners
             h1 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h2 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
@@ -196,48 +199,50 @@ namespace Project2
                         vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1)
                     };
                     
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal[0], GetColor(pHeights[i, j]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal[0], GetColor(pHeights[i, j])));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal[1], GetColor(pHeights[i + 1, j + 1]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal[1], GetColor(pHeights[i + 1, j + 1])));
                     
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
-                        normal[2], GetColor(pHeights[i + 1, j]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
+                        normal[2], GetColor(pHeights[i + 1, j])));
+                    //Add flat layer
+                    
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal[3], GetColor(pHeights[i, j]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
+                        normal[3], GetColor(pHeights[i, j])));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
-                        normal[4], GetColor(pHeights[i, j + 1]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
+                        normal[4], GetColor(pHeights[i, j + 1])));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal[5], GetColor(pHeights[i + 1, j + 1]));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
+                        normal[5], GetColor(pHeights[i + 1, j + 1])));
 
                     //backface
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
-                        normal[0], GetColor(pHeights[i, j], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
+                        normal[0], GetColor(pHeights[i, j], true)));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j], j),
-                        normal[2], GetColor(pHeights[i + 1, j], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j], j),
+                        normal[2], GetColor(pHeights[i + 1, j], true)));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
-                        normal[1], GetColor(pHeights[i + 1, j + 1], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
+                        normal[1], GetColor(pHeights[i + 1, j + 1], true)));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
-                        normal[3], GetColor(pHeights[i, j], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
+                        normal[3], GetColor(pHeights[i, j], true)));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
-                        normal[5], GetColor(pHeights[i + 1, j + 1], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), pHeights[i + 1, j + 1], (j + 1)),
+                        normal[5], GetColor(pHeights[i + 1, j + 1], true)));
 
-                    vertices[k++] = new VertexPositionNormalColor(new Vector3(i, pHeights[i, j + 1], (j + 1)),
-                        normal[4], GetColor(pHeights[i, j + 1], true));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j + 1], (j + 1)),
+                        normal[4], GetColor(pHeights[i, j + 1], true)));
                 }
             }
 
             //generates the position of the ball and the hole
             generateRandomStartObjectivePos();
-            return vertices;
+            return vertices.ToArray();
         }
 
         /**
@@ -291,11 +296,12 @@ namespace Project2
            It also flatten the beach near the ocean
          */
         private float flatOcean(float height) {
-            if (height <= COLOUR_SCALE * 0.1)
-            {
-                return COLOUR_SCALE * 0.1f;
-            }
             return height;
+            //if (height < COLOUR_SCALE * 0.1)
+            //{
+            //    return COLOUR_SCALE * 0.1f;
+            //}
+            //return height;
         }
 
         /**
