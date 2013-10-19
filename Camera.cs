@@ -37,7 +37,7 @@ namespace Project2
                 (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 900.0f);
 
             AngleH = 0;
-            AngleV = 0.7f;
+            AngleV = -0.7f;
 
             this.game = game;
         }
@@ -45,21 +45,21 @@ namespace Project2
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
         {
             scaleFactor *= (float) args.Delta.Scale;
-            AngleH -= (float)args.Delta.Translation.X / 500;
-            AngleV -= (float)args.Delta.Translation.Y / 500;
+            AngleH += (float)args.Delta.Translation.X / 500;
+            AngleV += (float)args.Delta.Translation.Y / 500;
         }
 
         public void Update(GameTime gameTime)
         {
             Vector4 temp = new Vector4(distance, 1);
-            temp = Vector4.Transform(temp, Matrix.RotationY(AngleH) * Matrix.RotationX(-AngleV));
+            temp = Vector4.Transform(temp, Matrix.RotationY(AngleH) * Matrix.RotationX(AngleV));
             RealDistance = new Vector3(temp.X, temp.Y, temp.Z);
             RealPosition = game.ball.position + RealDistance;
 
             position = game.ball.position + distance * scaleFactor;
             View = Matrix.Translation(-game.ball.position.X, -game.ball.position.Y, -game.ball.position.Z)
                 * Matrix.RotationY(AngleH)
-                * Matrix.RotationX(-AngleV)
+                * Matrix.RotationX(AngleV)
                 * Matrix.Translation(game.ball.position.X, game.ball.position.Y, game.ball.position.Z)
                 * Matrix.LookAtLH(position, game.ball.position, Vector3.UnitY);
         }

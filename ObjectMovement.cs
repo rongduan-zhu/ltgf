@@ -40,7 +40,7 @@ namespace Project2
 
         private void inAir(ref Vector3 position, float[,] heights)
         {
-            float accelerate = -0.01f;
+            float accelerate = -0.005f;
             Vector3 v = velocity;
             v.Y += accelerate;
             velocity = v;
@@ -57,6 +57,12 @@ namespace Project2
 
         public void onGround(ref Vector3 position, float[,] heights, string landtype)
         {
+            if (!game.landscape.isInside(position.X - 1, position.Z - 1)
+                || !game.landscape.isInside(position.X + 1, position.Z + 1 ))
+            {
+                game.gameState = Project2Game.GameState.Lose;
+                return;
+            }
             // heights difference between left and right
             float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
             // heights difference between front and back
