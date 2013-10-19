@@ -21,8 +21,8 @@ namespace Project2
         /*landscape properties*/
         //private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
         //private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
-        private float INIT_MIN_HEIGHT = BOARD_SIZE / 500;
-        private float INIT_MAX_HEIGHT = BOARD_SIZE / 200;
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 80;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
@@ -36,6 +36,7 @@ namespace Project2
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
         private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
+        private const float WATER_ALPHA = 0.3f;                         //Water transparency value
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -102,7 +103,8 @@ namespace Project2
             new Color(127f / 255, 255f / 255, 212f / 255, BACK_ALPHA),
             new Color(70f / 255, 130f / 255, 180f / 255, BACK_ALPHA),
             new Color(0 / 255, 0 / 255, 139f / 255, BACK_ALPHA),
-            new Color(0 / 255, 0 / 255, 255f / 255, BACK_ALPHA)
+            new Color(0 / 255, 0 / 255, 255f / 255, BACK_ALPHA),
+            new Color(98.0f / 255, 193.0f / 255, 255 / 255, WATER_ALPHA)
         };
 
         public Landscape2(Project2Game game)
@@ -128,7 +130,6 @@ namespace Project2
         {
             effect.Parameters["View"].SetValue(game.camera.View);
             effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
-            effect.Parameters["ballPos"].SetValue(game.ball.position);
         }
         
         public override void Draw(GameTime gameTime)
@@ -208,9 +209,7 @@ namespace Project2
                         normal[1], GetColor(pHeights[i + 1, j + 1])));
                     
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
-                        normal[2], GetColor(pHeights[i + 1, j])));
-                    //Add flat layer
-                    
+                        normal[2], GetColor(pHeights[i + 1, j])));                    
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
                         normal[3], GetColor(pHeights[i, j])));
@@ -220,6 +219,28 @@ namespace Project2
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
                         normal[5], GetColor(pHeights[i + 1, j + 1])));
+
+                    //add flat layer
+                    //if (isWater(pHeights[i, j]) && isWater(pHeights[i + 1, j]) && isWater(pHeights[i, j + 1]) && isWater(pHeights[i + 1, j + 1]))
+                    //{
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                    //    normal[0], bottom[25]));
+
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                    //        normal[1], bottom[25]));
+
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j], false), j),
+                    //        normal[2], bottom[25]));
+
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                    //        normal[3], bottom[25]));
+
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1], false), (j + 1)),
+                    //        normal[4], bottom[25]));
+
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                    //        normal[5], bottom[25]));
+                    //}
 
                     //backface
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
@@ -297,13 +318,17 @@ namespace Project2
            depth, but they are physically the same height. Just so it looks more realistic.
            It also flatten the beach near the ocean
          */
-        private float flatOcean(float height) {
-            return height;
-            //if (height < COLOUR_SCALE * 0.1)
-            //{
-            //    return COLOUR_SCALE * 0.1f;
-            //}
-            //return height;
+        private float flatOcean(float height, Boolean doNot = true) {
+            if (doNot)
+                return height;
+            else
+            {
+                if (height < COLOUR_SCALE * 0.1)
+                {
+                    return COLOUR_SCALE * 0.1f;
+                }
+                return height;
+            }
         }
 
         /**
