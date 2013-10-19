@@ -21,8 +21,8 @@ namespace Project2
         /*landscape properties*/
         //private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
         //private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
-        private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
-        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 500;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 200;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
@@ -128,6 +128,7 @@ namespace Project2
         {
             effect.Parameters["View"].SetValue(game.camera.View);
             effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
+            effect.Parameters["ballPos"].SetValue(game.ball.position);
         }
         
         public override void Draw(GameTime gameTime)
