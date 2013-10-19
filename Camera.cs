@@ -20,15 +20,15 @@ namespace Project2
         public Matrix Projection;
         public Project2Game game;
 
-
         public float AngleH { get; private set; }
         public float AngleV { get; private set; }
         private float scaleFactor = 1;
 
-        private Vector3 distance, position;
+        public Vector3 distance { get; private set; }
+        public Vector3 position { get; private set; }
 
         public Camera(Project2Game game) {
-            distance = new Vector3(0, 55, -15);
+            distance = new Vector3(0, 5, -5);
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
