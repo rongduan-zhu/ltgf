@@ -139,7 +139,14 @@ namespace Project2
             // Comparing the height of current position of ball to 
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
-            return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
+            //return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
+
+            if(position.Y <= (heights[(int) position.X, (int) position.Z] +r))
+            {
+                return true;
+            }
+
+            return false;
 
         }
 
@@ -149,7 +156,7 @@ namespace Project2
             float h = 0;
             float time = 0;
 
-            time = v.Y / a;
+            time = v.Y / Math.Abs(a);
             h = v.Y * time + (1 / 2) * a * time * time;
 
             return h;
