@@ -90,6 +90,7 @@ namespace Project2
                 v.Y = 0.0f;
                 accelerate = -0.01f;
             }
+            
             // control the velocity of ball movement.
             if (Math.Abs(v.X) > 0.1f)
             {
@@ -124,6 +125,7 @@ namespace Project2
             lpos = new Vector3((int)Math.Floor(position.X), 0, position.Z);
             rpos = new Vector3((int)Math.Ceiling(position.X), 0, position.Z);
 
+            // Calculate the height of next position. 
             float hOnX = (heights[(int)rpos.X, (int)rpos.Z] - heights[(int)lpos.X, (int)lpos.Z])
                 * (position.X - lpos.X) / (rpos.X - lpos.X)
                 + heights[(int)lpos.X, (int)lpos.Z];
@@ -132,6 +134,7 @@ namespace Project2
                 * (position.Z - (float)bpos.Z) * (fpos.Z - bpos.Z)
                 + heights[(int)bpos.X, (int)bpos.Z];
 
+            // update position Y.
             float nextH = (hOnX + hOnZ) / 2;
             position.Y = nextH;
             velocity = v;
@@ -148,15 +151,21 @@ namespace Project2
        }
 
         // control ball movement after ball hit ground and bounce back to sky.
-        private float ballBounce(float a, Vector3 v)
+        private void ballBounce(ref Vector3 position)
         {
-            float h = 0;
-            float time = 0;
+            Vector3 v = velocity;
+            v.Y = -1 * v.Y;
+            position.Y += velocity.Y;
+            position.X += velocity.X;
+            position.Z += velocity.Z;
 
-            time = v.Y / Math.Abs(a);
-            h = v.Y * time + (1 / 2) * a * time * time;
+            if (!game.landscape.isInside(position.X, position.Z))
+            {
+                game.gameState = Project2Game.GameState.Lose;
+            }
 
-            return h;
+            //time = v.Y / Math.Abs(g);
+            //h = v.Y * time + (1 / 2) * g * time * time;
         }
 
         public void Update(GameTime gameTime)
@@ -165,7 +174,14 @@ namespace Project2
 
             if (hitGround(position, game.landscape.pHeights))
             {
-                onGround(ref position, game.landscape.pHeights, "sand");
+                if (velocity.Y <= 0.0f)
+                {
+                    onGround(ref position, game.landscape.pHeights, "sand");
+                }
+                else
+                {
+                    ballBounce(ref position);
+                }
             }
             else
             {
