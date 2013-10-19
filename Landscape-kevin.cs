@@ -21,13 +21,14 @@ namespace Project2
         /*landscape properties*/
         //private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
         //private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
-        private float INIT_MIN_HEIGHT = BOARD_SIZE / 500;
-        private float INIT_MAX_HEIGHT = BOARD_SIZE / 200;
+        private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
         private float COLOUR_SCALE = BOARD_SIZE / 4;                    //A colour scale for calculating colours
-        private float smoothingFactor = 6;                              //Determines how smooth the landscape is
+        private float smoothingFactorLand = 1;                          //Determines how smooth the landscape is
+        private float smoothingFactorDetail = 7;                        //Determines how smooth the curves of the landscape is
         private int flatOffset = BOARD_SIZE / 100;                      //Value determines how smooth the landscape is
         public int minPlayable = BOARD_SIZE / 10;                       //Minimum x or z value that any GameObject could be placed
         public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
@@ -161,7 +162,7 @@ namespace Project2
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
 
             //average the landscape to remove sharp drop
-            for (int z = 0; z < smoothingFactor; z++)
+            for (int z = 0; z < smoothingFactorLand; z++)
             {
                 for (int i = flatOffset; i < BOARD_SIZE - flatOffset; i++)
                 {
@@ -173,7 +174,7 @@ namespace Project2
             }
 
             //average the landscape to remove sharp drop
-            for (int z = 0; z < smoothingFactor; z++)
+            for (int z = 0; z < smoothingFactorDetail; z++)
             {
                 for (int i = 1; i < BOARD_SIZE - 1; i++)
                 {
