@@ -159,5 +159,10 @@ namespace Project2
         {
             camera.OnManipulationUpdated(sender, args);
         }
+
+        public void fire()
+        {
+            models.Pop();
+        }
     }
 }

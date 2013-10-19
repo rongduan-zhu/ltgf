@@ -72,7 +72,9 @@ namespace Project2
 
         private void hit(object sender, RoutedEventArgs e)
         {
-
+            if (game.gameState == Project2Game.GameState.Start) {
+                game.fire();
+            }
             // hit the ball + UI disappear + watch movie
             game.gameState = Project2Game.GameState.Movie;
             game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);

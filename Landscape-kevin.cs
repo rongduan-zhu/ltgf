@@ -185,7 +185,6 @@ namespace Project2
             }
 
             //Now convert the array into vertices
-            int k = 0;
             for (int i = 0; i < BOARD_SIZE - 1; i++)
             {
                 for (int j = 0; j < BOARD_SIZE - 1; j++)
@@ -207,9 +206,8 @@ namespace Project2
                     
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
                         normal[2], GetColor(pHeights[i + 1, j])));
-                    //Add flat layer
-                    
 
+                    //Add flat layer
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
                         normal[3], GetColor(pHeights[i, j])));
 
