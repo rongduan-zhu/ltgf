@@ -28,11 +28,11 @@ float4x4 Projection;
 float4 cameraPos;
 float4 maxHeight;
 //Ambient Color rgb
-float4 lightAmbCol = float4(0.7f, 0.7f, 0.7f, 1.0f);
+float4 lightAmbCol = float4(0.6f, 0.6f, 0.6f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(0.0f, 180.0f, 0.0f, 1.0f);
+float4 lightPntPos = float4(0.0f, 20.0f, 0.0f, 1.0f);
 //point color rgb
-float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 1.0f);
+float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.1f);
 float4x4 worldInvTrp;
 //
 
@@ -84,8 +84,8 @@ float4 PS( PS_IN input ) : SV_Target
 	float3 amb = input.col.rgb*lightAmbCol.rgb*Ka;
 
 	// Calculate diffuse RBG reflections
-	float fAtt = 1;
-	float Kd = 1;
+	float fAtt = 1.0f;
+	float Kd = 1.0f;
 	float3 L = normalize(lightPntPos.xyz - input.wpos.xyz);
 	float LdotN = saturate(dot(L,interpNormal.xyz));
 	float3 dif = fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN;

@@ -56,7 +56,7 @@ namespace Project2
         public void Update(GameTime gameTime)
         {
             Vector4 temp = new Vector4(distance, 1);
-            temp = Vector4.Transform(temp, Matrix.RotationY(AngleH) * Matrix.RotationX(AngleV));
+            temp = Vector4.Transform(temp, Matrix.RotationY(-AngleH) * Matrix.RotationX(-AngleV));
             RealDistance = new Vector3(temp.X, temp.Y, temp.Z);
             RealPosition = game.ball.position + RealDistance;
 
