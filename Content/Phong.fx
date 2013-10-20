@@ -30,9 +30,9 @@ float4 maxHeight;
 //Ambient Color rgb
 float4 lightAmbCol = float4(0.6f, 0.6f, 0.6f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(0.0f, 20.0f, 0.0f, 1.0f);
+float4 lightPntPos = float4(0.0f, 80.0f, 0.0f, 1.0f);
 //point color rgb
-float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.1f);
+float4 lightPntCol = float4(0.4f, 0.4f, 0.4f, 0.1f);
 float4x4 worldInvTrp;
 //
 

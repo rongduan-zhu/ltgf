@@ -36,7 +36,7 @@ namespace Project2
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
         private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
-        private const float WATER_ALPHA = 0.3f;                         //Water transparency value
+        private const float WATER_ALPHA = 0.1f;                         //Water transparency value
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -221,26 +221,26 @@ namespace Project2
                         normal[5], GetColor(pHeights[i + 1, j + 1])));
 
                     //add flat layer
-                    //if (isWater(pHeights[i, j]) && isWater(pHeights[i + 1, j]) && isWater(pHeights[i, j + 1]) && isWater(pHeights[i + 1, j + 1]))
-                    //{
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
-                    //    normal[0], bottom[25]));
+                    if (isWater(pHeights[i, j]) && isWater(pHeights[i + 1, j]) && isWater(pHeights[i, j + 1]) && isWater(pHeights[i + 1, j + 1]))
+                    {
+                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                        normal[0], bottom[25]));
 
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
-                    //        normal[1], bottom[25]));
+                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                            normal[1], bottom[25]));
 
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j], false), j),
-                    //        normal[2], bottom[25]));
+                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j], false), j),
+                            normal[2], bottom[25]));
 
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
-                    //        normal[3], bottom[25]));
+                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                            normal[3], bottom[25]));
 
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1], false), (j + 1)),
-                    //        normal[4], bottom[25]));
+                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1], false), (j + 1)),
+                            normal[4], bottom[25]));
 
-                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
-                    //        normal[5], bottom[25]));
-                    //}
+                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                            normal[5], bottom[25]));
+                    }
 
                     //backface
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
@@ -336,55 +336,55 @@ namespace Project2
          */
         public Color GetColor(float height, bool back=false) {
             if (height >= COLOUR_SCALE)
-                return (back) ? top[0] : bottom[0];
+                return (back) ? bottom[0] : top[0];
             if (height < COLOUR_SCALE && height >= COLOUR_SCALE * 0.97)
-                return (back) ? top[1] : bottom[1];
+                return (back) ? bottom[1] : top[1];
             if (height < COLOUR_SCALE * 0.97 && height >= COLOUR_SCALE * 0.92)
-                return (back) ? top[2] : bottom[2];
+                return (back) ? bottom[2] : top[2];
             if (height < COLOUR_SCALE * 0.92 && height >= COLOUR_SCALE * 0.85)
-                return (back) ? top[3] : bottom[3];
+                return (back) ? bottom[3] : top[3];
             if (height < COLOUR_SCALE * 0.85 && height >= COLOUR_SCALE * 0.8)
-                return (back) ? top[4] : bottom[4];
+                return (back) ? bottom[4] : top[4];
             if (height < COLOUR_SCALE * 0.8 && height >= COLOUR_SCALE * 0.75)
-                return (back) ? top[5] : bottom[5];
+                return (back) ? bottom[5] : top[5];
             if (height < COLOUR_SCALE * 0.75 && height >= COLOUR_SCALE * 0.7)
-                return (back) ? top[6] : bottom[6];
+                return (back) ? bottom[6] : top[6];
             if (height < COLOUR_SCALE * 0.7 && height >= COLOUR_SCALE * 0.68)
-                return (back) ? top[7] : bottom[7];
+                return (back) ? bottom[7] : top[7];
             if (height < COLOUR_SCALE * 0.68 && height >= COLOUR_SCALE * 0.6)
-                return (back) ? top[8] : bottom[8];
+                return (back) ? bottom[8] : top[8];
             if (height < COLOUR_SCALE * 0.6 && height >= COLOUR_SCALE * 0.5)
-                return (back) ? top[9] : bottom[9];
+                return (back) ? bottom[9] : top[9];
             if (height < COLOUR_SCALE * 0.5 && height >= COLOUR_SCALE * 0.45)
-                return (back) ? top[10] : bottom[10];
+                return (back) ? bottom[10] : top[10];
             if (height < COLOUR_SCALE * 0.45 && height >= COLOUR_SCALE * 0.43)
-                return (back) ? top[11] : bottom[11];
+                return (back) ? bottom[11] : top[11];
             if (height < COLOUR_SCALE * 0.43 && height >= COLOUR_SCALE * 0.4)
-                return (back) ? top[12] : bottom[12];
+                return (back) ? bottom[12] : top[12];
             if (height < COLOUR_SCALE * 0.4 && height >= COLOUR_SCALE * 0.35)
-                return (back) ? top[13] : bottom[13];
+                return (back) ? bottom[13] : top[13];
             if (height < COLOUR_SCALE * 0.35 && height >= COLOUR_SCALE * 0.31)
-                return (back) ? top[14] : bottom[14];
+                return (back) ? bottom[14] : top[14];
             if (height < COLOUR_SCALE * 0.31 && height >= COLOUR_SCALE * 0.24)
-                return (back) ? top[15] : bottom[15];
+                return (back) ? bottom[15] : top[15];
             if (height < COLOUR_SCALE * 0.24 && height >= COLOUR_SCALE * 0.18)
-                return (back) ? top[16] : bottom[16];
+                return (back) ? bottom[16] : top[16];
             if (height < COLOUR_SCALE * 0.18 && height >= COLOUR_SCALE * 0.16)
-                return (back) ? top[17] : bottom[17];
+                return (back) ? bottom[17] : top[17];
             if (height < COLOUR_SCALE * 0.16 && height >= COLOUR_SCALE * 0.14)
-                return (back) ? top[18] : bottom[18];
+                return (back) ? bottom[18] : top[18];
             if (height < COLOUR_SCALE * 0.14 && height >= COLOUR_SCALE * 0.12)
-                return (back) ? top[19] : bottom[19];
+                return (back) ? bottom[19] : top[19];
             if (height < COLOUR_SCALE * 0.12 && height >= COLOUR_SCALE * 0.1)
-                return (back) ? top[20] : bottom[20];
+                return (back) ? bottom[20] : top[20];
             //Water below this point
             if (height < COLOUR_SCALE * 0.1 && height >= COLOUR_SCALE * 0.09)
-                return (back) ? top[21] : bottom[21];
+                return (back) ? bottom[21] : top[21];
             if (height < COLOUR_SCALE * 0.09 && height >= COLOUR_SCALE * 0.05)
-                return (back) ? top[22] : bottom[22];
+                return (back) ? bottom[22] : top[22];
             if (height < COLOUR_SCALE * 0.05)
-                return (back) ? top[23] : bottom[23];
-            return (back) ? top[24] : bottom[24];
+                return (back) ? bottom[23] : top[23];
+            return (back) ? bottom[24] : top[24];
         }
 
         /**
@@ -563,12 +563,12 @@ namespace Project2
 
         Vector3 vertexNormal(int x, float y, int z) {
             Vector3 n1, n2, n3, n4, n5, n6, center;
-            n1 = new Vector3(0, 0, 0);
-            n2 = new Vector3(0, 0, 0);
-            n3 = new Vector3(0, 0, 0);
-            n4 = new Vector3(0, 0, 0);
-            n5 = new Vector3(0, 0, 0);
-            n6 = new Vector3(0, 0, 0);
+            n1 = Vector3.Zero;
+            n2 = Vector3.Zero;
+            n3 = Vector3.Zero;
+            n4 = Vector3.Zero;
+            n5 = Vector3.Zero;
+            n6 = Vector3.Zero;
             center = new Vector3(x, pHeights[x, z], z);
             float counter = 0;
             //top right

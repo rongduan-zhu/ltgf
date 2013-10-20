@@ -156,6 +156,7 @@ namespace Project2
                     m.Draw();
                 }
 
+	        GraphicsDevice.SetBlendState(GraphicsDevice.BlendStates.AlphaBlend);
                 landscape.Draw(gameTime);
             }
             // Handle base.Draw
