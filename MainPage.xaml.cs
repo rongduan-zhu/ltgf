@@ -33,7 +33,7 @@ namespace Project2
 
     public sealed partial class MainPage
     {
-        private  Project2Game game;
+        private Project2Game game;
         private float force  = 0;
         public bool focussld = false;
         //which mode choosen, 0 is unlimit time,
@@ -46,16 +46,17 @@ namespace Project2
             game.Run(this);
         }
 
-        public void StartGame(object sender, RoutedEventArgs e)
+        public void startGame(object sender, RoutedEventArgs e)
         {
             mode = 1000;
             game.started = true;
             modebox.IsOpen = true;
-            txb_mode.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
-            sgrid.Visibility = Visibility.Collapsed;
+            popupText.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
+            startScreen.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
         }
+
         private void About(object sender, RoutedEventArgs e)
         {
             abutton.Visibility = Visibility.Visible;
@@ -97,32 +98,32 @@ namespace Project2
             else
             {
                 modebox.IsOpen = true;
-                txb_mode.Text = "GameOver";
+                popupText.Text = "GameOver";
             }
         }
 
-        private void sldforce_GotFocus(object sender, RoutedEventArgs e)
+        private void forceSliderGotFocus(object sender, RoutedEventArgs e)
         {
             focussld = true;
         }
 
 
-        private void sldforce_LostFocus(object sender, RoutedEventArgs e)
+        private void forceSliderLostFocus(object sender, RoutedEventArgs e)
         {
             focussld = false;
         }
 
-        private void bstart_practise_Click(object sender, RoutedEventArgs e)
+        private void practiseClick(object sender, RoutedEventArgs e)
         {
             game.started = true;
             mode = 3;
-            sgrid.Visibility = Visibility.Collapsed;
+            startScreen.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
             modebox.IsOpen = true;
-            txb_mode.Text = "You are under practise mode, in this mode, you are allowed unlimited times to hit the ball!";
+            popupText.Text = "You are under practise mode, in this mode, you are allowed unlimited times to hit the ball!";
         }
-        private void close_popup_Click(object sender, RoutedEventArgs e)
+        private void closePopupClick(object sender, RoutedEventArgs e)
         {
             modebox.IsOpen = false;
             if (mode == 0)
