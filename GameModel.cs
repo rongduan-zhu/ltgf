@@ -17,13 +17,14 @@ namespace Project2
         protected Project2Game game;
         public Model model { get; protected set; }
         public Matrix World { get; protected set; }
-
+        public Effect effect;
         public Vector3 position { get; set; }
 
         public GameModel (Model model, Game game, float x, float y, float z)
         {
             this.game = (Project2Game) game;
             this.model = model;
+            effect = game.Content.Load<Effect>("myShader");
             this.position = new Vector3(x, y, z);
             World = Matrix.Identity;
         }
@@ -37,8 +38,15 @@ namespace Project2
 
         public virtual void Draw()
         {
-            BasicEffect.EnableDefaultLighting(model, true);
-            model.Draw(game.GraphicsDevice, World, game.camera.View, game.camera.Projection);
+            //BasicEffect.EnableDefaultLighting(model, true);
+
+            effect.Parameters["World"].SetValue(World);
+            effect.Parameters["Projection"].SetValue(game.camera.Projection);
+            effect.Parameters["worldInvTrp"].SetValue(Matrix.Transpose(Matrix.Invert(World)));
+            effect.Parameters["maxHeight"].SetValue(0);
+            effect.Parameters["View"].SetValue(game.camera.View);
+            effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
+            model.Draw(game.GraphicsDevice, World, game.camera.View, game.camera.Projection, effect);
         }
     }
 }

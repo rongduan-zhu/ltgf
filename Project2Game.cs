@@ -93,10 +93,10 @@ namespace Project2
 
             objectmove = new ObjectMovement(this);
 
-            foreach (var m in models)
-            {
-                BasicEffect.EnableDefaultLighting(m.model, true);
-            }
+            //foreach (var m in models)
+            //{
+            //    BasicEffect.EnableDefaultLighting(m.model, true);
+            //}
 
             base.LoadContent();
         }
