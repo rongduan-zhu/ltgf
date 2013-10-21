@@ -18,9 +18,6 @@ namespace Project2
 
         private Project2Game game;
 
-        // radius
-        private float r = -0.03f;
-
         public ObjectMovement(Project2Game game)
         {
             this.game = game;
@@ -29,73 +26,58 @@ namespace Project2
 
         public void InitializeV(float v0, float AngleV, float AngleH)
         {
-                Vector3 v = new Vector3();
+            Vector3 v = new Vector3();
 
-                v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(-AngleH));
-                v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(-AngleH));
-                v.Y =  -1 * (float)(v0 * Math.Sin(-AngleV));
+            v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(-AngleH));
+            v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(-AngleH));
+            v.Y =  -1 * (float)(v0 * Math.Sin(-AngleV));
 
-                velocity = v;
+            velocity = v;
         }
 
         private void inAir(ref Vector3 position, float[,] heights)
         {
-                float accelerate = -0.005f;
-                Vector3 v = velocity;
-                v.Y += accelerate;
-                velocity = v;
+            float accelerate = -0.007f;
+            Vector3 v = velocity;
+            v.Y += accelerate;
+            velocity = v;
 
-                position.Y += velocity.Y;
-                position.X += velocity.X;
-                position.Z += velocity.Z;
+            position.Y += velocity.Y;
+            position.X += velocity.X;
+            position.Z += velocity.Z;
 
-                if (!game.landscape.isInside(position.X, position.Z))
-                {
-                    game.gameState = Project2Game.GameState.Lose;
-                }
+            if (!game.landscape.isInside(position.X, position.Z))
+            {
+                game.main.lose();
+                return;
+            }
         }
 
         // control the ball movement on ground when velocity on Y-axis is 0.
-        public void onGround(ref Vector3 position, float[,] heights, string landtype)
+        public void onGround(ref Vector3 position, float[,] heights)
         {
-            if (!game.landscape.isInside(position.X - 1, position.Z - 1)
-                || !game.landscape.isInside(position.X + 1, position.Z + 1 ))
-            {
-                game.gameState = Project2Game.GameState.Lose;
-                return;
-            }
-            // heights difference between left and right
-            float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
-            // heights difference between front and back
-            float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
-
-            float c = (float)Math.Sqrt(heightLRdiff * heightLRdiff + heightFBdiff * heightFBdiff);
-            // proportion on X-axis is cos, proportion on Z-axis is sin.
-            float cos = heightLRdiff / c;
-            float sin = heightFBdiff / c;
-
             // temps
             Vector3 v = velocity;
-            float accelerate = 0;
+            v.Y = 0;
 
-            
-
-            if (landtype.Equals("water"))
+            if (game.landscape.isWater((int)position.X, (int)position.Z))
             {
-                game.gameState = Project2Game.GameState.Lose;
+                game.main.lose();
                 return;
             }
-            else if (landtype.Equals("sand"))
+
+            if (Math.Abs(game.ball.position.X - game.landscape.objectivePos.X) < 0.1
+                || Math.Abs(game.ball.position.Z - game.landscape.objectivePos.Z) < 0.1)
             {
-                // on this type of land, don't allow ball bounce back to sky.
-                v.Y = 0.0f;
-                accelerate = -0.08f;
+                game.main.win();
+                return;
             }
             
             // control the velocity of ball movement on XZ-axis.
             if (Math.Abs(v.X) > 0.1f)
             {
-                v.X += accelerate * cos;
+                //v.X += accelerate * cos;
+                v.X *= 0.98f;
             }
             else
             {
@@ -104,7 +86,8 @@ namespace Project2
 
             if (Math.Abs(v.Z) > 0.1f)
             {
-                v.Z += accelerate * sin;
+                //v.Z += accelerate * sin;
+                v.Z *= 0.98f;
             }
             else
             {
@@ -116,7 +99,7 @@ namespace Project2
 
             if (!game.landscape.isInside(position.X, position.Z))
             {
-                game.gameState = Project2Game.GameState.Lose;
+                game.main.lose();
                 return;
             }
 
@@ -136,7 +119,11 @@ namespace Project2
                 + heights[(int)bpos.X, (int)bpos.Z];
 
             // update position Y.
-            float nextH = (hOnX + hOnZ) / 2;
+            float nextH = (hOnX + hOnZ) / 2 + game.ball.RADIUS;
+            if (nextH > position.Y)
+            {
+                v *= 0.8f;
+            }
             position.Y = nextH;
             velocity = v;
         }
@@ -148,21 +135,34 @@ namespace Project2
             // the height of position in map. If height of ball is less or equal
             // to height of position in map, then set hitGround to true.
             //return position.Y <= (heights[(int)position.X, (int)position.Z] + r);
+            float heightLRavg = heights[(int)position.X - 1, (int)position.Z] + heights[(int)position.X + 1, (int)position.Z];
+            heightLRavg /= 2;
+            float heightFBavg = heights[(int)position.X, (int)position.Z - 1] + heights[(int)position.X, (int)position.Z + 1];
+            heightFBavg /= 2;
 
-            if(position.Y <= (heights[(int)position.X, (int)position.Z] + r))
-            {
-                return true;
-            }
+            float height = (heightFBavg + heightLRavg) / 2;
 
-            return false;
-
+            return position.Y <= (height);
        }
 
         // control ball movement after ball hit ground and bounce back to sky.
         private void ballBounce(ref Vector3 position, float[,] heights)
         {
+            // heights difference between left and right
+            float heightLRdiff = heights[(int)position.X - 1, (int)position.Z] - heights[(int)position.X + 1, (int)position.Z];
+            // heights difference between front and back
+            float heightFBdiff = heights[(int)position.X, (int)position.Z - 1] - heights[(int)position.X, (int)position.Z + 1];
+
+            float c = (float)Math.Sqrt(heightLRdiff * heightLRdiff + heightFBdiff * heightFBdiff);
+            // proportion on X-axis is cos, proportion on Z-axis is sin.
+            float cos = heightLRdiff / c;
+            float sin = heightFBdiff / c;
+            float accelerate = 0.01f;
+
             Vector3 v = velocity;
-            v.Y = -1 * v.Y;
+            v.Y = -0.3f * v.Y;
+            v.X += accelerate * cos;
+            v.Z += accelerate * sin;
             velocity = v;
 
             Vector3 fpos, bpos, lpos, rpos;
@@ -181,7 +181,7 @@ namespace Project2
                 + heights[(int)bpos.X, (int)bpos.Z];
 
             // update position Y.
-            float nextH = (hOnX + hOnZ) / 2;
+            float nextH = (hOnX + hOnZ) / 2 + game.ball.RADIUS;
             position.Y = nextH;
 
             position.Y = nextH + velocity.Y;
@@ -200,22 +200,28 @@ namespace Project2
         {
             Vector3 position = game.ball.position;
 
+            if (!game.landscape.isInside(position.X - 1, position.Z - 1)
+                || !game.landscape.isInside(position.X + 1, position.Z + 1 ))
+            {
+                game.main.lose();
+                return;
+            }
 
-                if (hitGround(ref position, game.landscape.pHeights))
+            if (hitGround(ref position, game.landscape.pHeights))
+            {
+                if (Math.Abs(velocity.Y) >  0.005f)
                 {
-                    if (Math.Abs(velocity.Y) >  0.005f)
-                    {
-                        ballBounce(ref position, game.landscape.pHeights);
-                    }
-                    else
-                    {
-                        onGround(ref position, game.landscape.pHeights, "sand");
-                    }
+                    ballBounce(ref position, game.landscape.pHeights);
                 }
                 else
                 {
-                    inAir(ref position, game.landscape.pHeights);
+                    onGround(ref position, game.landscape.pHeights);
                 }
+            }
+            else
+            {
+                inAir(ref position, game.landscape.pHeights);
+            }
 
             game.ball.position = position;
         }

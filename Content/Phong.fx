@@ -30,7 +30,7 @@ float4 maxHeight;
 //Ambient Color rgb
 float4 lightAmbCol = float4(0.8f, 0.8f, 0.8f, 1.0f);
 //point position (x,y,z)
-float4 lightPntPos = float4(0.0f, 180.0f, 0.0f, 1.0f);
+float4 lightPntPos = float4(0.0f, 120.0f, 0.0f, 1.0f);
 //point color rgb
 float4 lightPntCol = float4(1.0f, 1.0f, 1.0f, 0.7f);
 float4x4 worldInvTrp;
@@ -102,8 +102,6 @@ float4 PS( PS_IN input ) : SV_Target
 	float4 returnCol = float4(0.0f,0.0f,0.0f,0.0f);
 
 	returnCol.rgb = amb.rgb + dif.rgb + ((int)(input.wpos.y <= maxHeight * 0.1f)) * spe.rgb;
-	
-
 	returnCol.a = input.col.a;
 
 	return returnCol;

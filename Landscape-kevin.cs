@@ -469,11 +469,11 @@ namespace Project2
         /**
          *  Checks if (x,z) is water
          */
-        public Boolean isWater(int x, int z) {
+        public bool isWater(int x, int z) {
             if (!isInside(x, z)) {
                 return false;
             }
-            return pHeights[x, z] < COLOUR_SCALE * 0.1;
+            return pHeights[x, z] <= COLOUR_SCALE * 0.1;
         }
 
         /**

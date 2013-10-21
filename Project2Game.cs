@@ -39,19 +39,19 @@ namespace Project2
         private GraphicsDeviceManager graphicsDeviceManager;
         private Model model;
         private Stack<GameModel> models;
-        private MainPage main;
 
         private static Vector3 STILL = Vector3.Zero;
 
         public enum GameState { Start, Movie, Ready, Lose, Win };
         public GameState gameState = GameState.Start;
 
+        public MainPage main { get; private set; }
         public Landscape2 landscape { get; private set; }
         public GameInput input { get; private set; }
         public Camera camera { get; private set; }
-        public GameModel ball { get; set; }
+        public Arrow arrow { get; private set; }
+        public Ball ball { get; private set; }
         public GameModel pin { get; private set; }
-        public GameModel arrow { get; private set; }
 
         public ObjectMovement objectmove;
 
@@ -134,6 +134,9 @@ namespace Project2
                             main.showHitUI();
                         }
                         break;
+                    case GameState.Win:
+                        main.win();
+                        break;
                     case GameState.Start:
                     case GameState.Ready:
                     case GameState.Lose:
@@ -156,7 +159,7 @@ namespace Project2
                     m.Draw();
                 }
 
-	        GraphicsDevice.SetBlendState(GraphicsDevice.BlendStates.AlphaBlend);
+                GraphicsDevice.SetBlendState(GraphicsDevice.BlendStates.AlphaBlend);
                 landscape.Draw(gameTime);
             }
             // Handle base.Draw

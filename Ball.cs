@@ -13,7 +13,14 @@ namespace Project2
 
     public class Ball : GameModel
     {
+        public float RADIUS = 0.06f;
+
         public Ball (Model model, Game game, float x, float y, float z)
             : base(model, game, x, y, z) {}
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+        }
     }
 }

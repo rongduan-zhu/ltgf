@@ -35,26 +35,39 @@ namespace Project2
     {
         private Project2Game game;
         private float force  = 0;
-        public bool focussld = false;
-        //which mode choosen, 0 is unlimit time,
-        public int mode = 0;
+        private int mode = 0;
+        private int hitCount = 0;
+
+        public bool focussld { get; private set; }
 
         public MainPage()
         {
             InitializeComponent();
+            focussld = false;
             game = new Project2Game(this);
             game.Run(this);
         }
 
         public void startGame(object sender, RoutedEventArgs e)
         {
-            mode = 1000;
             game.started = true;
-            modebox.IsOpen = true;
-            popupText.Text = "You are under Real play mode, in this mode, you hit will be counted as score!";
+            mode = 5;
             startScreen.Visibility = Visibility.Collapsed;
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
+            popupBox.IsOpen = true;
+            popupText.Text = "5 shots";
+        }
+
+        private void practiseClick(object sender, RoutedEventArgs e)
+        {
+            game.started = true;
+            mode = 1000;
+            startScreen.Visibility = Visibility.Collapsed;
+            sldforce.Visibility = Visibility.Visible;
+            btnhit.Visibility = Visibility.Visible;
+            popupBox.IsOpen = true;
+            popupText.Text = "Unlimited shots";
         }
 
         private void About(object sender, RoutedEventArgs e)
@@ -80,26 +93,18 @@ namespace Project2
 
         private void hit(object sender, RoutedEventArgs e)
         {
-
-            if (mode > 0)
+            if (game.gameState == Project2Game.GameState.Start)
             {
-                if (game.gameState == Project2Game.GameState.Start)
-                {
-                    game.fire();
-                }
-                // hit the ball + UI disappear + watch movie
-                game.gameState = Project2Game.GameState.Movie;
-                game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+                game.fire();
+            }
+            // hit the ball + UI disappear + watch movie
+            game.gameState = Project2Game.GameState.Movie;
+            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
 
-                sldforce.Visibility = Visibility.Collapsed;
-                btnhit.Visibility = Visibility.Collapsed;
-                mode--;
-            }
-            else
-            {
-                modebox.IsOpen = true;
-                popupText.Text = "GameOver";
-            }
+            sldforce.Visibility = Visibility.Collapsed;
+            btnhit.Visibility = Visibility.Collapsed;
+            mode--;
+            hitCount++;
         }
 
         private void forceSliderGotFocus(object sender, RoutedEventArgs e)
@@ -113,26 +118,35 @@ namespace Project2
             focussld = false;
         }
 
-        private void practiseClick(object sender, RoutedEventArgs e)
-        {
-            game.started = true;
-            mode = 3;
-            startScreen.Visibility = Visibility.Collapsed;
-            sldforce.Visibility = Visibility.Visible;
-            btnhit.Visibility = Visibility.Visible;
-            modebox.IsOpen = true;
-            popupText.Text = "You are under practise mode, in this mode, you are allowed unlimited times to hit the ball!";
-        }
         private void closePopupClick(object sender, RoutedEventArgs e)
         {
-            modebox.IsOpen = false;
-            if (mode == 0)
+            popupBox.IsOpen = false;
+            if (game.gameState == Project2Game.GameState.Win ||
+                game.gameState == Project2Game.GameState.Lose)
             {
-                game.started = true;
-                game = new Project2Game(this);
-                game.Run(this);
-                mode = 3;
+                focussld = false;
+                startScreen.Visibility = Visibility.Visible;
+                sldforce.Visibility = Visibility.Collapsed;
+                btnhit.Visibility = Visibility.Collapsed;
+                game.Exit();
+
+                //game = new Project2Game(this);
+                //game.Run(this);
             }
+        }
+
+        internal void win()
+        {
+            game.gameState = Project2Game.GameState.Win;
+            popupBox.IsOpen = true;
+            popupText.Text = "You Finished the game with " + hitCount + " shot(s)";
+        }
+
+        internal void lose()
+        {
+            game.gameState = Project2Game.GameState.Lose;
+            popupBox.IsOpen = true;
+            popupText.Text = "GameOver";
         }
     }
 }
