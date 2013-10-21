@@ -36,7 +36,7 @@ namespace Project2
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
         private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
-        private const float WATER_ALPHA = 0.1f;                         //Water transparency value
+        private const float WATER_ALPHA = 1f;                         //Water transparency value
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
@@ -104,7 +104,7 @@ namespace Project2
             new Color(70f / 255, 130f / 255, 180f / 255, BACK_ALPHA),
             new Color(0 / 255, 0 / 255, 139f / 255, BACK_ALPHA),
             new Color(0 / 255, 0 / 255, 255f / 255, BACK_ALPHA),
-            new Color(98.0f / 255, 193.0f / 255, 255 / 255, WATER_ALPHA)
+            new Color(98f / 255, 193f / 255, 255 / 255, WATER_ALPHA)
         };
 
         public Landscape2(Project2Game game)
@@ -198,49 +198,50 @@ namespace Project2
                         vertexNormal(i + 1, flatOcean(pHeights[i + 1, j]), j),
                         vertexNormal(i, flatOcean(pHeights[i, j]), j),
                         vertexNormal(i, flatOcean(pHeights[i, j + 1]), j + 1),
-                        vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1)
+                        vertexNormal(i + 1, flatOcean(pHeights[i + 1, j + 1]), j + 1),
+                        new Vector3(0,1,0)
                     };
-                    
-                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal[0], GetColor(pHeights[i, j])));
 
-                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal[1], GetColor(pHeights[i + 1, j + 1])));
-                    
-                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j), 
-                        normal[2], GetColor(pHeights[i + 1, j])));                    
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j),
+                        isWater(pHeights[i, j]) ? new Vector3(0, 1, 0) : normal[0], GetColor(pHeights[i, j])));
 
-                    //Add flat layer
-                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j), 
-                        normal[3], GetColor(pHeights[i, j])));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)),
+                        isWater(pHeights[i + 1, j + 1]) ? new Vector3(0, 1, 0) : normal[1], GetColor(pHeights[i + 1, j + 1])));
 
-                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)), 
-                        normal[4], GetColor(pHeights[i, j + 1])));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j),
+                        isWater(pHeights[i + 1, j]) ? new Vector3(0, 1, 0) : normal[2], GetColor(pHeights[i + 1, j])));
 
-                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)), 
-                        normal[5], GetColor(pHeights[i + 1, j + 1])));
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j),
+                        isWater(pHeights[i, j]) ? new Vector3(0, 1, 0) : normal[3], GetColor(pHeights[i, j])));
+
+                    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)),
+                        isWater(pHeights[i, j + 1]) ? new Vector3(0, 1, 0) : normal[4], GetColor(pHeights[i, j + 1])));
+
+                    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)),
+                        isWater(pHeights[i + 1, j + 1]) ? new Vector3(0, 1, 0) : normal[5], GetColor(pHeights[i + 1, j + 1])));
 
                     //add flat layer
-                    if (isWater(pHeights[i, j]) && isWater(pHeights[i + 1, j]) && isWater(pHeights[i, j + 1]) && isWater(pHeights[i + 1, j + 1]))
-                    {
-                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
-                        normal[0], bottom[25]));
+                    //if (isWater(pHeights[i, j]) || isWater(pHeights[i + 1, j]) || isWater(pHeights[i, j + 1]) || isWater(pHeights[i + 1, j + 1]))
+                    //{
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                    //    normal[0], GetColor(COLOUR_SCALE * 0.09f, true)));
 
-                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
-                            normal[1], bottom[25]));
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                    //        normal[1], GetColor(COLOUR_SCALE * 0.09f, true)));
 
-                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j], false), j),
-                            normal[2], bottom[25]));
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j], false), j),
+                    //        normal[2], GetColor(COLOUR_SCALE * 0.09f, true)));
 
-                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
-                            normal[3], bottom[25]));
+                    //    //Add flat layer
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j], false), j),
+                    //        normal[3], GetColor(COLOUR_SCALE * 0.09f, true)));
 
-                        vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1], false), (j + 1)),
-                            normal[4], bottom[25]));
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1], false), (j + 1)),
+                    //        normal[4], GetColor(COLOUR_SCALE * 0.09f, true)));
 
-                        vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
-                            normal[5], bottom[25]));
-                    }
+                    //    vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1], false), (j + 1)),
+                    //        normal[5], GetColor(COLOUR_SCALE * 0.09f, true)));
+                    //}
 
                     //backface
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, pHeights[i, j], j),
@@ -318,7 +319,7 @@ namespace Project2
            depth, but they are physically the same height. Just so it looks more realistic.
            It also flatten the beach near the ocean
          */
-        private float flatOcean(float height, Boolean doNot = true) {
+        private float flatOcean(float height, Boolean doNot = false) {
             if (doNot)
                 return height;
             else
