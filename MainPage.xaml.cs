@@ -21,7 +21,7 @@
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using SharpDX;
-
+using Windows.UI.Xaml.Media.Animation;
 namespace Project2
 {
     /// <summary>
@@ -151,6 +151,21 @@ namespace Project2
             popupBox.IsOpen = true;
             popupText.Text = "GameOver";
             game.started = false;
+        }
+
+        private void btnback_Click(object sender, RoutedEventArgs e)
+        {
+            focussld = false;
+            startScreen.Visibility = Visibility.Visible;
+            sldforce.Visibility = Visibility.Collapsed;
+            btnhit.Visibility = Visibility.Collapsed;
+            menuBar.IsOpen = false;
+
+        }
+
+        private void btnQuit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Exit();   
         }
     }
 }

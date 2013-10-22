@@ -8,14 +8,14 @@
     mc:Ignorable="d"    
     d:DesignWidth="1280"
     d:DesignHeight="800">
-    <Grid x:Name="startScreen" VerticalAlignment="Top" Height="879" Margin="-10,-79,0,0">
+    <Grid x:Name="startScreen" VerticalAlignment="Top" Height="800">
         <Grid.Background>
             <ImageBrush ImageSource="Content/GolfImage.jpg" Stretch="UniformToFill"/>
         </Grid.Background>
-        <Button x:Name="bstart" Content="Start Game" HorizontalAlignment="Left" Margin="875,187,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="startGame" Background="#FF26D67E" AllowDrop="True"/>
-        <Button x:Name="bstart_practise" Content="Practise" HorizontalAlignment="Left" Margin="875,319,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="practiseClick" Background="#FF26D67E" AllowDrop="True"/>
-        <Button x:Name="bcontrol" Content="Control" HorizontalAlignment="Left" Margin="875,451,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="About" Background="#FF26D67E"/>
-        <Button x:Name="babout" Content="About" HorizontalAlignment="Left" Margin="875,588,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="About" Background="#FF26D67E"/>
+        <Button x:Name="bstart" Content="Start Game" HorizontalAlignment="Left" Margin="875,187,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="startGame" Background="#FF26D67E" AllowDrop="True" FontSize="30" FontStyle="Italic" FontStretch="UltraExpanded"/>
+        <Button x:Name="bstart_practise" Content="Practise" HorizontalAlignment="Left" Margin="875,319,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="practiseClick" Background="#FF26D67E" AllowDrop="True" FontSize="30" FontStyle="Italic" FontStretch="UltraExpanded"/>
+        <Button x:Name="bcontrol" Content="Control" HorizontalAlignment="Left" Margin="875,451,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="About" Background="#FF26D67E" FontSize="30" FontStyle="Italic" FontStretch="UltraExpanded"/>
+        <Button x:Name="babout" Content="About" HorizontalAlignment="Left" Margin="875,588,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="About" Background="#FF26D67E" FontSize="30" FontStyle="Italic" FontStretch="UltraExpanded"/>
         <Button x:Name="abutton" Content="ABOUT" HorizontalAlignment="Left" Margin="406,319,0,0" VerticalAlignment="Top" Height="231" Width="361" BorderBrush="White" Click="hideAbout" Background="#FF26D67E" Visibility="Collapsed"/>
     </Grid>
     <Slider x:Name="sldforce" LostFocus="forceSliderLostFocus" HorizontalAlignment="Left" Margin="15.962,699.575,0,0" Width="500.567" RenderTransformOrigin="0.5,0.5" Height="46.888" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FF00AC4E" Background="#FF7E2020" ValueChanged="setForce" GotFocus="forceSliderGotFocus" BorderThickness="20" VerticalContentAlignment="Stretch" Visibility="Collapsed"/>
@@ -26,6 +26,20 @@
             <Button x:Name="closePopup" Content="OK" Click="closePopupClick" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" UseLayoutRounding="True" HorizontalAlignment="Right" HorizontalContentAlignment="Right" ManipulationMode="All" RenderTransformOrigin="0,0" IsRightTapEnabled="False"/>
         </Grid>
     </Popup>
+    <AppBar x:Name="menuBar" IsOpen="False" Margin="1096,0,-59,0">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="btnBack"  HorizontalAlignment="Left" Margin="61,221,0,0" VerticalAlignment="Top" Height="122" Width="162" BorderBrush="White" Click="btnback_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource BackButtonStyle}"/>
+            <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="61,487,0,0" VerticalAlignment="Top" Height="122" Width="162" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource AppBarButtonStyle}"/>
+
+
+        </Grid>
+    </AppBar>
 
 
 </SwapChainBackgroundPanel>
