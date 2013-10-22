@@ -160,12 +160,31 @@ namespace Project2
             sldforce.Visibility = Visibility.Collapsed;
             btnhit.Visibility = Visibility.Collapsed;
             menuBar.IsOpen = false;
-
         }
 
         private void btnQuit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Exit();   
+        }
+
+        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sound1 = sender as ToggleSwitch;
+            if (sound1 != null){
+           if (sound1.IsOn == true) {
+               if (bgm != null)
+               {
+                   bgm.IsMuted = false;
+               }
+            }
+           else
+           {
+               if (bgm != null)
+               {
+                   bgm.IsMuted = true;
+               }
+           }
+            }
         }
     }
 }

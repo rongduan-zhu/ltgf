@@ -31,8 +31,9 @@
         <Grid>
             <Button x:Name="btnBack"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Height="122" Width="162" BorderBrush="White" Click="btnback_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource BackButtonStyle}"/>
             <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" Height="122" Width="162" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Style="{StaticResource AppBarButtonStyle}" Grid.ColumnSpan="2"/>
+            <ToggleSwitch x:Name="sound" Header="Music" Margin="0,100,0,0" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="75" IsOn="True" Toggled="ToggleSwitch_Toggled" FontSize="24"/>
         </Grid>
     </AppBar>
-    <MediaElement HorizontalAlignment="Left" Height="69" Margin="10,10,0,0" VerticalAlignment="Top" Width="324" Source="Assets/BGM.mp3" AudioCategory="BackgroundCapableMedia" IsLooping="True" Stereo3DVideoPackingMode="SideBySide"/>
+    <MediaElement x:Name="bgm" HorizontalAlignment="Left" Height="69" Margin="10,10,0,0" VerticalAlignment="Top" Width="324" Source="Assets/BGM.mp3" AudioCategory="BackgroundCapableMedia" IsLooping="True" Stereo3DVideoPackingMode="SideBySide"/>
 
 </SwapChainBackgroundPanel>
