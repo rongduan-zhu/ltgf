@@ -44,17 +44,13 @@ namespace Project2
         {
             InitializeComponent();
             focussld = false;
-            //game = new Project2Game(this);
-            //game.Run(this);
+            game = new Project2Game(this);
+            game.Run(this);
         }
 
         public void startGame(object sender, RoutedEventArgs e)
 
         {
-            //game = new Project2Game(this);
-            //game.Run(this);
-            game = new Project2Game(this);
-            game.Run(this);
             game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 5;
@@ -67,10 +63,6 @@ namespace Project2
 
         private void practiseClick(object sender, RoutedEventArgs e)
         {
-            //game = new Project2Game(this);
-           // game.Run(this);
-            game = new Project2Game(this);
-            game.Run(this);
             game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 1000;
@@ -143,15 +135,6 @@ namespace Project2
                 btnhit.Visibility = Visibility.Collapsed;
                 
                 game.Exit();
-
-
-            }
-            if (game.gameState == Project2Game.GameState.Start )
-            {
-                game.started = true;
-                //focussld = false;
-                //game = new Project2Game(this);
-                //game.Run(this);
             }
         }
 
