@@ -86,7 +86,7 @@ namespace Project2
 
         private void setForce(object sender, RangeBaseValueChangedEventArgs e)
         {
-            force = (float) e.NewValue / 100;
+            force = (float)e.NewValue;
         }
 
         public void showHitUI()
@@ -103,7 +103,7 @@ namespace Project2
             }
             // hit the ball + UI disappear + watch movie
             game.gameState = Project2Game.GameState.Movie;
-            game.objectmove.InitializeV(force, game.camera.AngleV, game.camera.AngleH);
+            game.movement.Hit(force);
 
             sldforce.Visibility = Visibility.Collapsed;
             btnhit.Visibility = Visibility.Collapsed;
@@ -133,8 +133,6 @@ namespace Project2
                 startScreen.Visibility = Visibility.Visible;
                 sldforce.Visibility = Visibility.Collapsed;
                 btnhit.Visibility = Visibility.Collapsed;
-                
-                game.Exit();
             }
         }
 
@@ -143,6 +141,7 @@ namespace Project2
             game.gameState = Project2Game.GameState.Win;
             popupBox.IsOpen = true;
             popupText.Text = "You Finished the game with " + hitCount + " shot(s)";
+            game.started = false;
         }
 
         internal void lose()

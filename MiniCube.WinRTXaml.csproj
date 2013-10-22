@@ -45,6 +45,7 @@
     </Compile>
     <Compile Include="Arrow.cs" />
     <Compile Include="Ball.cs" />
+    <Compile Include="BallMovement.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="ColoredGameObject.cs" />
     <Compile Include="GameInput.cs" />

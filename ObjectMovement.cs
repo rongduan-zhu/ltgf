@@ -30,7 +30,7 @@ namespace Project2
 
             v.X = (float)(v0 * Math.Cos(AngleV) * Math.Sin(-AngleH));
             v.Z = (float)(v0 * Math.Cos(AngleV) * Math.Cos(-AngleH));
-            v.Y =  -1 * (float)(v0 * Math.Sin(-AngleV));
+            v.Y = - (float)(v0 * Math.Sin(-AngleV));
 
             velocity = v;
         }

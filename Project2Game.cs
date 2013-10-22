@@ -53,7 +53,7 @@ namespace Project2
         public Ball ball { get; private set; }
         public GameModel pin { get; private set; }
 
-        public ObjectMovement objectmove;
+        public BallMovement movement;
 
         public bool started = false;
 
@@ -91,12 +91,7 @@ namespace Project2
             pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
             models.Push(pin);
 
-            objectmove = new ObjectMovement(this);
-
-            //foreach (var m in models)
-            //{
-            //    BasicEffect.EnableDefaultLighting(m.model, true);
-            //}
+            movement = new BallMovement(this);
 
             base.LoadContent();
         }
@@ -126,28 +121,25 @@ namespace Project2
                 switch (gameState)
                 {
                     case GameState.Movie:
-                        objectmove.Update(gameTime);
-
-                        if (objectmove.velocity.Equals(STILL))
+                        if (movement.velocity.Equals(STILL))
                         {
                             gameState = GameState.Ready;
                             main.showHitUI();
                         }
+                        else
+                        {
+                            movement.Update(gameTime);
+                        }
                         break;
                     case GameState.Win:
-                        main.win();
-                        break;
                     case GameState.Start:
-                        started = true;
-                        break;
                     case GameState.Ready:
                     case GameState.Lose:
-                        started = false;
-                        break;
                     default:
                         break;
                 }
             }
+
             base.Update(gameTime);
         }
 
