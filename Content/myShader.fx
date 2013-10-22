@@ -34,6 +34,10 @@ float4 lightPntPos = float4(0.0f, 180.0f, 0.0f, 1.0f);
 //point color rgb
 float4 lightPntCol = float4(0.5f, 0.5f, 0.5f, 0.1f);
 float4x4 worldInvTrp;
+
+float4 mainLightPos;
+float4 supportLightPos;
+float4 oppMainLightPos;
 //
 
 struct VS_IN
@@ -85,12 +89,24 @@ float4 PS( PS_IN input ) : SV_Target
 	// Calculate diffuse RBG reflections
 	float fAtt = 1.0f;
 	float Kd = 0.7f;
-	float3 L = normalize(lightPntPos.xyz - input.wpos.xyz);
+	//float3 L = normalize(lightPntPos.xyz - input.wpos.xyz);
+	//float LdotN = saturate(dot(L,interpNormal.xyz));
+	//float3 dif = fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN;
+	//main diffuse
+	float3 L = normalize(mainLightPos.xyz - input.wpos.xyz);
 	float LdotN = saturate(dot(L,interpNormal.xyz));
 	float3 dif = fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN;
+	//opposite diffuse
+	L = normalize(oppMainLightPos.xyz - input.wpos.xyz);
+	LdotN = saturate(dot(L,interpNormal.xyz));
+	dif += (0.5 * fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN);
+	//support diffuse
+	L = normalize(supportLightPos.xyz - input.wpos.xyz);
+	LdotN = saturate(dot(L,interpNormal.xyz));
+	dif += (0.2 * fAtt*lightPntCol.rgb*Kd*input.col.rgb*LdotN);
 
 	// Calculate specular reflections
-	float Ks = 0.1f;
+	float Ks = 0.3f;
 	float specN = 10; // Numbers>>1 give more mirror-like highlights
 	float3 V = normalize(cameraPos.xyz - input.wpos.xyz);
 	float3 R = normalize(2*LdotN*interpNormal.xyz - L.xyz);

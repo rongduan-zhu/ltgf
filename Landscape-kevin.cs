@@ -5,6 +5,7 @@ using System.Text;
 
 using SharpDX;
 using SharpDX.Toolkit;
+using System.Diagnostics;
 
 namespace Project2
 {
@@ -13,7 +14,8 @@ namespace Project2
     public class Landscape2 : ColoredGameObject
     {
         /*board properties*/
-        private const int BOARD_SIZE = 513;                      //Work best at 513x513
+        public int baord_size_public = 513;                             //Work best at 513x513
+        private const int BOARD_SIZE = 513;
         private float MAX_HEIGHT;                                       //Setting the maximum height, a random value between INIT_MIN_HEIGHT and INIT_MAX_HEIGHT
         public float[,] pHeights;                                       //2D array storing the heights for corresponding (x,z)
         private VertexPositionNormalColor[] vpc;                              //Vertices list generated from the 2D array
@@ -22,7 +24,7 @@ namespace Project2
         //private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
         //private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
         private float INIT_MIN_HEIGHT = BOARD_SIZE / 50;
-        private float INIT_MAX_HEIGHT = BOARD_SIZE / 20;
+        private float INIT_MAX_HEIGHT = BOARD_SIZE / 40;
         private float ROUGHNESS = BOARD_SIZE / 40;                      //How rough the terrain is, 1 is super flat, 20 is rocky mountain range. Default = 10
         private float GBIGSIZE = 2 * BOARD_SIZE;                        //Normalizing factor for displacement
         private float HIGHEST_POINT = 0;                                //Calculating the highest point
@@ -36,13 +38,14 @@ namespace Project2
         private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
         private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
         private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
-        private const float WATER_ALPHA = 1f;                         //Water transparency value
+        private const float WATER_ALPHA = 1f;                           //Water transparency value
+        private float waterAngleAlter = 0.07f;
 
         private float totalLand;                                        //Total number of points which is land
         private float totalPoints;                                      //Total number of initialized points
         private float landRatio;                                        //Portion of land
-        private const float OPTIMAL_RATIO = 0.7f;                       //Optimal portion of land
-        private const float UPPERBOUND_RATIO = 0.9f;                    //Upper bound portion of land
+        private const float OPTIMAL_RATIO = 0.6f;                       //Optimal portion of land
+        private const float UPPERBOUND_RATIO = 0.7f;                    //Upper bound portion of land
         private const float LOWERBOUND_RATIO = 0.5f;                    //Lower bound portion of land
 
         /*auxiliary members*/
@@ -202,23 +205,30 @@ namespace Project2
                         new Vector3(0,1,0)
                     };
 
+                    Vector3[] waterNormal = new Vector3[] {
+                        new Vector3(calcWaterSurface().X, calcWaterSurface().Y, calcWaterSurface().Z),
+                        new Vector3(calcWaterSurface().X, calcWaterSurface().Y, calcWaterSurface().Z),
+                        new Vector3(calcWaterSurface().X, calcWaterSurface().Y, calcWaterSurface().Z),
+                        new Vector3(calcWaterSurface().X, calcWaterSurface().Y, calcWaterSurface().Z)
+                    };
+
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j),
-                        isWater(pHeights[i, j]) ? new Vector3(0, 1, 0) : normal[0], GetColor(pHeights[i, j])));
+                        isWater(pHeights[i, j]) ? waterNormal[0] : normal[0], GetColor(pHeights[i, j])));
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)),
-                        isWater(pHeights[i + 1, j + 1]) ? new Vector3(0, 1, 0) : normal[1], GetColor(pHeights[i + 1, j + 1])));
+                        isWater(pHeights[i + 1, j + 1]) ? waterNormal[1] : normal[1], GetColor(pHeights[i + 1, j + 1])));
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j]), j),
-                        isWater(pHeights[i + 1, j]) ? new Vector3(0, 1, 0) : normal[2], GetColor(pHeights[i + 1, j])));
+                        isWater(pHeights[i + 1, j]) ? waterNormal[2] : normal[2], GetColor(pHeights[i + 1, j])));
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j]), j),
-                        isWater(pHeights[i, j]) ? new Vector3(0, 1, 0) : normal[3], GetColor(pHeights[i, j])));
+                        isWater(pHeights[i, j]) ? waterNormal[0] : normal[3], GetColor(pHeights[i, j])));
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3(i, flatOcean(pHeights[i, j + 1]), (j + 1)),
-                        isWater(pHeights[i, j + 1]) ? new Vector3(0, 1, 0) : normal[4], GetColor(pHeights[i, j + 1])));
+                        isWater(pHeights[i, j + 1]) ? waterNormal[3] : normal[4], GetColor(pHeights[i, j + 1])));
 
                     vertices.Add(new VertexPositionNormalColor(new Vector3((i + 1), flatOcean(pHeights[i + 1, j + 1]), (j + 1)),
-                        isWater(pHeights[i + 1, j + 1]) ? new Vector3(0, 1, 0) : normal[5], GetColor(pHeights[i + 1, j + 1])));
+                        isWater(pHeights[i + 1, j + 1]) ? waterNormal[1] : normal[5], GetColor(pHeights[i + 1, j + 1])));
 
                     //add flat layer
                     //if (isWater(pHeights[i, j]) || isWater(pHeights[i + 1, j]) || isWater(pHeights[i, j + 1]) || isWater(pHeights[i + 1, j + 1]))
@@ -379,12 +389,14 @@ namespace Project2
             if (height < COLOUR_SCALE * 0.12 && height >= COLOUR_SCALE * 0.1)
                 return (back) ? bottom[20] : top[20];
             //Water below this point
-            if (height < COLOUR_SCALE * 0.1 && height >= COLOUR_SCALE * 0.09)
+            if (height < COLOUR_SCALE * 0.1)
                 return (back) ? bottom[21] : top[21];
-            if (height < COLOUR_SCALE * 0.09 && height >= COLOUR_SCALE * 0.05)
-                return (back) ? bottom[22] : top[22];
-            if (height < COLOUR_SCALE * 0.05)
-                return (back) ? bottom[23] : top[23];
+            //if (height < COLOUR_SCALE * 0.1 && height >= COLOUR_SCALE * 0.09)
+            //    return (back) ? bottom[21] : top[21];
+            //if (height < COLOUR_SCALE * 0.09 && height >= COLOUR_SCALE * 0.05)
+            //    return (back) ? bottom[22] : top[22];
+            //if (height < COLOUR_SCALE * 0.05)
+            //    return (back) ? bottom[23] : top[23];
             return (back) ? bottom[24] : top[24];
         }
 
@@ -443,25 +455,25 @@ namespace Project2
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;
             tempX1 = tempX2 = tempZ1 = tempZ2 = 0;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX1 = rnd.Next(minPlayable, maxPlayable);
                 tempZ1 = rnd.Next(minPlayable, maxPlayable);
                 if (isSafePosition(tempX1, tempZ1))
                 {
                     unsuccessful = false;
                 }
-            }
+            //}
 
             //Get objective pos
             unsuccessful = true;
-            while (unsuccessful) {
+            //while (unsuccessful) {
                 tempX2 = rnd.Next(minPlayable, maxPlayable);
                 tempZ2 = rnd.Next(minPlayable, maxPlayable);
                 if ( isSafePosition(tempX2, tempZ2) && 
                     (Math.Abs(tempX2 - tempX1) > minimumDistance || Math.Abs(tempZ2 - tempZ1) > minimumDistance)) {
                     unsuccessful = false;
                 }
-            }
+            //}
             startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
             objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
@@ -621,6 +633,20 @@ namespace Project2
                 counter = 1;
             }
             return (n1 + n2 + n3 + n4 + n5 + n6) / counter;
+        }
+
+        Vector3 calcWaterSurface() {
+            Vector4 temp = new Vector4(0, 20, 0, 1);
+            temp = Vector4.Transform(temp, Matrix.RotationY(rnd.NextFloat(-waterAngleAlter, waterAngleAlter)) 
+                * Matrix.RotationX(rnd.NextFloat(-waterAngleAlter, waterAngleAlter)));
+            float choice = rnd.NextFloat(-1, 1);
+            if (temp.Y < 0) {
+                Debug.WriteLine(temp.Y);
+            }
+            if (choice > 0)
+                return new Vector3(temp.X, temp.Y, temp.Z);
+            else
+                return new Vector3(0, 20f, 0);
         }
 
     }

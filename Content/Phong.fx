@@ -92,7 +92,7 @@ float4 PS( PS_IN input ) : SV_Target
 
 	// Calculate specular reflections
 	float Ks = 1;
-	float specN = 40; // Numbers>>1 give more mirror-like highlights
+	float specN = 20; // Numbers>>1 give more mirror-like highlights
 	float3 V = normalize(cameraPos.xyz - input.wpos.xyz);
 	float3 R = normalize(2*LdotN*interpNormal.xyz - L.xyz);
 	//float3 R = normalize(0.5*(L.xyz+V.xyz)); //Blinn-Phong equivalent

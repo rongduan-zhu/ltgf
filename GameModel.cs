@@ -20,6 +20,8 @@ namespace Project2
         public Effect effect;
         public Vector3 position { get; set; }
 
+         Vector3[] lightPointPositions;
+
         public GameModel (Model model, Game game, float x, float y, float z)
         {
             this.game = (Project2Game) game;
@@ -27,6 +29,12 @@ namespace Project2
             effect = game.Content.Load<Effect>("myShader");
             this.position = new Vector3(x, y, z);
             World = Matrix.Identity;
+
+            lightPointPositions = new [] {
+                new Vector3(0, 180, 0),
+                new Vector3(-this.game.landscape.baord_size_public , 180, 0),
+                new Vector3(this.game.landscape.baord_size_public, 180, this.game.landscape.baord_size_public)
+            };
         }
 
         public GameModel () {}
@@ -46,6 +54,9 @@ namespace Project2
             effect.Parameters["maxHeight"].SetValue(0);
             effect.Parameters["View"].SetValue(game.camera.View);
             effect.Parameters["cameraPos"].SetValue(game.camera.RealPosition);
+            effect.Parameters["mainLightPos"].SetValue(lightPointPositions[0]);
+            effect.Parameters["supportLightPos"].SetValue(lightPointPositions[1]);
+            effect.Parameters["oppMainLightPos"].SetValue(lightPointPositions[2]);
             model.Draw(game.GraphicsDevice, World, game.camera.View, game.camera.Projection, effect);
         }
     }
