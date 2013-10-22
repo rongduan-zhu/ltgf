@@ -56,7 +56,7 @@ namespace Project2
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
             popupBox.IsOpen = true;
-            popupText.Text = "5 shots";
+            popupText.Text = "5 shots Allowed";
         }
 
         private void practiseClick(object sender, RoutedEventArgs e)

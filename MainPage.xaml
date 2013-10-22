@@ -8,7 +8,7 @@
     mc:Ignorable="d"    
     d:DesignWidth="1280"
     d:DesignHeight="800">
-    <Grid x:Name="startScreen" VerticalAlignment="Top" Height="800">
+    <Grid x:Name="startScreen" VerticalAlignment="Top" Height="800" Margin="-10,-79,10,0">
         <Grid.Background>
             <ImageBrush ImageSource="Content/GolfImage.jpg" Stretch="UniformToFill"/>
         </Grid.Background>
@@ -20,10 +20,12 @@
     </Grid>
     <Slider x:Name="sldforce" LostFocus="forceSliderLostFocus" HorizontalAlignment="Left" Margin="15.962,699.575,0,0" Width="924.567" RenderTransformOrigin="0.5,0.5" Height="46.888" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FF00AC4E" Background="#FF7E2020" ValueChanged="setForce" GotFocus="forceSliderGotFocus" BorderThickness="20" VerticalContentAlignment="Stretch" Visibility="Collapsed"/>
     <Button x:Name="btnhit" Content="HIT" HorizontalAlignment="Left" Margin="994.984,517.033,0,0" Click="hit" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="108.711"  UseLayoutRounding="False" Width="190.089" d:LayoutRounding="Auto" Background="#FF26D67E" BorderBrush="#FF2B302D" Visibility="Collapsed" BorderThickness="2"/>
-    <Popup x:Name="popupBox" IsOpen="False" ManipulationMode="None" Margin="520,338,437,218">
-        <StackPanel Background="#FF26D67E" Height="212.99" Width="298" RenderTransformOrigin="0.5,0.5" UseLayoutRounding="False" d:LayoutRounding="Auto" >
-            <TextBlock x:Name="popupText" TextAlignment="Center" TextWrapping="Wrap" FontSize="15" Height="147"/>
-            <Button x:Name="closePopup" Content="OK" Click="closePopupClick" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" UseLayoutRounding="True" HorizontalAlignment="Right" HorizontalContentAlignment="Right" ManipulationMode="All" RenderTransformOrigin="0.49,0.498" IsRightTapEnabled="False" Margin="0,20,10,20"/>
-        </StackPanel>
+    <Popup x:Name="popupBox" IsOpen="False" ManipulationMode="None">
+        <Grid Background="#FF26D67E" RenderTransformOrigin="0.5,0.5" Margin="476,327,450,294" Height="116" Width="242" >
+            <TextBlock x:Name="popupText" TextAlignment="Center" TextWrapping="Wrap" FontSize="20" Margin="0,19" FontStyle="Oblique" Text="Text" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
+            <Button x:Name="closePopup" Content="OK" Click="closePopupClick" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" UseLayoutRounding="True" HorizontalAlignment="Right" HorizontalContentAlignment="Right" ManipulationMode="All" RenderTransformOrigin="0,0" IsRightTapEnabled="False"/>
+        </Grid>
     </Popup>
+
+
 </SwapChainBackgroundPanel>
