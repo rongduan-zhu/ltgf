@@ -51,6 +51,7 @@ namespace Project2
         public void startGame(object sender, RoutedEventArgs e)
 
         {
+
             game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 5;
@@ -109,17 +110,6 @@ namespace Project2
             btnhit.Visibility = Visibility.Collapsed;
             mode--;
             hitCount++;
-        }
-
-        private void forceSliderGotFocus(object sender, RoutedEventArgs e)
-        {
-            focussld = true;
-        }
-
-
-        private void forceSliderLostFocus(object sender, RoutedEventArgs e)
-        {
-            focussld = false;
         }
 
         private void closePopupClick(object sender, RoutedEventArgs e)
@@ -185,6 +175,16 @@ namespace Project2
                }
            }
             }
+        }
+
+        private void sldforce_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            focussld = false;
+        }
+
+        private void sldforce_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        {
+            focussld = true;
         }
     }
 }
