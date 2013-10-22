@@ -37,19 +37,25 @@ namespace Project2
         private float force  = 0;
         private int mode = 0;
         private int hitCount = 0;
-
+        
         public bool focussld { get; private set; }
 
         public MainPage()
         {
             InitializeComponent();
             focussld = false;
-            game = new Project2Game(this);
-            game.Run(this);
+            //game = new Project2Game(this);
+            //game.Run(this);
         }
 
         public void startGame(object sender, RoutedEventArgs e)
+
         {
+            //game = new Project2Game(this);
+            //game.Run(this);
+            game = new Project2Game(this);
+            game.Run(this);
+            game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 5;
             startScreen.Visibility = Visibility.Collapsed;
@@ -61,6 +67,11 @@ namespace Project2
 
         private void practiseClick(object sender, RoutedEventArgs e)
         {
+            //game = new Project2Game(this);
+           // game.Run(this);
+            game = new Project2Game(this);
+            game.Run(this);
+            game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 1000;
             startScreen.Visibility = Visibility.Collapsed;
@@ -68,6 +79,7 @@ namespace Project2
             btnhit.Visibility = Visibility.Visible;
             popupBox.IsOpen = true;
             popupText.Text = "Unlimited shots";
+            //game.Run(this);
         }
 
         private void About(object sender, RoutedEventArgs e)
@@ -124,12 +136,20 @@ namespace Project2
             if (game.gameState == Project2Game.GameState.Win ||
                 game.gameState == Project2Game.GameState.Lose)
             {
+                game.started = false;
                 focussld = false;
                 startScreen.Visibility = Visibility.Visible;
                 sldforce.Visibility = Visibility.Collapsed;
                 btnhit.Visibility = Visibility.Collapsed;
+                
                 game.Exit();
 
+
+            }
+            if (game.gameState == Project2Game.GameState.Start )
+            {
+                game.started = true;
+                //focussld = false;
                 //game = new Project2Game(this);
                 //game.Run(this);
             }
@@ -147,6 +167,7 @@ namespace Project2
             game.gameState = Project2Game.GameState.Lose;
             popupBox.IsOpen = true;
             popupText.Text = "GameOver";
+            game.started = false;
         }
     }
 }

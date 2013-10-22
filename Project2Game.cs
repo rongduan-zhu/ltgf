@@ -138,8 +138,12 @@ namespace Project2
                         main.win();
                         break;
                     case GameState.Start:
+                        started = true;
+                        break;
                     case GameState.Ready:
                     case GameState.Lose:
+                        started = false;
+                        break;
                     default:
                         break;
                 }
