@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using SharpDX;
 using Windows.UI.Xaml.Media.Animation;
+
 namespace Project2
 {
     /// <summary>
@@ -37,15 +38,26 @@ namespace Project2
         private float force  = 0;
         private int mode = 0;
         private int hitCount = 0;
-        
+        DispatcherTimer timer = new DispatcherTimer();
         public bool focussld { get; private set; }
 
         public MainPage()
         {
+            
             InitializeComponent();
             focussld = false;
             game = new Project2Game(this);
             game.Run(this);
+            timer.Start();
+        }
+        private void startAnimation()
+        {
+            timer.Tick += timer_Tick;
+        }
+
+        void timer_Tick(object sender, object e)
+        {
+            throw new System.NotImplementedException();
         }
 
         public void startGame(object sender, RoutedEventArgs e)
@@ -80,10 +92,15 @@ namespace Project2
         {
             abutton.Visibility = Visibility.Visible;
         }
+        private void Control(object sender, RoutedEventArgs e)
+        {
+            cbutton.Visibility = Visibility.Visible;
+        }
 
         public void hideAbout(object sender, RoutedEventArgs e)
         {
             abutton.Visibility = Visibility.Collapsed;
+            cbutton.Visibility = Visibility.Collapsed;
         }
 
         private void setForce(object sender, RangeBaseValueChangedEventArgs e)
