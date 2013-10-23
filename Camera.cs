@@ -35,7 +35,7 @@ namespace Project2
             position = new Vector3(0, 0, 0);
             View = Matrix.LookAtLH(distance, Vector3.Zero, Vector3.UnitY);
             Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4.0f,
-                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 900.0f);
+                (float)game.GraphicsDevice.BackBuffer.Width / game.GraphicsDevice.BackBuffer.Height, 0.1f, 500.0f);
 
             AngleH = 0;
             AngleV = -0.7f;
@@ -47,7 +47,7 @@ namespace Project2
         {
             if (main.focussld == false)
             {
-                scaleFactor *=  (float)args.Delta.Scale;
+                scaleFactor *= (float)args.Delta.Scale;
                 AngleH += (float)args.Delta.Translation.X / 500;
                 AngleV += (float)args.Delta.Translation.Y / 500;
             }

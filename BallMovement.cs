@@ -18,6 +18,9 @@ namespace Project2
         private float[,] heights;
 
         private const float bounceThreshold = 0.01f;
+        private const float bounceFactor = -0.3f;
+        private const float stoppingFactor = 0.03f;
+        private const float FRICTION = 0.91f;
 
         public Vector3 accelerate { get; private set; }
         public Vector3 velocity { get; private set; }
@@ -25,7 +28,7 @@ namespace Project2
         public BallMovement (Project2Game game)
         {
             this.game = game;
-            accelerate = new Vector3(0, -0.01f, 0);
+            accelerate = new Vector3(0, -0.007f, 0);
             velocity = new Vector3(0, -0.03f, 0);
             heights = game.landscape.pHeights;
         }
@@ -58,24 +61,25 @@ namespace Project2
             // proportion on X-axis is cos, proportion on Z-axis is sin.
             float cos = heightLRdiff / c;
             float sin = heightFBdiff / c;
-            float accelerate = 0.007f;
+            float accelerate = 0.005f;
 
             Vector3 v = velocity;
             v.X += accelerate * cos;
             v.Z += accelerate * sin;
 
-            float y = (velocity.Y < bounceThreshold) ?
-                0 : velocity.Y * (-0.7f);
+            float y = (Math.Abs(velocity.Y) < bounceThreshold) ?
+                0 : velocity.Y * bounceFactor;
 
             ballPosition = new Vector3(ballPosition.X, ballPosition.Y + game.ball.RADIUS, ballPosition.Z);
 
-            v.Y *= y;
+            v.Y = y;
 
-            v *= 0.95f;
+            v.X *= FRICTION;
+            v.Z *= FRICTION;
 
-            v.X = (Math.Abs(v.X) > 0.03f) ? v.X : 0;
-            v.Y = (Math.Abs(v.Y) > 0.03f) ? v.Y : 0;
-            v.Z = (Math.Abs(v.Z) > 0.03f) ? v.Z : 0;
+            v.X = (Math.Abs(v.X) > stoppingFactor) ? v.X : 0;
+            v.Y = (Math.Abs(v.Y) > stoppingFactor) ? v.Y : 0;
+            v.Z = (Math.Abs(v.Z) > stoppingFactor) ? v.Z : 0;
 
             velocity = v;
         }
@@ -141,13 +145,18 @@ namespace Project2
                 + heights[(int)position.X, (int)position.Z - 1])
                 / 4;
 
-            if (position.Y - game.ball.RADIUS / 2 <= groundAltitude)
+            if (position.Y - game.ball.RADIUS <= groundAltitude)
             {
                 touchGround(ref position, groundAltitude);
+
+                sentinel(position, groundAltitude);
+
+                if (Math.Abs(velocity.Y) > 0.03f)
+                {
+                    return;
+                }
                 heightFix(ref position, groundAltitude);
             }
-
-            sentinel(position, groundAltitude);
 
             game.ball.position = position;
         }
