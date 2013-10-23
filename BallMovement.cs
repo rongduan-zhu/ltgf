@@ -45,7 +45,7 @@ namespace Project2
             velocity = v;
         }
 
-        private void touchGround (Vector3 ballPosition, float groundAltitude)
+        private void touchGround (ref Vector3 ballPosition, float groundAltitude)
         {
             // heights difference between left and right
             float heightLRdiff = heights[(int)ballPosition.X - 1, (int)ballPosition.Z]
@@ -66,6 +66,8 @@ namespace Project2
 
             float y = (velocity.Y < bounceThreshold) ?
                 0 : velocity.Y * (-0.7f);
+
+            ballPosition = new Vector3(ballPosition.X, ballPosition.Y + game.ball.RADIUS, ballPosition.Z);
 
             v.Y *= y;
 
@@ -141,7 +143,7 @@ namespace Project2
 
             if (position.Y - game.ball.RADIUS / 2 <= groundAltitude)
             {
-                touchGround(position, groundAltitude);
+                touchGround(ref position, groundAltitude);
                 heightFix(ref position, groundAltitude);
             }
 
