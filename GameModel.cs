@@ -26,7 +26,7 @@ namespace Project2
         {
             this.game = (Project2Game) game;
             this.model = model;
-            effect = game.Content.Load<Effect>("myShader");
+            effect = game.Content.Load<Effect>("ObjectShader");
             this.position = new Vector3(x, y, z);
             World = Matrix.Identity;
 
