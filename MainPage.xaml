@@ -8,7 +8,7 @@
     mc:Ignorable="d"    
     d:DesignWidth="1280"
     d:DesignHeight="800">
-    
+
     <Grid x:Name="startScreen" VerticalAlignment="Top" Height="800">
         <Grid.Background>
             <ImageBrush ImageSource="Content/GolfImage.jpg" Stretch="UniformToFill"/>
@@ -19,9 +19,15 @@
         <Button x:Name="babout" Content="About" HorizontalAlignment="Left" Margin="875,588,0,0" VerticalAlignment="Top" Height="99" Width="269" Click="About" Background="#FF26D67E" FontSize="30" FontStyle="Italic" FontStretch="UltraExpanded"/>
         <Button x:Name="abutton" Content="ABOUT" HorizontalAlignment="Left" Margin="406,319,0,0" VerticalAlignment="Top" Height="231" Width="361" BorderBrush="White" Click="hideAbout" Background="#FF26D67E" Visibility="Collapsed"/>
         <ProgressRing HorizontalAlignment="Left" Margin="599,555,0,0" VerticalAlignment="Top" Width="44" Height="38" IsActive="True"/>
+        
 
     </Grid>
-    <Slider x:Name="sldforce"  HorizontalAlignment="Left" Margin="15.962,699.575,0,0" Width="500.567" RenderTransformOrigin="0.5,0.5" Height="46.888" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FF00AC4E" Background="#FF7E2020" ValueChanged="setForce"  BorderThickness="20" VerticalContentAlignment="Stretch" Visibility="Collapsed" PointerEntered="sldforce_PointerPressed" PointerExited="sldforce_PointerReleased"/>
+    <Button x:Name="btnMenu" HorizontalAlignment="Left" Margin="1128,31,0,0" VerticalAlignment="Top" Height="55" Width="77" Visibility="Collapsed" UseLayoutRounding="False" Click="btnMenu_Click">
+        <Button.Template>
+            <ControlTemplate TargetType="Button"/>
+        </Button.Template>
+    </Button>
+    <Slider x:Name="sldforce"  HorizontalAlignment="Left" Margin="15.962,699.575,0,0" Width="500.567" RenderTransformOrigin="0.5,0.5" Height="46.888" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FF00AC4E" Background="#FF7E2020" ValueChanged="setForce"  BorderThickness="20" VerticalContentAlignment="Stretch" Visibility="Collapsed" PointerEntered="sldforce_PointerPressed" PointerExited="sldforce_PointerReleased" Value="-1"/>
     <Button x:Name="btnhit" Content="HIT" HorizontalAlignment="Left" Margin="994.984,517.033,0,0" Click="hit" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="108.711"  UseLayoutRounding="False" Width="190.089" d:LayoutRounding="Auto" Background="#FF26D67E" BorderBrush="#FF2B302D" Visibility="Collapsed" BorderThickness="2"/>
     <Popup x:Name="popupBox" IsOpen="False" ManipulationMode="None" RenderTransformOrigin="0.467,0.482" Margin="90,0,-90,0">
         <Grid Background="#FF26D67E" RenderTransformOrigin="0.5,0.5" Margin="476,327,450,294" Height="116" Width="242" >
@@ -32,7 +38,7 @@
     <AppBar x:Name="menuBar" IsOpen="False" Margin="1185,0,0,0">
         <Grid>
             <Button x:Name="btnBack"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Height="122" Width="162" BorderBrush="White" Click="btnback_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource BackButtonStyle}"/>
-            <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" Height="122" Width="162" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Style="{StaticResource AppBarButtonStyle}" Grid.ColumnSpan="2"/>
+            <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" Height="122" Width="162" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Style="{StaticResource OutAppBarButtonStyle}" Grid.ColumnSpan="2"/>
             <ToggleSwitch x:Name="sound" Header="Music" Margin="0,100,0,0" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="75" IsOn="True" Toggled="ToggleSwitch_Toggled" FontSize="24"/>
         </Grid>
     </AppBar>

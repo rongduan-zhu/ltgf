@@ -51,7 +51,7 @@ namespace Project2
         public void startGame(object sender, RoutedEventArgs e)
 
         {
-
+            btnMenu.Visibility = Windows.UI.Xaml.Visibility.Visible;
             game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 5;
@@ -64,6 +64,7 @@ namespace Project2
 
         private void practiseClick(object sender, RoutedEventArgs e)
         {
+            btnMenu.Visibility = Windows.UI.Xaml.Visibility.Visible;
             game.gameState = Project2Game.GameState.Start;
             game.started = true;
             mode = 1000;
@@ -145,6 +146,7 @@ namespace Project2
 
         private void btnback_Click(object sender, RoutedEventArgs e)
         {
+            btnMenu.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
             focussld = false;
             startScreen.Visibility = Visibility.Visible;
             sldforce.Visibility = Visibility.Collapsed;
@@ -185,6 +187,11 @@ namespace Project2
         private void sldforce_PointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             focussld = true;
+        }
+
+        private void btnMenu_Click(object sender, RoutedEventArgs e)
+        {
+            menuBar.IsOpen = true;
         }
     }
 }

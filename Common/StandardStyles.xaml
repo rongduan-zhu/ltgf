@@ -488,11 +488,13 @@
         <Setter Property="AutomationProperties.Name" Value="Home"/>
         <Setter Property="Content" Value="&#xE10F;"/>
     </Style>
+    -->
     <Style x:Key="OutAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="OutAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Out"/>
         <Setter Property="Content" Value="&#xE110;"/>
     </Style>
+    <!--
     <Style x:Key="NextAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="NextAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Next"/>
@@ -759,11 +761,14 @@
         <Setter Property="AutomationProperties.Name" Value="Dock Left"/>
         <Setter Property="Content" Value="&#xE145;"/>
     </Style>
+    -->
+    
     <Style x:Key="DockRightAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="DockRightAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Dock Right"/>
         <Setter Property="Content" Value="&#xE146;"/>
     </Style>
+    <!--
     <Style x:Key="DockBottomAppBarButtonStyle" TargetType="ButtonBase" BasedOn="{StaticResource AppBarButtonStyle}">
         <Setter Property="AutomationProperties.AutomationId" Value="DockBottomAppBarButton"/>
         <Setter Property="AutomationProperties.Name" Value="Dock Bottom"/>
