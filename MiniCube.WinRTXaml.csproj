@@ -74,8 +74,8 @@
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Content\GolfImage.jpg" />
-    <ToolkitFxc Include="Content\Phong.fx" />
-    <ToolkitFxc Include="Content\myShader.fx" />
+    <ToolkitFxc Include="Content\LandscapeShader.fx" />
+    <ToolkitFxc Include="Content\ObjectShader.fx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
