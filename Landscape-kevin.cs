@@ -418,25 +418,25 @@ namespace Project2
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;
             tempX1 = tempX2 = tempZ1 = tempZ2 = 0;
-            //while (unsuccessful) {
+            while (unsuccessful) {
                 tempX1 = rnd.Next(minPlayable, maxPlayable);
                 tempZ1 = rnd.Next(minPlayable, maxPlayable);
                 if (isSafePosition(tempX1, tempZ1))
                 {
                     unsuccessful = false;
                 }
-            //}
+            }
 
             //Get objective pos
             unsuccessful = true;
-            //while (unsuccessful) {
+            while (unsuccessful) {
                 tempX2 = rnd.Next(minPlayable, maxPlayable);
                 tempZ2 = rnd.Next(minPlayable, maxPlayable);
                 if ( isSafePosition(tempX2, tempZ2) && 
                     (Math.Abs(tempX2 - tempX1) > minimumDistance || Math.Abs(tempZ2 - tempZ1) > minimumDistance)) {
                     unsuccessful = false;
                 }
-            //}
+            }
             startPos = new Vector3(tempX1, flatOcean(pHeights[tempX1, tempZ1]), tempZ1);
             objectivePos = new Vector3(tempX2, flatOcean(pHeights[tempX2, tempZ2]), tempZ2);
         }
