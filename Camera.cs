@@ -30,6 +30,9 @@ namespace Project2
         public Vector3 RealDistance { get; private set; }
         public Vector3 RealPosition { get; private set; }
 
+        public MouseManager mouseManager;
+        public float prevDelta;
+
         public Camera(Project2Game game, MainPage main) {
             distance = new Vector3(0, 0, -15);
             position = new Vector3(0, 0, 0);
@@ -41,6 +44,8 @@ namespace Project2
             AngleV = -0.7f;
             this.main = main;
             this.game = game;
+
+            mouseManager = new MouseManager(game);
         }
 
         public void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs args)
@@ -55,6 +60,18 @@ namespace Project2
 
         public void Update(GameTime gameTime)
         {
+            //Mouse update
+            MouseState mouseState = mouseManager.GetState();
+            scaleFactor -= (mouseState.WheelDelta - prevDelta) / 1000.0f;
+            prevDelta = mouseState.WheelDelta;
+
+            if (scaleFactor > 10) {
+                scaleFactor = 10;
+            }
+            if (scaleFactor < 0.1) {
+                scaleFactor = 0.1f;
+            }
+
             Vector4 temp = new Vector4(distance, 1);
             temp = Vector4.Transform(temp, Matrix.Scaling(scaleFactor) * Matrix.RotationY(-AngleH) * Matrix.RotationX(-AngleV));
             RealDistance = new Vector3(temp.X, temp.Y, temp.Z);
