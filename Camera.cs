@@ -52,7 +52,7 @@ namespace Project2
         {
             if (main.focussld == false)
             {
-                scaleFactor *= (float)args.Delta.Scale;
+                scaleFactor /= (float)args.Delta.Scale;
                 AngleH += (float)args.Delta.Translation.X / 500;
                 AngleV += (float)args.Delta.Translation.Y / 500;
             }
