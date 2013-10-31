@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="MiniCube.App">
-      <VisualElements DisplayName="MiniCube.WinRTXaml" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="MiniCube.WinRTXaml" ForegroundText="light" BackgroundColor="#464646">
+      <VisualElements DisplayName="Let The Golf Fly" Logo="Assets\Logo.png" SmallLogo="Assets\SmallLogo.png" Description="Arcade golf game" ForegroundText="light" BackgroundColor="#464646">
         <DefaultTile ShowName="allLogos" />
         <SplashScreen Image="Assets\SplashScreen.png" BackgroundColor="black" />
       </VisualElements>
