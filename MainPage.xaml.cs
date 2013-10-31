@@ -49,6 +49,17 @@ namespace Project2
             game = new Project2Game(this);
             game.Run(this);
             timer.Start();
+
+            //initialize positions
+            startScreen.Width = getScreenWidth();
+            startScreen.Height = getScreenHeight();
+            bstart.Margin = new Thickness(startScreen.Width - 400, 180, 0, 0);
+            bstart_practise.Margin = new Thickness(startScreen.Width - 400, 300, 0, 0);
+            bcontrol.Margin = new Thickness(startScreen.Width - 400, 420, 0, 0);
+            babout.Margin = new Thickness(startScreen.Width - 400, 540, 0, 0);
+            sldforce.Margin = new Thickness(20, startScreen.Height - 100, 0, 0);
+            btnhit.Margin = new Thickness(startScreen.Width - 280, startScreen.Height - 280, 0, 0);
+            menuBar.Margin = new Thickness(startScreen.Width - 400, 0, 0, 0);
         }
         private void startAnimation()
         {
@@ -58,6 +69,14 @@ namespace Project2
         void timer_Tick(object sender, object e)
         {
             throw new System.NotImplementedException();
+        }
+
+        public int getScreenWidth() {
+            return (int)Window.Current.Bounds.Width;
+        }
+
+        public int getScreenHeight() {
+            return (int)Window.Current.Bounds.Height;
         }
 
         public void startGame(object sender, RoutedEventArgs e)
@@ -208,6 +227,10 @@ namespace Project2
         private void btnMenu_Click(object sender, RoutedEventArgs e)
         {
             menuBar.IsOpen = true;
+        }
+
+        private void btnHideMenu_Click(object sender, RoutedEventArgs e) {
+            menuBar.IsOpen = false;
         }
     }
 }

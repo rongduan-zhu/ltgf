@@ -39,8 +39,9 @@
     </Popup>
     <AppBar x:Name="menuBar" IsOpen="False" Margin="1185,0,0,0">
         <Grid>
-            <Button x:Name="btnBack"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center" Height="122" Width="162" BorderBrush="White" Click="btnback_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource BackButtonStyle}"/>
-            <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Bottom" Height="122" Width="162" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Style="{StaticResource OutAppBarButtonStyle}" Grid.ColumnSpan="2"/>
+            <Button x:Name="btnBack"  HorizontalAlignment="Left" Margin="0,300,0,0" VerticalAlignment="Top" Height="122" Width="200" BorderBrush="White" Click="btnback_Click" Background="#FF26D67E" Grid.ColumnSpan="2" Style="{StaticResource HomeAppBarButtonStyle}"/>
+            <Button x:Name="btnQuit"  HorizontalAlignment="Left" Margin="0,600,0,0" VerticalAlignment="Top" Height="122" Width="200" BorderBrush="White" Click="btnQuit_Click" Background="#FF26D67E" Style="{StaticResource OutAppBarButtonStyle}" Grid.ColumnSpan="2"/>
+            <Button x:Name="btnHideMenu"  HorizontalAlignment="Left" Margin="0,450,0,0" VerticalAlignment="Top" Height="122" Width="200" BorderBrush="White" Click="btnHideMenu_Click" Background="#FF26D67E" Style="{StaticResource ClosePaneAppBarButtonStyle}" Grid.ColumnSpan="2"/>
             <ToggleSwitch x:Name="sound" Header="Music" Margin="0,100,0,0" HorizontalAlignment="Left" Height="800" VerticalAlignment="Top" Width="75" IsOn="True" Toggled="ToggleSwitch_Toggled" FontSize="24"/>
         </Grid>
     </AppBar>
