@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using SharpDX;
 using Windows.UI.Xaml.Media.Animation;
+using System.Diagnostics;
 
 namespace Project2
 {
@@ -60,6 +61,8 @@ namespace Project2
             sldforce.Margin = new Thickness(20, startScreen.Height - 100, 0, 0);
             btnhit.Margin = new Thickness(startScreen.Width - 280, startScreen.Height - 280, 0, 0);
             menuBar.Margin = new Thickness(startScreen.Width - 400, 0, 0, 0);
+            displayText.Margin = new Thickness(10, 180, 0, 0);
+            displayText.Visibility = Visibility.Collapsed;
         }
         private void startAnimation()
         {
@@ -109,11 +112,38 @@ namespace Project2
 
         private void About(object sender, RoutedEventArgs e)
         {
-            abutton.Visibility = Visibility.Visible;
+            //abutton.Visibility = Visibility.Visible;
+            string aboutText = "Production of:\n\tPo Chen, Litao Shen, Weiqian Wang, Rongduan Zhu.\n\tAll Rights Reserved";
+            dummyText.Text = aboutText;
+            if (displayText.Visibility == Visibility.Visible && displayText.Text.Equals(dummyText.Text))
+            {
+                displayText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                displayText.Text = aboutText;
+                displayText.Visibility = Visibility.Visible;
+            }
+            
         }
         private void Control(object sender, RoutedEventArgs e)
         {
-            cbutton.Visibility = Visibility.Visible;
+            //cbutton.Visibility = Visibility.Visible;
+            string controlText = "Objective:\n\tHit the golf ball into the hole under the floating arrow.\n\t" +
+                "Direction of camera is the direction the ball will be hit.\n\t" +
+                "Use slider to control how hard you want to hit the ball,\n\tuse the Hit Button to hit.\n";
+            dummyText.Text = controlText;
+            if (displayText.Visibility == Visibility.Visible && displayText.Text.Equals(dummyText.Text))
+            {
+                displayText.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                displayText.Text = controlText;
+                Debug.WriteLine(displayText.Text.ToString().Length);
+                Debug.WriteLine(controlText.Length);
+                displayText.Visibility = Visibility.Visible;
+            }
         }
 
         public void hideAbout(object sender, RoutedEventArgs e)

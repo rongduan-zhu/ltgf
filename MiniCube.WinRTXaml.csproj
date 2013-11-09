@@ -12,7 +12,9 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>MiniCube.WinRTXaml_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>MiniCube.WinRTXaml_StoreKey.pfx</PackageCertificateKeyFile>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <PackageCertificateThumbprint>0A85A5B3A9AE1B95924ADA9DFE920C063F59E743</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,6 +67,7 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="Content\Arrow.mtl" />
+    <None Include="MiniCube.WinRTXaml_StoreKey.pfx" />
     <None Include="MiniCube.WinRTXaml_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +77,7 @@
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\StoreLogo.png" />
     <Content Include="Content\GolfImage.jpg" />
+    <None Include="Package.StoreAssociation.xml" />
     <ToolkitFxc Include="Content\LandscapeShader.fx" />
     <ToolkitFxc Include="Content\ObjectShader.fx" />
   </ItemGroup>
