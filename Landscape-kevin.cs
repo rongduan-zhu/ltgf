@@ -244,7 +244,7 @@ namespace Project2
             }
 
             //generates the position of the ball and the hole
-            generateRandomStartObjectivePos();
+            //generateRandomStartObjectivePos();
             return vertices.ToArray();
         }
 
@@ -413,7 +413,7 @@ namespace Project2
         /**
          * Generates a random golf ball position and hole position
          */
-        private void generateRandomStartObjectivePos() {
+        public void generateRandomStartObjectivePos() {
             //Get starting pos
             bool unsuccessful = true;
             int tempX1, tempZ1, tempX2, tempZ2;

@@ -43,7 +43,7 @@ namespace Project2
         private static Vector3 STILL = Vector3.Zero;
 
         public enum GameState { Start, Movie, Ready, Lose, Win };
-        public GameState gameState = GameState.Start;
+        public GameState gameState;
 
         public MainPage main { get; private set; }
         public Landscape2 landscape { get; private set; }
@@ -82,18 +82,27 @@ namespace Project2
             landscape = new Landscape2(this);
 
             model = Content.Load<Model>("Arrow");
-            arrow = new Arrow(model, this, landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
+            arrow = new Arrow(model, this, 0, 0, 0);
             models.Push(arrow);
             model = Content.Load<Model>("Ball");
-            ball = new Ball(model, this, landscape.startPos.X, landscape.startPos.Y + 0.8f, landscape.startPos.Z);
+            ball = new Ball(model, this, 0, 0, 0);
             models.Push(ball);
             model = Content.Load<Model>("Pin");
-            pin = new GameModel(model, this, landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
+            pin = new GameModel(model, this, 0, 0, 0);
             models.Push(pin);
 
             movement = new BallMovement(this);
 
             base.LoadContent();
+        }
+
+        public void initializePositions() {
+            landscape.generateRandomStartObjectivePos();
+            arrow.position = new Vector3(landscape.objectivePos.X, landscape.objectivePos.Y, landscape.objectivePos.Z);
+            ball.position = new Vector3(landscape.startPos.X, landscape.startPos.Y + 0.8f, landscape.startPos.Z);
+            pin.position = new Vector3(landscape.startPos.X, landscape.startPos.Y, landscape.startPos.Z);
+            gameState = GameState.Start;
+            movement.reset();
         }
 
         protected override void Initialize()
@@ -173,7 +182,7 @@ namespace Project2
 
         public void fire()
         {
-            models.Pop();
+            //models.Pop();
         }
     }
 }

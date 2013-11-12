@@ -28,6 +28,13 @@ namespace Project2
         public BallMovement (Project2Game game)
         {
             this.game = game;
+            reset();
+            //accelerate = new Vector3(0, -0.007f, 0);
+            //velocity = new Vector3(0, -0.03f, 0);
+            //heights = game.landscape.pHeights;
+        }
+
+        public void reset() {
             accelerate = new Vector3(0, -0.007f, 0);
             velocity = new Vector3(0, -0.03f, 0);
             heights = game.landscape.pHeights;

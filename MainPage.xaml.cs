@@ -94,6 +94,7 @@ namespace Project2
             btnhit.Visibility = Visibility.Visible;
             popupBox.IsOpen = true;
             popupText.Text = "5 shots allowed";
+            game.initializePositions();
         }
 
         private void practiseClick(object sender, RoutedEventArgs e)
@@ -107,6 +108,7 @@ namespace Project2
             btnhit.Visibility = Visibility.Visible;
             popupBox.IsOpen = true;
             popupText.Text = "Unlimited shots";
+            game.initializePositions();
             //game.Run(this);
         }
 
