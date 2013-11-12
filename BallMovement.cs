@@ -22,8 +22,8 @@ namespace Project2
         private const float stoppingFactor = 0.03f;
         private const float FRICTION = 0.91f;
 
-        public Vector3 accelerate { get; private set; }
-        public Vector3 velocity { get; private set; }
+        public Vector3 accelerate { get; set; }
+        public Vector3 velocity { get; set; }
 
         public BallMovement (Project2Game game)
         {

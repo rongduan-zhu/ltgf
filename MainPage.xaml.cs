@@ -93,7 +93,7 @@ namespace Project2
             sldforce.Visibility = Visibility.Visible;
             btnhit.Visibility = Visibility.Visible;
             popupBox.IsOpen = true;
-            popupText.Text = "5 shots Allowed";
+            popupText.Text = "5 shots allowed";
         }
 
         private void practiseClick(object sender, RoutedEventArgs e)
@@ -198,7 +198,7 @@ namespace Project2
             game.gameState = Project2Game.GameState.Win;
             popupBox.IsOpen = true;
             popupText.Text = "You Finished the game with " + hitCount + " shot(s)";
-            game.started = false;
+            //game.started = false;
         }
 
         internal void lose()
@@ -206,7 +206,7 @@ namespace Project2
             game.gameState = Project2Game.GameState.Lose;
             popupBox.IsOpen = true;
             popupText.Text = "GameOver";
-            game.started = false;
+            //game.started = false;
         }
 
         private void btnback_Click(object sender, RoutedEventArgs e)

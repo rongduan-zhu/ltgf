@@ -37,7 +37,7 @@
     </Button>
     <Slider x:Name="sldforce"  HorizontalAlignment="Left" Margin="15.962,699.575,0,0" Width="500.567" RenderTransformOrigin="0.5,0.5" Height="46.888" UseLayoutRounding="False" d:LayoutRounding="Auto" CacheMode="BitmapCache" FontFamily="Global User Interface" BorderBrush="#FF00AC4E" Background="#FF7E2020" ValueChanged="setForce"  BorderThickness="20" VerticalContentAlignment="Stretch" Visibility="Collapsed" PointerEntered="sldforce_PointerPressed" PointerExited="sldforce_PointerReleased" Value="-1"/>
     <Button x:Name="btnhit" Content="HIT" HorizontalAlignment="Left" Margin="994.984,517.033,0,0" Click="hit" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5" Height="108.711"  UseLayoutRounding="False" Width="190.089" d:LayoutRounding="Auto" Background="#FF26D67E" BorderBrush="#FF2B302D" Visibility="Collapsed" BorderThickness="2"/>
-    <Popup x:Name="popupBox" IsOpen="False" ManipulationMode="None" RenderTransformOrigin="0.467,0.482" Margin="90,0,-90,0">
+    <Popup x:Name="popupBox" IsOpen="False" ManipulationMode="None" RenderTransformOrigin="0.467,0.482" Margin="90,0,-90,0" Opacity="0.6">
         <Grid Background="#FF26D67E" RenderTransformOrigin="0.5,0.5" Margin="476,327,450,294" Height="116" Width="242" >
             <TextBlock x:Name="popupText" TextAlignment="Center" TextWrapping="Wrap" FontSize="20" Margin="0,19" FontStyle="Oblique" Text="Text" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
             <Button x:Name="closePopup" Content="OK" Click="closePopupClick" VerticalAlignment="Bottom" VerticalContentAlignment="Bottom" UseLayoutRounding="True" HorizontalAlignment="Right" HorizontalContentAlignment="Right" ManipulationMode="All" RenderTransformOrigin="0,0" IsRightTapEnabled="False"/>

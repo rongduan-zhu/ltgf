@@ -132,9 +132,13 @@ namespace Project2
                         }
                         break;
                     case GameState.Win:
+                    case GameState.Lose:
+                        movement.velocity = Vector3.Zero;
+                        movement.accelerate = Vector3.Zero;
+                        break;
                     case GameState.Start:
                     case GameState.Ready:
-                    case GameState.Lose:
+                    
                     default:
                         break;
                 }
