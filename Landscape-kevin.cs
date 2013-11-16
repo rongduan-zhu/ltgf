@@ -35,8 +35,8 @@ namespace Project2
         public int minPlayable = BOARD_SIZE / 10;                       //Minimum x or z value that any GameObject could be placed
         public int maxPlayable = 9 * BOARD_SIZE / 10;                   //Maximum x or z value that any GameObject could be placed
         private int minimumDistance = 2 * BOARD_SIZE / 10;              //Minimum distance between golf ball and hole
-        private float min_probability = 0.1f;                           //Minimum percentage of max height value of the range of the height generator
-        private float max_probability = 1.2f;                           //Maximum percentage of max height value of the range of the height generator
+        private float min_probability = 1f;                           //Minimum percentage of max height value of the range of the height generator
+        private float max_probability = 0.8f;                           //Maximum percentage of max height value of the range of the height generator
         private const float BACK_ALPHA = 0.5f;                          //Back face transparency value
         private const float WATER_ALPHA = 1f;                           //Water transparency value
         private float waterAngleAlter = 0.07f;
@@ -159,7 +159,7 @@ namespace Project2
             h3 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
             h4 = rnd.NextFloat(-MAX_HEIGHT, MAX_HEIGHT);
 
-            landscapeShapeGuard(h1, h2, h3, h4);
+            //landscapeShapeGuard(h1, h2, h3, h4);
 
             //Start populating the array using a hybrid midpoint displacement and diamond square algorithm
             DivideVertices(ref pHeights, 0, 0, BOARD_SIZE - 1, h1, h2, h3, h4);
